@@ -8,9 +8,14 @@ h2, h3 { font-weight: 600 !important; }
 [data-testid="stCaptionContainer"] { color: #64748B; line-height: 1.6; }
 .research-eyebrow { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: .68rem; font-weight: 700; letter-spacing: .15em; color: #64748B; }
 .research-category { border: 1px solid #DFE5ED; border-radius: 4px; padding: .3rem .6rem; color: var(--research-accent); background: var(--research-soft); letter-spacing: .07em; }
-[data-testid="stSidebar"] { background: #EFF2F6; border-right: 1px solid #DFE5ED; }
-[data-testid="stSidebarNav"] a { border-radius: 5px; margin-block: 2px; }
-[data-testid="stSidebarNav"] a[aria-current="page"] { background: var(--research-soft); color: var(--research-accent); font-weight: 650; }
+[data-testid="stSidebar"] { background: #172B46; color: #E6EDF5; border-right: 1px solid #263F5F; }
+[data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 { color: #E6EDF5; }
+[data-testid="stSidebarNav"] a { color: #D6E1EE; border-radius: 5px; margin-block: 2px; border-left: 3px solid transparent; }
+[data-testid="stSidebarNav"] a span { color: inherit; }
+[data-testid="stSidebarNav"] a:hover { background: #223D5C; color: #FFFFFF; }
+[data-testid="stSidebarNav"] a[aria-current="page"] { background: #2C4869; color: #FFFFFF; border-left-color: #A9C4DF; font-weight: 650; }
+[data-testid="stSidebarNav"] a:focus-visible { outline: 2px solid #A9C4DF; outline-offset: 2px; }
+[data-testid="stSidebarNav"] [data-testid="stSidebarNavSeparator"] { border-color: #35506E; }
 [data-testid="stMetric"] { background: #FFFFFF; border: 1px solid #DFE5ED; border-top: 3px solid var(--research-accent); border-radius: 8px; padding: 1.1rem 1.2rem; box-shadow: 0 2px 5px #233E6005; }
 [data-testid="stMetricLabel"] { color: #64748B; font-size: .8rem; }
 [data-testid="stMetricValue"] { color: var(--research-accent); font-variant-numeric: tabular-nums; font-size: 1.7rem; letter-spacing: -.03em; }
