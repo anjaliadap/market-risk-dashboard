@@ -1,0 +1,26 @@
+{
+  "Market": [
+    "Market Data",
+    "Bear Market",
+    "S&P vs Bonds",
+    "Valuation",
+    "S&P 500 Fundamentals",
+    "Margin Debt",
+    "S&P Relative",
+    "Gold to Oil",
+    "Banks",
+    "Bull vs Bear",
+    "VIX & Options",
+    "BTC",
+    "Housing",
+    "Energy"
+  ],
+  "Macro": [
+    "Recession",
+    "Consumer"
+  ],
+  "AI": [
+    "Demand",
+    "Forecasting"
+  ]
+}

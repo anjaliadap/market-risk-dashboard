@@ -1,0 +1,11 @@
+[project]
+name = "market-risk-dashboard"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = ["streamlit>=1.40,<2", "plotly>=6,<7", "pandas>=2.2,<3", "numpy>=2,<3", "scipy>=1.14,<2", "statsmodels>=0.14,<1", "sqlalchemy>=2,<3", "alembic>=1.14,<2", "httpx>=0.28,<1", "pydantic-settings>=2,<3", "openpyxl>=3.1,<4"]
+[dependency-groups]
+dev = ["pytest>=8,<10", "ruff>=0.9,<1"]
+[tool.pytest.ini_options]
+pythonpath = ["."]
+[tool.ruff]
+line-length = 100
