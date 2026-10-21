@@ -1,0 +1,7 @@
+# Sources
+
+The machine-readable `config/series.json` lists implemented FRED series, source links, units, frequency and usage constraints. FRED is the distributor; underlying institutions and rights vary by series. No redistribution rights are assumed. The connector requests graph CSV since 2000; actual coverage is provider-dependent (S&P coverage is limited). Live verification initially received cloud egress HTTP 403; subsequent requests returned HTTP 200 with a FRED Site Maintenance HTML page, not CSV; fixture tests do not establish live availability.
+
+Planned sources: Treasury (rates), BLS (labor/inflation), BEA (national accounts), FDIC (banking), SEC EDGAR companyfacts (hyperscaler reported fundamentals), EIA (energy), Census (housing), FINRA (margin debt), Cboe (volatility/options), AAII (sentiment), NBER (recession dates via FRED), ALFRED (real-time vintages). These are candidates, not implemented integrations. SEC requires an identified compliant User-Agent and filing-period normalization. EIA may require an API key. MOVE, forward index multiples and official index fundamentals may require licenses. Industry AI supply metrics require research and potentially commercial permissions.
+
+Bloomberg stub deliberately refuses data retrieval until a licensed Desktop API implementation is supplied. University Terminal access does not establish company display or redistribution rights. Never bypass provider restrictions.
