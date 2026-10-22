@@ -10,6 +10,7 @@ import streamlit as st
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from dashboard.excel_views import render_administration, render_section, synchronization_status
 from src.analytics.core import (
     drawdown,
     historical_comparison,
@@ -27,6 +28,7 @@ from src.registry import BY_ID, REGISTRY
 
 st.set_page_config(page_title="Market & Risk Intelligence", page_icon="◈", layout="wide")
 initialize()
+synchronization_status()
 st.markdown(
     """<style>.stApp{background:#f7f8fa}h1,h2,h3{color:#30223d}div[data-testid=stMetric]{background:white;border:1px solid #e2e4e8;padding:16px;border-radius:6px}section[data-testid=stSidebar]{background:#eeeef3}</style>""",
     unsafe_allow_html=True,
@@ -90,11 +92,30 @@ BLOCKERS = {
 
 
 def render(title):
+    if title == "Workbook Administration":
+        render_administration()
+        return
     st.title(title)
     st.caption(
         "MARKET & RISK INTELLIGENCE · Research workspace · Public-source observations, never real-time"
     )
-    if title in BLOCKERS:
+    excel_primary = render_section(title)
+    if excel_primary:
+        if title not in MAPPING and title != "Valuation":
+            return
+        label = (
+            "Show independent valuation assumptions"
+            if title == "Valuation"
+            else "Show independent FRED observations for comparison"
+        )
+        if not st.checkbox(label, key="independent_" + title):
+            return
+    if title == "Supply":
+        st.info(
+            "No workbook source exists for AI Supply. Capacity, vacancy, supply-chain lead times and GPU rental prices require independently verified sources; see the integration audit for the source strategy."
+        )
+        return
+    if title in BLOCKERS and not excel_primary:
         st.info("Coverage limitation · " + BLOCKERS[title])
     if title == "Data Sources & System Status":
         st.dataframe(pd.DataFrame(REGISTRY), hide_index=True)
@@ -170,6 +191,8 @@ def render(title):
                 st.dataframe(frame, hide_index=True)
     ids = MAPPING.get(title, [])
     if not ids:
+        if title in {"Valuation", "Forecasting"}:
+            return
         st.warning(
             "UNAVAILABLE · No verified observations connected for this page. See coverage report for outstanding work."
         )
@@ -343,12 +366,15 @@ def render(title):
     )
     if key == "SP500":
         st.plotly_chart(
-            px.line(drawdown(selected.value), title="DERIVED · price-index drawdown (%)"),
+            px.line(
+                drawdown(h.value).loc[str(start) :], title="DERIVED · price-index drawdown (%)"
+            ),
             width="stretch",
         )
         st.plotly_chart(
             px.line(
-                volatility(selected.value), title="DERIVED · 21-session annualized volatility (%)"
+                volatility(h.value).loc[str(start) :],
+                title="DERIVED · 21-session annualized volatility (%)",
             ),
             width="stretch",
         )
@@ -369,7 +395,7 @@ def render(title):
                     width="stretch",
                 )
         st.caption(
-            "Moving-average interpretation: distance of index price from its trailing 50/200-session average, not constituent breadth. Excel workbook was not supplied; original labels cannot be verified. Sector calculations remain unavailable pending sector feeds."
+            "These independent FRED calculations measure index-price distance from its trailing average. The sponsor workbook's Market Data charts measure constituent breadth and are shown separately."
         )
     with st.expander("Source, methodology and observation metadata"):
         st.json(BY_ID[key])
@@ -393,6 +419,6 @@ def page(title):
 navigation = {
     "Home": [page("Executive Overview")],
     **{group: [page(t) for t in titles] for group, titles in PAGES.items()},
-    "Research operations": [page("Data Sources & System Status")],
+    "Research operations": [page("Data Sources & System Status"), page("Workbook Administration")],
 }
 st.navigation(navigation).run()

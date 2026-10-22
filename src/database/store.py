@@ -7,6 +7,7 @@ from sqlalchemy import (
     Float,
     Integer,
     String,
+    Text,
     UniqueConstraint,
     create_engine,
     select,
@@ -55,6 +56,19 @@ class ResearchRecord(Base):
     payload: Mapped[str] = mapped_column(String)
     version: Mapped[int] = mapped_column(default=1)
     __table_args__ = (UniqueConstraint("kind", "name", "version"),)
+
+
+class WorkbookImport(Base):
+    """Immutable local import snapshots, kept separate from independent provider observations."""
+
+    __tablename__ = "workbook_imports"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    imported_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    path: Mapped[str] = mapped_column(Text)
+    sha256: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    status: Mapped[str] = mapped_column(String(40))
+    error: Mapped[str | None] = mapped_column(Text, nullable=True)
+    payload: Mapped[str | None] = mapped_column(Text, nullable=True)
 
 
 if settings.database_url.startswith("sqlite:///data/"):

@@ -1,0 +1,2868 @@
+{
+  "version": 1,
+  "policy": "Saved caches only; no Bloomberg refresh attestation",
+  "sections": {
+    "Market Data": {
+      "sheets": [
+        "Market Data"
+      ],
+      "notes": [
+        "Authorized Bloomberg refresh/save; snapshot TODAY() dates are calculation dates, not release dates. Sector breadth is constituent breadth, not index distance to DMA. Futures prices must not be labeled spot."
+      ],
+      "charts": [
+        {
+          "id": "market_data_0",
+          "title": "% of S&P 500 Trading > 50-DMA",
+          "series": [
+            {
+              "id": "market_data_0_0",
+              "name": "%",
+              "role": "metric",
+              "sheet": "Market Data",
+              "values": "AL4:AL5686",
+              "date_sheet": "Market Data",
+              "dates": "AK4:AK5686",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0",
+              "allowed_number_formats": [
+                "0.0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "market_data_1",
+          "title": "% of S&P 500 Trading > 200-DMA",
+          "series": [
+            {
+              "id": "market_data_1_0",
+              "name": "%",
+              "role": "metric",
+              "sheet": "Market Data",
+              "values": "AO4:AO5426",
+              "date_sheet": "Market Data",
+              "dates": "AN4:AN5426",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0",
+              "allowed_number_formats": [
+                "0.0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "market_data_2",
+          "title": "% of S&P at 52Wk High vs Low",
+          "series": [
+            {
+              "id": "market_data_2_0",
+              "name": "High",
+              "role": "metric",
+              "sheet": "Market Data",
+              "values": "AR4:AR4225",
+              "date_sheet": "Market Data",
+              "dates": "AQ4:AQ4225",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0.0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0",
+              "allowed_number_formats": [
+                "0.0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "market_data_2_1",
+              "name": "Low (Formula for Chart)",
+              "role": "metric",
+              "sheet": "Market Data",
+              "values": "AT4:AT4225",
+              "date_sheet": "Market Data",
+              "dates": "AQ4:AQ4225",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0.0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0",
+              "allowed_number_formats": [
+                "0.0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "market_data_3",
+          "title": "SPY Flows",
+          "series": [
+            {
+              "id": "market_data_3_0",
+              "name": "$",
+              "role": "metric",
+              "sheet": "Market Data",
+              "values": "AW4:AW4225",
+              "date_sheet": "Market Data",
+              "dates": "AV4:AV4225",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "\"$\"#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "\"$\"#,##0",
+              "allowed_number_formats": [
+                "\"$\"#,##0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        }
+      ],
+      "tables": [
+        {
+          "id": "market_snapshot",
+          "title": "Market Snapshot",
+          "sheet": "Market Data",
+          "range": "B3:M54",
+          "date_cell": "Z4",
+          "expected_headers": {
+            "B3": "Equities",
+            "D3": "Current",
+            "E3": "YTD",
+            "F3": "1M",
+            "G3": "3M",
+            "H3": "6M",
+            "I3": "12M",
+            "J3": "50-DMA",
+            "K3": "200-DMA",
+            "L3": "Low",
+            "M3": "High"
+          },
+          "display_columns": [
+            [
+              "B",
+              "Market"
+            ],
+            [
+              "D",
+              "Current"
+            ],
+            [
+              "E",
+              "YTD"
+            ],
+            [
+              "F",
+              "1M"
+            ],
+            [
+              "G",
+              "3M"
+            ],
+            [
+              "H",
+              "6M"
+            ],
+            [
+              "I",
+              "12M"
+            ],
+            [
+              "J",
+              "50-DMA"
+            ],
+            [
+              "K",
+              "200-DMA"
+            ],
+            [
+              "L",
+              "52W Low"
+            ],
+            [
+              "M",
+              "52W High"
+            ]
+          ],
+          "signal_column": null
+        }
+      ]
+    },
+    "Bear Market": {
+      "sheets": [
+        "Bear Market"
+      ],
+      "notes": [
+        "D8:D21 current, E8:E21 historical averages (linked to row 22, preserve them), G8:G21 explicit direction rules; F8:F21 saved flags. D23=14 denominator. Historical peaks and IPO inputs are sponsor assumptions. Never infer red flags from font colors."
+      ],
+      "charts": [],
+      "tables": [
+        {
+          "id": "bear_checklist",
+          "title": "Bear Checklist",
+          "sheet": "Bear Market",
+          "range": "B7:G26",
+          "date_cell": null,
+          "expected_headers": {
+            "B7": "Bear Market Checklist",
+            "D7": "Current",
+            "E7": "Average*",
+            "G7": "Formatting"
+          },
+          "display_columns": [
+            [
+              "B",
+              "Indicator"
+            ],
+            [
+              "D",
+              "Current"
+            ],
+            [
+              "E",
+              "Historical average"
+            ]
+          ],
+          "signal_column": "F"
+        }
+      ]
+    },
+    "S&P vs Bonds": {
+      "sheets": [
+        "S&P vs Bonds"
+      ],
+      "notes": [
+        "T:AA Bloomberg inputs; J:R cached Excel outputs. P/S yield less Baa yield and equity P/E less Baa P/E are sponsor definitions, not an equity risk premium."
+      ],
+      "charts": [
+        {
+          "id": "sandp_vs_bonds_0",
+          "title": "P/S yield less Baa bond yield",
+          "series": [
+            {
+              "id": "sandp_vs_bonds_0_0",
+              "name": "P/S Yield -  Baa Bond Yield",
+              "role": "metric",
+              "sheet": "S&P vs Bonds",
+              "values": "M4:M324",
+              "date_sheet": "S&P vs Bonds",
+              "dates": "J4:J324",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "sandp_vs_bonds_1",
+          "title": "Equity P/E less Baa bond P/E",
+          "series": [
+            {
+              "id": "sandp_vs_bonds_1_0",
+              "name": "Equity P/E -  Baa Bond P/E",
+              "role": "metric",
+              "sheet": "S&P vs Bonds",
+              "values": "R4:R324",
+              "date_sheet": "S&P vs Bonds",
+              "dates": "O4:O324",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0\\x",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0\\x",
+              "allowed_number_formats": [
+                "0.0\\x"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        }
+      ],
+      "tables": []
+    },
+    "Valuation": {
+      "sheets": [
+        "Valuation"
+      ],
+      "notes": [
+        "C:E are fixed historical benchmarks; F current Bloomberg values; H current vs 2000. Preserve benchmark dates and values."
+      ],
+      "charts": [],
+      "tables": [
+        {
+          "id": "valuation_benchmarks",
+          "title": "Valuation Benchmarks",
+          "sheet": "Valuation",
+          "range": "B2:H12",
+          "date_cell": "F3",
+          "expected_headers": {
+            "C2": "Peak",
+            "D2": "Trough",
+            "E2": "Trough",
+            "F2": "Current",
+            "H2": "Current vs"
+          },
+          "display_columns": [
+            [
+              "B",
+              "Valuation metric"
+            ],
+            [
+              "C",
+              "2000 peak"
+            ],
+            [
+              "D",
+              "2002 trough"
+            ],
+            [
+              "E",
+              "2009 trough"
+            ],
+            [
+              "F",
+              "Current"
+            ],
+            [
+              "H",
+              "Current vs 2000 peak"
+            ]
+          ],
+          "signal_column": null
+        }
+      ]
+    },
+    "S&P 500 Fundamentals": {
+      "sheets": [
+        "S&P 500 Fundamentals"
+      ],
+      "notes": [
+        "B:R Bloomberg/BQL sources; W:AC sponsor calculations. L23 and Q23 have no formula cache (BQL spill anchors); downstream dated numeric results are independent saved values. Large BQL tables include identity/header rows, not observations."
+      ],
+      "charts": [
+        {
+          "id": "sandp_500_fundamentals_0",
+          "title": "S&P 500 P/E vs Operating Margin",
+          "series": [
+            {
+              "id": "sandp_500_fundamentals_0_0",
+              "name": "S&P 500 P/E",
+              "role": "metric",
+              "sheet": "S&P 500 Fundamentals",
+              "values": "C23:C129",
+              "date_sheet": "S&P 500 Fundamentals",
+              "dates": "B23:B129",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0\"x\"",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0\"x\"",
+              "allowed_number_formats": [
+                "0.0\"x\""
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "sandp_500_fundamentals_0_1",
+              "name": "Operating Margin",
+              "role": "metric",
+              "sheet": "S&P 500 Fundamentals",
+              "values": "F23:F129",
+              "date_sheet": "S&P 500 Fundamentals",
+              "dates": "E23:E129",
+              "date_mapping_inferred": true,
+              "kind": "LineChart",
+              "secondary": true,
+              "unit": "0.0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0",
+              "allowed_number_formats": [
+                "0.0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "sandp_500_fundamentals_1",
+          "title": "S&P 500 P/E vs ROE",
+          "series": [
+            {
+              "id": "sandp_500_fundamentals_1_0",
+              "name": "S&P 500 P/E",
+              "role": "metric",
+              "sheet": "S&P 500 Fundamentals",
+              "values": "C23:C129",
+              "date_sheet": "S&P 500 Fundamentals",
+              "dates": "B23:B129",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0\"x\"",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0\"x\"",
+              "allowed_number_formats": [
+                "0.0\"x\""
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "sandp_500_fundamentals_1_1",
+              "name": "ROE",
+              "role": "metric",
+              "sheet": "S&P 500 Fundamentals",
+              "values": "I23:I129",
+              "date_sheet": "S&P 500 Fundamentals",
+              "dates": "H23:H129",
+              "date_mapping_inferred": true,
+              "kind": "LineChart",
+              "secondary": true,
+              "unit": "0.0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0",
+              "allowed_number_formats": [
+                "0.0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "sandp_500_fundamentals_2",
+          "title": "S&P 500 Dividends & Buybacks",
+          "series": [
+            {
+              "id": "sandp_500_fundamentals_2_0",
+              "name": "Dividends",
+              "role": "metric",
+              "sheet": "S&P 500 Fundamentals",
+              "values": "X25:X129",
+              "date_sheet": "S&P 500 Fundamentals",
+              "dates": "W25:W129",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "\"$\"#,##0.00",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "\"$\"#,##0.00",
+              "allowed_number_formats": [
+                "\"$\"#,##0.00"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "sandp_500_fundamentals_2_1",
+              "name": "Buybacks",
+              "role": "metric",
+              "sheet": "S&P 500 Fundamentals",
+              "values": "Y25:Y129",
+              "date_sheet": "S&P 500 Fundamentals",
+              "dates": "W25:W129",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "\"$\"#,##0.00",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "\"$\"#,##0.00",
+              "allowed_number_formats": [
+                "\"$\"#,##0.00"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "sandp_500_fundamentals_2_2",
+              "name": "Total",
+              "role": "metric",
+              "sheet": "S&P 500 Fundamentals",
+              "values": "Z25:Z129",
+              "date_sheet": "S&P 500 Fundamentals",
+              "dates": "W25:W129",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "\"$\"#,##0.00",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "\"$\"#,##0.00",
+              "allowed_number_formats": [
+                "\"$\"#,##0.00"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "sandp_500_fundamentals_3",
+          "title": "Y/Y Change in Dividends & Buybacks",
+          "series": [
+            {
+              "id": "sandp_500_fundamentals_3_0",
+              "name": "Div %",
+              "role": "metric",
+              "sheet": "S&P 500 Fundamentals",
+              "values": "AA25:AA129",
+              "date_sheet": "S&P 500 Fundamentals",
+              "dates": "W25:W129",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "sandp_500_fundamentals_3_1",
+              "name": "Buyback %",
+              "role": "metric",
+              "sheet": "S&P 500 Fundamentals",
+              "values": "AB25:AB129",
+              "date_sheet": "S&P 500 Fundamentals",
+              "dates": "W25:W129",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        }
+      ],
+      "tables": []
+    },
+    "Margin Debt": {
+      "sheets": [
+        "Margin Debt"
+      ],
+      "notes": [
+        "W:X GDP, Z:AA FINRA margin debt in millions, AC:AD Wilshire market cap in millions. FINRA data must be manually updated; market cap hardcoded through early 2026 then Bloomberg. K:U retains sponsor unit alignment/calculations. B:G peak/trough benchmarks preserved."
+      ],
+      "charts": [
+        {
+          "id": "margin_debt_0",
+          "title": "Margin Debt/GDP",
+          "series": [
+            {
+              "id": "margin_debt_0_0",
+              "name": "Margin Debt/GDP",
+              "role": "metric",
+              "sheet": "Margin Debt",
+              "values": "N4:N109",
+              "date_sheet": "Margin Debt",
+              "dates": "K4:K109",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0%",
+              "allowed_number_formats": [
+                "0.0%"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "margin_debt_0_1",
+              "name": "Avg",
+              "role": "metric",
+              "sheet": "Margin Debt",
+              "values": "O4:O109",
+              "date_sheet": "Margin Debt",
+              "dates": "K4:K109",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0%",
+              "allowed_number_formats": [
+                "0.0%"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "margin_debt_1",
+          "title": "Margin Debt/Market Cap",
+          "series": [
+            {
+              "id": "margin_debt_1_0",
+              "name": "Margin Debt/Market Cap",
+              "role": "metric",
+              "sheet": "Margin Debt",
+              "values": "T4:T357",
+              "date_sheet": "Margin Debt",
+              "dates": "Q4:Q357",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0%",
+              "allowed_number_formats": [
+                "0.0%"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "margin_debt_1_1",
+              "name": "Avg",
+              "role": "metric",
+              "sheet": "Margin Debt",
+              "values": "U4:U357",
+              "date_sheet": "Margin Debt",
+              "dates": "Q4:Q357",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0%",
+              "allowed_number_formats": [
+                "0.0%"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        }
+      ],
+      "tables": [
+        {
+          "id": "margin_benchmarks",
+          "title": "Margin Benchmarks",
+          "sheet": "Margin Debt",
+          "range": "B4:G16",
+          "date_cell": null,
+          "expected_headers": {
+            "F4": "Relative to"
+          },
+          "display_columns": [
+            [
+              "B",
+              "Period"
+            ],
+            [
+              "D",
+              "Peak"
+            ],
+            [
+              "E",
+              "Trough"
+            ],
+            [
+              "F",
+              "Prior peak"
+            ],
+            [
+              "G",
+              "Prior trough"
+            ]
+          ],
+          "signal_column": null
+        }
+      ]
+    },
+    "S&P Relative": {
+      "sheets": [
+        "S&P Relative"
+      ],
+      "notes": [
+        "P:Q index, S:T gold, V:W WTI. WTI hardcoded through 1999, individually dated formulas thereafter; authorized operator must append next month and extend B:N calculations. Sheet explicitly says 7-year MA/difference need updating. Do not silently repair rolling windows."
+      ],
+      "charts": [
+        {
+          "id": "sandp_relative_0",
+          "title": "S&P 500 to Gold",
+          "series": [
+            {
+              "id": "sandp_relative_0_0",
+              "name": "Ratio",
+              "role": "metric",
+              "sheet": "S&P Relative",
+              "values": "E5:E925",
+              "date_sheet": "S&P Relative",
+              "dates": "B5:B925",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0\"x\"",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0\"x\"",
+              "allowed_number_formats": [
+                "0.0\"x\""
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "sandp_relative_0_1",
+              "name": "7Yr MA",
+              "role": "metric",
+              "sheet": "S&P Relative",
+              "values": "F5:F925",
+              "date_sheet": "S&P Relative",
+              "dates": "B5:B925",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0\"x\"",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0\"x\"",
+              "allowed_number_formats": [
+                "0.0\"x\""
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "sandp_relative_1",
+          "title": "S&P 500 to WTI",
+          "series": [
+            {
+              "id": "sandp_relative_1_0",
+              "name": "Ratio",
+              "role": "metric",
+              "sheet": "S&P Relative",
+              "values": "L5:L925",
+              "date_sheet": "S&P Relative",
+              "dates": "I5:I925",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0\"x\"",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0\"x\"",
+              "allowed_number_formats": [
+                "0.0\"x\""
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "sandp_relative_1_1",
+              "name": "7Yr Moving Avg",
+              "role": "metric",
+              "sheet": "S&P Relative",
+              "values": "M5:M925",
+              "date_sheet": "S&P Relative",
+              "dates": "I5:I925",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0\"x\"",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0\"x\"",
+              "allowed_number_formats": [
+                "0.0\"x\""
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        }
+      ],
+      "tables": []
+    },
+    "Gold to Oil": {
+      "sheets": [
+        "Gold to Oil"
+      ],
+      "notes": [
+        "B:F Bloomberg inputs, H:L cached ratios/long-term average; N23:Q29 implied prices and upside/downside use fixed row 463. New observations require extending formulas AND updating these fixed endpoints in Excel."
+      ],
+      "charts": [
+        {
+          "id": "gold_to_oil_0",
+          "title": "Gold to Brent Oil",
+          "series": [
+            {
+              "id": "gold_to_oil_0_0",
+              "name": "Gold/Oil",
+              "role": "metric",
+              "sheet": "Gold to Oil",
+              "values": "K4:K463",
+              "date_sheet": "Gold to Oil",
+              "dates": "H4:H463",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0\"x\"",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0\"x\"",
+              "allowed_number_formats": [
+                "0.0\"x\""
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "gold_to_oil_0_1",
+              "name": "LT Avg.",
+              "role": "metric",
+              "sheet": "Gold to Oil",
+              "values": "L4:L463",
+              "date_sheet": "Gold to Oil",
+              "dates": "H4:H463",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0\"x\"",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0\"x\"",
+              "allowed_number_formats": [
+                "0.0\"x\""
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "gold_to_oil_0_2",
+              "name": "Brent (C01)",
+              "role": "metric",
+              "sheet": "Gold to Oil",
+              "values": "J4:J463",
+              "date_sheet": "Gold to Oil",
+              "dates": "H4:H463",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": true,
+              "unit": "\"$\"#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "\"$\"#,##0",
+              "allowed_number_formats": [
+                "\"$\"#,##0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        }
+      ],
+      "tables": [
+        {
+          "id": "implied_prices",
+          "title": "Implied Prices",
+          "sheet": "Gold to Oil",
+          "range": "N23:Q29",
+          "date_cell": "H463",
+          "expected_headers": {
+            "N23": "Implied Gold Price at LT Average"
+          },
+          "display_columns": [
+            [
+              "N",
+              "Metric"
+            ],
+            [
+              "Q",
+              "Saved value"
+            ]
+          ],
+          "signal_column": null
+        }
+      ]
+    },
+    "Bull vs Bear": {
+      "sheets": [
+        "Bull vs Bear",
+        "AAII Bull"
+      ],
+      "notes": [
+        "B:F and N:Q Bloomberg; H:L Excel; S:T fixed decile lookup; V:AA saved conditional returns. Forward returns contain BQL capacity-error text. Unavailable values stay missing, never zero. Historical conditional returns are descriptive and overlap/publication controls are not established.",
+        "Auxiliary substantive worksheet, not a separate sponsor section. Additional Bloomberg returns and hardcoded decile lookup; mapped as an optional Bull vs Bear chart. Do not substitute it for the requested bull-minus-bear study."
+      ],
+      "charts": [
+        {
+          "id": "bull_vs_bear_0",
+          "title": "AAII Bull - Bear",
+          "series": [
+            {
+              "id": "bull_vs_bear_0_0",
+              "name": "Bull - Bear",
+              "role": "metric",
+              "sheet": "Bull vs Bear",
+              "values": "I5:I2049",
+              "date_sheet": "Bull vs Bear",
+              "dates": "H5:H2049",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "bull_vs_bear_0_1",
+              "name": "Current",
+              "role": "metric",
+              "sheet": "Bull vs Bear",
+              "values": "L5:L2049",
+              "date_sheet": "Bull vs Bear",
+              "dates": "H5:H2049",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0",
+              "allowed_number_formats": [
+                "0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "aaii_bull_0",
+          "title": "AAII Bull Index 1987-Present",
+          "series": [
+            {
+              "id": "aaii_bull_0_0",
+              "name": "AAII Bull",
+              "role": "metric",
+              "sheet": "AAII Bull",
+              "values": "C20:C2047",
+              "date_sheet": "AAII Bull",
+              "dates": "B20:B2047",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "aaii_bull_0_1",
+              "name": "Current",
+              "role": "metric",
+              "sheet": "AAII Bull",
+              "values": "D20:D2047",
+              "date_sheet": "AAII Bull",
+              "dates": "B20:B2047",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        }
+      ],
+      "tables": [
+        {
+          "id": "sentiment_deciles",
+          "title": "Sentiment Deciles",
+          "sheet": "Bull vs Bear",
+          "range": "V3:AA16",
+          "date_cell": null,
+          "expected_headers": {
+            "W3": "AAII Bull Less",
+            "X3": "S&P 500"
+          },
+          "display_columns": [
+            [
+              "V",
+              "Investors"
+            ],
+            [
+              "W",
+              "Bull less bear decile"
+            ],
+            [
+              "X",
+              "1M"
+            ],
+            [
+              "Y",
+              "3M"
+            ],
+            [
+              "Z",
+              "6M"
+            ],
+            [
+              "AA",
+              "12M"
+            ]
+          ],
+          "signal_column": null
+        }
+      ]
+    },
+    "VIX & Options": {
+      "sheets": [
+        "VIX & Options"
+      ],
+      "notes": [
+        "Bloomberg series plus cached current-reference lines. Chart endpoints stop at row 1078 although sheet extends to row 1399; reproduce configured chart range, report clipping, and require mapping review to extend."
+      ],
+      "charts": [
+        {
+          "id": "vix_and_options_0",
+          "title": "VIX Call Options",
+          "series": [
+            {
+              "id": "vix_and_options_0_0",
+              "name": "VIX Call Options",
+              "role": "metric",
+              "sheet": "VIX & Options",
+              "values": "C3:C1078",
+              "date_sheet": "VIX & Options",
+              "dates": "B3:B1078",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "#,##0",
+              "allowed_number_formats": [
+                "#,##0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "vix_and_options_0_1",
+              "name": "Current",
+              "role": "metric",
+              "sheet": "VIX & Options",
+              "values": "D3:D1078",
+              "date_sheet": "VIX & Options",
+              "dates": "B3:B1078",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "#,##0",
+              "allowed_number_formats": [
+                "#,##0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "vix_and_options_1",
+          "title": "S&P 500 Put Volume",
+          "series": [
+            {
+              "id": "vix_and_options_1_0",
+              "name": "S&P Put Volume",
+              "role": "metric",
+              "sheet": "VIX & Options",
+              "values": "G3:G1078",
+              "date_sheet": "VIX & Options",
+              "dates": "F3:F1078",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "#,##0",
+              "allowed_number_formats": [
+                "#,##0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "vix_and_options_1_1",
+              "name": "Current",
+              "role": "metric",
+              "sheet": "VIX & Options",
+              "values": "H3:H1078",
+              "date_sheet": "VIX & Options",
+              "dates": "F3:F1078",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "#,##0",
+              "allowed_number_formats": [
+                "#,##0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "vix_and_options_2",
+          "title": "CBOE Put/Call Ratio",
+          "series": [
+            {
+              "id": "vix_and_options_2_0",
+              "name": "CBOE Put/Call Ratio",
+              "role": "metric",
+              "sheet": "VIX & Options",
+              "values": "K3:K1078",
+              "date_sheet": "VIX & Options",
+              "dates": "J3:J1078",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "vix_and_options_2_1",
+              "name": "Current",
+              "role": "metric",
+              "sheet": "VIX & Options",
+              "values": "L3:L1078",
+              "date_sheet": "VIX & Options",
+              "dates": "J3:J1078",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        }
+      ],
+      "tables": []
+    },
+    "BTC": {
+      "sheets": [
+        "BTC"
+      ],
+      "notes": [
+        "D4 Bitcoin position, D8 debt/preferred sum, D15 cost basis manually maintained from Strategy Analytics/Ledger. D5 Bloomberg BTC price; D6:D16 cached sponsor outputs; USD millions vs USD/BTC preserved."
+      ],
+      "charts": [],
+      "tables": [
+        {
+          "id": "btc_coverage",
+          "title": "Btc Coverage",
+          "sheet": "BTC",
+          "range": "B3:E16",
+          "date_cell": null,
+          "expected_headers": {
+            "B3": "MSTR BTC Holdings Market Value to Debt Coverage"
+          },
+          "display_columns": [
+            [
+              "B",
+              "Metric"
+            ],
+            [
+              "D",
+              "Saved value"
+            ]
+          ],
+          "signal_column": null
+        }
+      ]
+    },
+    "Banks": {
+      "sheets": [
+        "Banks"
+      ],
+      "notes": [
+        "Bloomberg quarterly net charge-offs; population/units are from sponsor workbook, do not replace with another bank universe."
+      ],
+      "charts": [
+        {
+          "id": "banks_0",
+          "title": "Bank Net Charge-Offs",
+          "series": [
+            {
+              "id": "banks_0_0",
+              "name": "NCOs",
+              "role": "metric",
+              "sheet": "Banks",
+              "values": "C3:C44",
+              "date_sheet": "Banks",
+              "dates": "B3:B44",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        }
+      ],
+      "tables": []
+    },
+    "Housing": {
+      "sheets": [
+        "Housing"
+      ],
+      "notes": [
+        "Independent date columns for different monthly/quarterly frequencies. Preserve secondary axes; never align affordability with the longer mortgage series by row position."
+      ],
+      "charts": [
+        {
+          "id": "housing_0",
+          "title": "Affordability & 30Yr Mortgage Rate",
+          "series": [
+            {
+              "id": "housing_0_0",
+              "name": "Affordability",
+              "role": "metric",
+              "sheet": "Housing",
+              "values": "C24:C129",
+              "date_sheet": "Housing",
+              "dates": "B24:B129",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "housing_0_1",
+              "name": "30Yr Mortgage",
+              "role": "metric",
+              "sheet": "Housing",
+              "values": "AD24:AD344",
+              "date_sheet": "Housing",
+              "dates": "AC24:AC344",
+              "date_mapping_inferred": true,
+              "kind": "LineChart",
+              "secondary": true,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "housing_1",
+          "title": "Existing Home Sales, Inventory, & Months of Supply",
+          "series": [
+            {
+              "id": "housing_1_0",
+              "name": "Months of Supply",
+              "role": "metric",
+              "sheet": "Housing",
+              "values": "L24:L344",
+              "date_sheet": "Housing",
+              "dates": "K24:K344",
+              "date_mapping_inferred": true,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "housing_1_1",
+              "name": "Existing Home Sales",
+              "role": "metric",
+              "sheet": "Housing",
+              "values": "F24:F344",
+              "date_sheet": "Housing",
+              "dates": "E24:E344",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": true,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "housing_1_2",
+              "name": "Existing Home Inventory",
+              "role": "metric",
+              "sheet": "Housing",
+              "values": "I24:I344",
+              "date_sheet": "Housing",
+              "dates": "H24:H344",
+              "date_mapping_inferred": true,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "housing_2",
+          "title": "Existing home median price",
+          "series": [
+            {
+              "id": "housing_2_0",
+              "name": "Existing Home Median Price",
+              "role": "metric",
+              "sheet": "Housing",
+              "values": "O24:O344",
+              "date_sheet": "Housing",
+              "dates": "N24:N344",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "housing_3",
+          "title": "Single Family Starts & Permits",
+          "series": [
+            {
+              "id": "housing_3_0",
+              "name": "Single-Family Starts",
+              "role": "metric",
+              "sheet": "Housing",
+              "values": "R24:R343",
+              "date_sheet": "Housing",
+              "dates": "Q24:Q343",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "housing_3_1",
+              "name": "Single-Family Permits",
+              "role": "metric",
+              "sheet": "Housing",
+              "values": "U24:U343",
+              "date_sheet": "Housing",
+              "dates": "T24:T343",
+              "date_mapping_inferred": true,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "housing_4",
+          "title": "Purchase & Refi Applications",
+          "series": [
+            {
+              "id": "housing_4_0",
+              "name": "Purchase Applications",
+              "role": "metric",
+              "sheet": "Housing",
+              "values": "X24:X344",
+              "date_sheet": "Housing",
+              "dates": "W24:W344",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "housing_4_1",
+              "name": "Refi Applications",
+              "role": "metric",
+              "sheet": "Housing",
+              "values": "AA24:AA344",
+              "date_sheet": "Housing",
+              "dates": "Z24:Z344",
+              "date_mapping_inferred": true,
+              "kind": "LineChart",
+              "secondary": true,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "housing_5",
+          "title": "Homeowners' equity",
+          "series": [
+            {
+              "id": "housing_5_0",
+              "name": "Homeowners' Equity",
+              "role": "metric",
+              "sheet": "Housing",
+              "values": "AG24:AG129",
+              "date_sheet": "Housing",
+              "dates": "AF24:AF129",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "\"$\"#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "\"$\"#,##0",
+              "allowed_number_formats": [
+                "\"$\"#,##0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        }
+      ],
+      "tables": []
+    },
+    "Energy": {
+      "sheets": [
+        "Energy"
+      ],
+      "notes": [
+        "Bloomberg source pairs B:C, E:F, H:I, N:O, Q:R, T:U, W:X, Z:AA. K:L and AC:AD are calculated efficiencies. WTI/Henry Hub use futures tickers CL1/NG1; gas Bcfd and Bcf axes differ. Chart endpoints are shorter than source columns."
+      ],
+      "charts": [
+        {
+          "id": "energy_0",
+          "title": "US oil production",
+          "series": [
+            {
+              "id": "energy_0_0",
+              "name": "US Oil Production",
+              "role": "metric",
+              "sheet": "Energy",
+              "values": "C24:C300",
+              "date_sheet": "Energy",
+              "dates": "B24:B300",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "#,##0",
+              "allowed_number_formats": [
+                "#,##0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "energy_1",
+          "title": "US Oil Rigs vs WTI",
+          "series": [
+            {
+              "id": "energy_1_0",
+              "name": "Oil Rigs",
+              "role": "metric",
+              "sheet": "Energy",
+              "values": "F24:F300",
+              "date_sheet": "Energy",
+              "dates": "E24:E300",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "#,##0",
+              "allowed_number_formats": [
+                "#,##0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "energy_1_1",
+              "name": "WTI",
+              "role": "metric",
+              "sheet": "Energy",
+              "values": "I24:I300",
+              "date_sheet": "Energy",
+              "dates": "H24:H300",
+              "date_mapping_inferred": true,
+              "kind": "LineChart",
+              "secondary": true,
+              "unit": "\"$\"#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "\"$\"#,##0",
+              "allowed_number_formats": [
+                "\"$\"#,##0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "energy_2",
+          "title": "Oil Efficiency: Production per Rig",
+          "series": [
+            {
+              "id": "energy_2_0",
+              "name": "Efficiency",
+              "role": "metric",
+              "sheet": "Energy",
+              "values": "L24:L300",
+              "date_sheet": "Energy",
+              "dates": "K24:K300",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0.0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0",
+              "allowed_number_formats": [
+                "0.0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "energy_3",
+          "title": "US Gas Production",
+          "series": [
+            {
+              "id": "energy_3_0",
+              "name": "Marcellus (Bcfd)",
+              "role": "metric",
+              "sheet": "Energy",
+              "values": "R24:R260",
+              "date_sheet": "Energy",
+              "dates": "Q24:Q260",
+              "date_mapping_inferred": true,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0.0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0",
+              "allowed_number_formats": [
+                "0.0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "energy_3_1",
+              "name": "Haynesville (Bcfd)",
+              "role": "metric",
+              "sheet": "Energy",
+              "values": "U24:U260",
+              "date_sheet": "Energy",
+              "dates": "T24:T260",
+              "date_mapping_inferred": true,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0.0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0",
+              "allowed_number_formats": [
+                "0.0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "energy_3_2",
+              "name": "US Gas Marketed Production (Bcf)",
+              "role": "metric",
+              "sheet": "Energy",
+              "values": "X24:X258",
+              "date_sheet": "Energy",
+              "dates": "W24:W258",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": true,
+              "unit": "#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "#,##0",
+              "allowed_number_formats": [
+                "#,##0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "energy_4",
+          "title": "US Gas Rigs vs Henry Hub",
+          "series": [
+            {
+              "id": "energy_4_0",
+              "name": "Gas Rigs",
+              "role": "metric",
+              "sheet": "Energy",
+              "values": "O24:O260",
+              "date_sheet": "Energy",
+              "dates": "N24:N260",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "#,##0",
+              "allowed_number_formats": [
+                "#,##0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "energy_4_1",
+              "name": "Henry Hub",
+              "role": "metric",
+              "sheet": "Energy",
+              "values": "AA24:AA260",
+              "date_sheet": "Energy",
+              "dates": "Z24:Z260",
+              "date_mapping_inferred": true,
+              "kind": "LineChart",
+              "secondary": true,
+              "unit": "\"$\"#,##0.00",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "\"$\"#,##0.00",
+              "allowed_number_formats": [
+                "\"$\"#,##0.00"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        }
+      ],
+      "tables": []
+    },
+    "Recession": {
+      "sheets": [
+        "Recession"
+      ],
+      "notes": [
+        "B/D/F/H checklist has manual text states and Bloomberg numbers; G saved flags; D55=17 denominator. F55 SUM(G8:G55) includes total row but G55 is blank. H notes govern thresholds. U Sahm warning line is hardcoded 0.5. Manual statuses are not proven current by a new save."
+      ],
+      "charts": [
+        {
+          "id": "recession_0",
+          "title": "Sahm Rule Recession Indicator",
+          "series": [
+            {
+              "id": "recession_0_0",
+              "name": "Series 1",
+              "role": "metric",
+              "sheet": "Recession",
+              "values": "T8:T808",
+              "date_sheet": "Recession",
+              "dates": "S8:S808",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "0.00",
+                "General",
+                "0.0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "recession_0_1",
+              "name": "Series 2",
+              "role": "metric",
+              "sheet": "Recession",
+              "values": "U8:U808",
+              "date_sheet": "Recession",
+              "dates": "S8:S808",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        }
+      ],
+      "tables": [
+        {
+          "id": "recession_checklist",
+          "title": "Recession Checklist",
+          "sheet": "Recession",
+          "range": "B6:H56",
+          "date_cell": null,
+          "expected_headers": {
+            "D6": "Typical Pre-Recession/",
+            "F6": "Current"
+          },
+          "display_columns": [
+            [
+              "B",
+              "Metric"
+            ],
+            [
+              "D",
+              "Typical recession reading"
+            ],
+            [
+              "F",
+              "Current status"
+            ],
+            [
+              "H",
+              "Sponsor notes"
+            ]
+          ],
+          "signal_column": "G"
+        }
+      ]
+    },
+    "Consumer": {
+      "sheets": [
+        "Consumer"
+      ],
+      "notes": [
+        "Bloomberg series and source-specific units; debt-service rate and savings rate have different denominators."
+      ],
+      "charts": [
+        {
+          "id": "consumer_0",
+          "title": "Household debt service ratio",
+          "series": [
+            {
+              "id": "consumer_0_0",
+              "name": "HH Debt Service Ratio",
+              "role": "metric",
+              "sheet": "Consumer",
+              "values": "C25:C110",
+              "date_sheet": "Consumer",
+              "dates": "B25:B110",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "consumer_1",
+          "title": "Consumer credit outstanding",
+          "series": [
+            {
+              "id": "consumer_1_0",
+              "name": "Consumer Credit Outstanding",
+              "role": "metric",
+              "sheet": "Consumer",
+              "values": "F25:F282",
+              "date_sheet": "Consumer",
+              "dates": "E25:E282",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "\"$\"#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "\"$\"#,##0",
+              "allowed_number_formats": [
+                "\"$\"#,##0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "consumer_2",
+          "title": "Personal savings rate",
+          "series": [
+            {
+              "id": "consumer_2_0",
+              "name": "US Personal Savings Rate",
+              "role": "metric",
+              "sheet": "Consumer",
+              "values": "I25:I282",
+              "date_sheet": "Consumer",
+              "dates": "H25:H282",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        }
+      ],
+      "tables": []
+    },
+    "Demand": {
+      "sheets": [
+        "Demand"
+      ],
+      "notes": [
+        "Horizontal quarterly history/forward estimates; row 2 labels distinguish (Rep)/(Fwd), row 3 dates. Preserve red vertical latest-reported-quarter marker. Revenue/FCF/capex Excel calculations remain authoritative; do not describe all revenue as AI-specific."
+      ],
+      "charts": [
+        {
+          "id": "demand_0",
+          "title": "AMZN: Revenue vs Capex Growth (TTM)",
+          "series": [
+            {
+              "id": "demand_0_0",
+              "name": "Latest reported quarter",
+              "role": "reported_marker",
+              "sheet": "Demand",
+              "values": "AA31:BL31",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "demand_0_1",
+              "name": "Latest reported quarter",
+              "role": "reported_marker",
+              "sheet": "Demand",
+              "values": "AA32:BL32",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "demand_0_2",
+              "name": "Revenue",
+              "role": "metric",
+              "sheet": "Demand",
+              "values": "AA28:BL28",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "demand_0_3",
+              "name": "AWS",
+              "role": "metric",
+              "sheet": "Demand",
+              "values": "AA29:BL29",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "demand_0_4",
+              "name": "Capex + R&D",
+              "role": "metric",
+              "sheet": "Demand",
+              "values": "AA30:BL30",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            }
+          ]
+        },
+        {
+          "id": "demand_1",
+          "title": "AMZN: FCF Margin (TTM)",
+          "series": [
+            {
+              "id": "demand_1_0",
+              "name": "Latest reported quarter",
+              "role": "reported_marker",
+              "sheet": "Demand",
+              "values": "AA23:BL23",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "demand_1_1",
+              "name": "Latest reported quarter",
+              "role": "reported_marker",
+              "sheet": "Demand",
+              "values": "AA24:BL24",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "demand_1_2",
+              "name": "   Free Cash Flow Margin (%)",
+              "role": "metric",
+              "sheet": "Demand",
+              "values": "AA22:BL22",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            }
+          ]
+        },
+        {
+          "id": "demand_2",
+          "title": "GOOGL: Revenue vs Capex Growth (TTM)",
+          "series": [
+            {
+              "id": "demand_2_0",
+              "name": "Latest reported quarter",
+              "role": "reported_marker",
+              "sheet": "Demand",
+              "values": "AA63:BL63",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "demand_2_1",
+              "name": "Latest reported quarter",
+              "role": "reported_marker",
+              "sheet": "Demand",
+              "values": "AA64:BL64",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "demand_2_2",
+              "name": "Revenue",
+              "role": "metric",
+              "sheet": "Demand",
+              "values": "AA60:BL60",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "demand_2_3",
+              "name": "Cloud",
+              "role": "metric",
+              "sheet": "Demand",
+              "values": "AA61:BL61",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "demand_2_4",
+              "name": "Capex + R&D",
+              "role": "metric",
+              "sheet": "Demand",
+              "values": "AA62:BL62",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            }
+          ]
+        },
+        {
+          "id": "demand_3",
+          "title": "GOOGL: FCF Margin (TTM)",
+          "series": [
+            {
+              "id": "demand_3_0",
+              "name": "Latest reported quarter",
+              "role": "reported_marker",
+              "sheet": "Demand",
+              "values": "AA55:BL55",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "demand_3_1",
+              "name": "Latest reported quarter",
+              "role": "reported_marker",
+              "sheet": "Demand",
+              "values": "AA56:BL56",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "demand_3_2",
+              "name": "   Free Cash Flow Margin (%)",
+              "role": "metric",
+              "sheet": "Demand",
+              "values": "AA54:BL54",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            }
+          ]
+        },
+        {
+          "id": "demand_4",
+          "title": "META: Revenue vs Capex Growth (TTM)",
+          "series": [
+            {
+              "id": "demand_4_0",
+              "name": "Latest reported quarter",
+              "role": "reported_marker",
+              "sheet": "Demand",
+              "values": "AA90:BL90",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "demand_4_1",
+              "name": "Latest reported quarter",
+              "role": "reported_marker",
+              "sheet": "Demand",
+              "values": "AA91:BL91",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "demand_4_2",
+              "name": "Revenue",
+              "role": "metric",
+              "sheet": "Demand",
+              "values": "AA88:BL88",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "demand_4_3",
+              "name": "Capex + R&D",
+              "role": "metric",
+              "sheet": "Demand",
+              "values": "AA89:BL89",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            }
+          ]
+        },
+        {
+          "id": "demand_5",
+          "title": "META: FCF Margin (TTM)",
+          "series": [
+            {
+              "id": "demand_5_0",
+              "name": "Latest reported quarter",
+              "role": "reported_marker",
+              "sheet": "Demand",
+              "values": "AA83:BL83",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "demand_5_1",
+              "name": "Latest reported quarter",
+              "role": "reported_marker",
+              "sheet": "Demand",
+              "values": "AA84:BL84",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "demand_5_2",
+              "name": "   Free Cash Flow Margin (%)",
+              "role": "metric",
+              "sheet": "Demand",
+              "values": "AA82:BL82",
+              "date_sheet": "Demand",
+              "dates": "AA3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            }
+          ]
+        }
+      ],
+      "tables": []
+    },
+    "Financing": {
+      "sheets": [
+        "Financing"
+      ],
+      "notes": [
+        "Sponsor Financing section is additional to existing Forecasting. Horizontal hyperscaler ratios and combined quarterly cash flows, plus credit/relative-performance histories. Forward estimates must be distinguished from reported quarters."
+      ],
+      "charts": [
+        {
+          "id": "financing_0",
+          "title": "Hyperscaler Capex/CFOps (TTM)",
+          "series": [
+            {
+              "id": "financing_0_0",
+              "name": "Latest reported quarter",
+              "role": "reported_marker",
+              "sheet": "Financing",
+              "values": "W8:BL8",
+              "date_sheet": "Financing",
+              "dates": "W3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "financing_0_1",
+              "name": "Latest reported quarter",
+              "role": "reported_marker",
+              "sheet": "Financing",
+              "values": "W9:BL9",
+              "date_sheet": "Financing",
+              "dates": "W3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "financing_0_2",
+              "name": "AMZN",
+              "role": "metric",
+              "sheet": "Financing",
+              "values": "W4:BL4",
+              "date_sheet": "Financing",
+              "dates": "W3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "financing_0_3",
+              "name": "GOOGL",
+              "role": "metric",
+              "sheet": "Financing",
+              "values": "W5:BL5",
+              "date_sheet": "Financing",
+              "dates": "W3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "financing_0_4",
+              "name": "META",
+              "role": "metric",
+              "sheet": "Financing",
+              "values": "W6:BL6",
+              "date_sheet": "Financing",
+              "dates": "W3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "financing_0_5",
+              "name": "Combined",
+              "role": "metric",
+              "sheet": "Financing",
+              "values": "W7:BL7",
+              "date_sheet": "Financing",
+              "dates": "W3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            }
+          ]
+        },
+        {
+          "id": "financing_1",
+          "title": "Combined Capex  vs CFOps (Quarterly)",
+          "series": [
+            {
+              "id": "financing_1_0",
+              "name": "Combined Capex",
+              "role": "metric",
+              "sheet": "Financing",
+              "values": "W10:BL10",
+              "date_sheet": "Financing",
+              "dates": "W3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "\"$\"#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "\"$\"#,##0",
+              "allowed_number_formats": [
+                "\"$\"#,##0"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "financing_1_1",
+              "name": "Latest reported quarter",
+              "role": "reported_marker",
+              "sheet": "Financing",
+              "values": "W12:BL12",
+              "date_sheet": "Financing",
+              "dates": "W3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "\"$\"#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "\"$\"#,##0",
+              "allowed_number_formats": [
+                "\"$\"#,##0"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "financing_1_2",
+              "name": "Latest reported quarter",
+              "role": "reported_marker",
+              "sheet": "Financing",
+              "values": "W13:BL13",
+              "date_sheet": "Financing",
+              "dates": "W3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "\"$\"#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "\"$\"#,##0",
+              "allowed_number_formats": [
+                "\"$\"#,##0"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            },
+            {
+              "id": "financing_1_3",
+              "name": "Combined CFOps",
+              "role": "metric",
+              "sheet": "Financing",
+              "values": "W11:BL11",
+              "date_sheet": "Financing",
+              "dates": "W3:BL3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "\"$\"#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "\"$\"#,##0",
+              "allowed_number_formats": [
+                "\"$\"#,##0"
+              ],
+              "allow_forward": true,
+              "period_labels_row": 2
+            }
+          ]
+        },
+        {
+          "id": "financing_2",
+          "title": "HY Tech vs IG Index",
+          "series": [
+            {
+              "id": "financing_2_0",
+              "name": "Spread",
+              "role": "metric",
+              "sheet": "Financing",
+              "values": "P31:P315",
+              "date_sheet": "Financing",
+              "dates": "O31:O315",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0",
+              "allowed_number_formats": [
+                "0.0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "financing_2_1",
+              "name": "Avg",
+              "role": "metric",
+              "sheet": "Financing",
+              "values": "Q31:Q315",
+              "date_sheet": "Financing",
+              "dates": "O31:O315",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0",
+              "allowed_number_formats": [
+                "0.0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "financing_3",
+          "title": "ORCL & CRWV Relative Performance to S&P 500",
+          "series": [
+            {
+              "id": "financing_3_0",
+              "name": "ORCL RS",
+              "role": "metric",
+              "sheet": "Financing",
+              "values": "AC31:AC49",
+              "date_sheet": "Financing",
+              "dates": "AB31:AB49",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.000\"x\"",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.000\"x\"",
+              "allowed_number_formats": [
+                "0.000\"x\""
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "financing_3_1",
+              "name": "CRWV RS",
+              "role": "metric",
+              "sheet": "Financing",
+              "values": "AD31:AD49",
+              "date_sheet": "Financing",
+              "dates": "AB31:AB49",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.000\"x\"",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.000\"x\"",
+              "allowed_number_formats": [
+                "0.000\"x\""
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        }
+      ],
+      "tables": []
+    }
+  }
+}
