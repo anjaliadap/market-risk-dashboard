@@ -9,3 +9,9 @@ Choose Market, Macro or AI sections in the grouped sidebar. Tables show availabl
 Use the freshness button to enqueue eligible datasets, then rerun after completion. Scheduled ingestion is preferred for regular use. Inspect Data Sources & System Status for failures and last successful jobs. All observations are delayed; publication timestamps are unknown unless supplied. Do not interpret checklist inputs as predictions. Scenario controls and justified P/E are assumptions, not observed financial data.
 
 Pages with unavailable feeds describe the dependency. Navigation availability does not establish analytical completion. No synthetic financial observations are supplied.
+
+## Visual conventions
+
+Market pages use navy accents, Macro pages use teal, and AI pages use plum. White cards and consistent chart layouts sit on a light background. Signed changes use muted green for positive numbers and muted red for negative numbers; these colors describe direction, not investment recommendations. Amber marks delayed, stale or unavailable data. Status text remains visible alongside color. CSV exports keep original values and source metadata.
+
+Shared presentation utilities live in `dashboard/styles/theme.py`, layout rules in `dashboard/styles/institutional.css`, and native Streamlit light-theme defaults in `.streamlit/config.toml`. Theme helpers format display values without changing analytics, storage or exports.

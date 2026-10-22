@@ -10,7 +10,16 @@ import streamlit as st
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+<<<<<<< HEAD
 from dashboard.excel_views import render_administration, render_section, synchronization_status
+=======
+from dashboard.styles.theme import (
+    financial_table,
+    page_header,
+    research_chart,
+    theme_for,
+)
+>>>>>>> f89f4d00cccaddf6a329fba779cce0c370332273
 from src.analytics.core import (
     drawdown,
     historical_comparison,
@@ -28,11 +37,14 @@ from src.registry import BY_ID, REGISTRY
 
 st.set_page_config(page_title="Market & Risk Intelligence", page_icon="◈", layout="wide")
 initialize()
+<<<<<<< HEAD
 synchronization_status()
 st.markdown(
     """<style>.stApp{background:#f7f8fa}h1,h2,h3{color:#30223d}div[data-testid=stMetric]{background:white;border:1px solid #e2e4e8;padding:16px;border-radius:6px}section[data-testid=stSidebar]{background:#eeeef3}</style>""",
     unsafe_allow_html=True,
 )
+=======
+>>>>>>> f89f4d00cccaddf6a329fba779cce0c370332273
 PAGES = json.loads((Path(__file__).resolve().parents[1] / "config/pages.json").read_text())
 MAPPING = {
     "Executive Overview": ["SP500", "DGS10", "VIXCLS", "UNRATE"],
@@ -92,6 +104,7 @@ BLOCKERS = {
 
 
 def render(title):
+<<<<<<< HEAD
     if title == "Workbook Administration":
         render_administration()
         return
@@ -117,11 +130,26 @@ def render(title):
         return
     if title in BLOCKERS and not excel_primary:
         st.info("Coverage limitation · " + BLOCKERS[title])
+=======
+    theme = theme_for(title, PAGES)
+    page_header(title, theme)
+
+    def table_view(frame, **kwargs):
+        financial_table(frame, theme, **kwargs)
+
+    def chart(figure, **kwargs):
+        research_chart(figure, theme, **kwargs)
+
+    if title in BLOCKERS:
+        st.warning("Coverage limitation · " + BLOCKERS[title])
+>>>>>>> f89f4d00cccaddf6a329fba779cce0c370332273
     if title == "Data Sources & System Status":
-        st.dataframe(pd.DataFrame(REGISTRY), hide_index=True)
+        st.subheader("Source registry")
+        table_view(pd.DataFrame(REGISTRY), hide_index=True)
+        st.subheader("Recent ingestion activity")
         with Session(engine) as session:
             jobs = session.scalars(select(Job).order_by(Job.started_at.desc()).limit(100)).all()
-            st.dataframe(
+            table_view(
                 pd.DataFrame(
                     [
                         {
@@ -179,7 +207,7 @@ def render(title):
                     / 100
                 )
                 frame = scenario(capex, ocf, c, o)
-                st.plotly_chart(
+                chart(
                     px.line(
                         frame,
                         x="year",
@@ -188,7 +216,7 @@ def render(title):
                     ),
                     width="stretch",
                 )
-                st.dataframe(frame, hide_index=True)
+                table_view(frame, hide_index=True)
     ids = MAPPING.get(title, [])
     if not ids:
         if title in {"Valuation", "Forecasting"}:
@@ -268,8 +296,15 @@ def render(title):
                 "Source": meta["url"],
             }
         )
+    if histories:
+        st.subheader("Latest observations")
+        columns = st.columns(min(4, len(histories)))
+        for column, (series_id, frame) in zip(columns, list(histories.items())[:4], strict=False):
+            column.metric(BY_ID[series_id]["name"], f"{frame.value.iloc[-1]:,.2f}")
+            column.caption(f"{BY_ID[series_id]['unit']} · {frame.index[-1].date()}")
+    st.subheader("Research snapshot")
     table = pd.DataFrame(rows)
-    st.dataframe(table, hide_index=True, width="stretch")
+    table_view(table, hide_index=True, width="stretch")
     st.download_button(
         "Export research table (CSV with source metadata)",
         table.to_csv(index=False),
@@ -281,24 +316,19 @@ def render(title):
             "No saved observations. Run the documented refresh command, or request a freshness check above. Source failure never generates substitute values."
         )
         return
-    st.subheader("Latest observations")
-    columns = st.columns(min(4, len(histories)))
-    for column, (series_id, frame) in zip(columns, list(histories.items())[:4], strict=False):
-        column.metric(BY_ID[series_id]["name"], f"{frame.value.iloc[-1]:,.2f}")
-        column.caption(f"{BY_ID[series_id]['unit']} · {frame.index[-1].date()}")
     if "DGS10" in histories and "DGS2" in histories:
         curve = pd.concat(
             [histories["DGS10"].value.rename("10y"), histories["DGS2"].value.rename("2y")], axis=1
         ).dropna()
         if len(curve):
             spread = (curve["10y"] - curve["2y"]) * 100
-            st.plotly_chart(
+            chart(
                 px.line(spread, title="DERIVED · 10-year minus 2-year Treasury spread (bp)"),
                 width="stretch",
             )
     if title == "S&P Relative" and {"SP500", "DCOILWTICO"}.issubset(histories):
         research_ratio = relative(histories["SP500"].value, histories["DCOILWTICO"].value)
-        st.plotly_chart(
+        chart(
             px.line(
                 research_ratio, title="DERIVED · S&P price index points / WTI spot USD per barrel"
             ),
@@ -308,7 +338,7 @@ def render(title):
         unemployment = histories["UNRATE"].value
         average = unemployment.rolling(3).mean()
         sahm = average - average.rolling(12).min()
-        st.plotly_chart(
+        chart(
             px.line(sahm, title="DERIVED · Sahm-style unemployment gap (percentage points)"),
             width="stretch",
         )
@@ -342,10 +372,11 @@ def render(title):
                     }
                     for k, h in histories.items()
                 ]
-                st.dataframe(pd.DataFrame(stats), hide_index=True)
+                table_view(pd.DataFrame(stats), hide_index=True)
                 st.caption(
                     "Descriptive reference-date comparisons use bounded observation-date alignment, not publication-aware backtests. Not evidence of predictive power."
                 )
+    st.subheader("Historical analysis")
     key = st.selectbox("Historical series", list(histories), format_func=lambda k: BY_ID[k]["name"])
     h = histories[key]
     start = st.date_input(
@@ -355,7 +386,7 @@ def render(title):
         max_value=h.index[-1].date(),
     )
     selected = h.loc[str(start) :]
-    st.plotly_chart(
+    chart(
         px.line(
             selected,
             x=selected.index,
@@ -365,13 +396,18 @@ def render(title):
         width="stretch",
     )
     if key == "SP500":
+<<<<<<< HEAD
         st.plotly_chart(
             px.line(
                 drawdown(h.value).loc[str(start) :], title="DERIVED · price-index drawdown (%)"
             ),
+=======
+        chart(
+            px.line(drawdown(selected.value), title="DERIVED · price-index drawdown (%)"),
+>>>>>>> f89f4d00cccaddf6a329fba779cce0c370332273
             width="stretch",
         )
-        st.plotly_chart(
+        chart(
             px.line(
                 volatility(h.value).loc[str(start) :],
                 title="DERIVED · 21-session annualized volatility (%)",
@@ -384,7 +420,7 @@ def render(title):
             common = set.intersection(*(set(h.index) for _, h in yields))
             if common:
                 date = max(common)
-                st.plotly_chart(
+                chart(
                     px.line(
                         x=[n for n, _ in yields],
                         y=[h.loc[date, "value"] for _, h in yields],
@@ -402,7 +438,7 @@ def render(title):
         st.write(
             "Period returns: endpoint / baseline − 1. Calendar-month targets use last observation on/before target, maximum 10-day gap. YTD baseline is prior calendar year-end. Price-index returns exclude dividends; commodity series here are spot prices, without futures rolls. Unavailable baselines remain blank. Published dates are unknown, never inferred from observation dates. Retrieval vintages do not establish real-time macro vintages."
         )
-        st.dataframe(h.tail(10))
+        table_view(h.tail(10), hide_index=False)
         st.download_button(
             "Export selected history with metadata", h.to_csv(), key + ".csv", "text/csv"
         )
