@@ -10,20 +10,17 @@ import streamlit as st
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-<<<<<<< HEAD
 from dashboard.excel_views import render_administration, render_section, synchronization_status
-=======
+from dashboard.sections import RENDERERS, PageContext
 from dashboard.styles.theme import (
     financial_table,
     page_header,
     research_chart,
     theme_for,
 )
->>>>>>> f89f4d00cccaddf6a329fba779cce0c370332273
 from src.analytics.core import (
     drawdown,
     historical_comparison,
-    justified_pe,
     moving_average,
     period_changes,
     range_distance,
@@ -37,14 +34,7 @@ from src.registry import BY_ID, REGISTRY
 
 st.set_page_config(page_title="Market & Risk Intelligence", page_icon="◈", layout="wide")
 initialize()
-<<<<<<< HEAD
 synchronization_status()
-st.markdown(
-    """<style>.stApp{background:#f7f8fa}h1,h2,h3{color:#30223d}div[data-testid=stMetric]{background:white;border:1px solid #e2e4e8;padding:16px;border-radius:6px}section[data-testid=stSidebar]{background:#eeeef3}</style>""",
-    unsafe_allow_html=True,
-)
-=======
->>>>>>> f89f4d00cccaddf6a329fba779cce0c370332273
 PAGES = json.loads((Path(__file__).resolve().parents[1] / "config/pages.json").read_text())
 MAPPING = {
     "Executive Overview": ["SP500", "DGS10", "VIXCLS", "UNRATE"],
@@ -64,7 +54,6 @@ MAPPING = {
     "S&P vs Bonds": ["DGS10"],
     "S&P Relative": ["SP500", "DCOILWTICO"],
     "VIX & Options": ["VIXCLS"],
-    "Housing": ["MORTGAGE30US", "HOUST", "PERMIT", "HSN1F", "CSUSHPINSA"],
     "Energy": ["DCOILWTICO", "DCOILBRENTEU", "DHHNGSP"],
     "Recession": [
         "DGS2",
@@ -79,58 +68,29 @@ MAPPING = {
         "GDP",
         "USREC",
     ],
-    "Consumer": ["UNRATE", "PSAVERT", "TDSP", "TOTALSL", "REVOLSL", "NONREVSL"],
 }
 BLOCKERS = {
     "Market Data": "Remaining indices, all 11 sector histories, breadth, MOVE and metals need verified permitted feeds. No ETF substitutions. Rates are changes in basis points; VIX changes are index points. Spot commodity returns are not futures returns.",
     "Bear Market": "Historical peak comparison requires sponsor event dates and publication-aligned history. No aggregate predictive score is claimed.",
     "S&P vs Bonds": "Earnings-yield spread requires dated index earnings/P-E history. A simple yield spread is not a modeled equity risk premium.",
-    "Valuation": "Current index multiples need an authorized provider. The model below is assumption-driven, not observed valuation.",
     "S&P 500 Fundamentals": "Official index aggregates require a licensed dataset; constituent medians would not be equivalent.",
     "Margin Debt": "FINRA margin history and comparable market capitalization ingestion are not implemented. GDP is in billions; FINRA figures require unit alignment.",
     "S&P Relative": "Gold history is not connected. Index/oil ratios mix index points and USD per barrel and are research ratios, not investable returns.",
     "Gold to Oil": "Verified USD gold spot history is required. No futures splice or synthetic observation is used.",
-    "Banks": "FDIC quarterly industry ingestion is not yet implemented; population and ratio definitions must be verified.",
     "Bull vs Bear": "AAII history requires permitted access. Conditional-return studies require publication dates and overlap controls.",
     "VIX & Options": "MOVE and put/call feeds are not connected; licensing and history must be verified.",
     "BTC": "Exchange/reference-currency provider and history are not yet verified. No synthetic price feed.",
-    "Housing": "Existing sales, NAHB, applications and affordability sources remain unconnected.",
     "Energy": "Spot prices only. EIA inventory, production, utilization, storage and seasonal balance ingestion remain unimplemented.",
     "Recession": "Current revised observations are unsuitable for real-time backtests. ALFRED vintages, GDPNow, policy futures and calibrated probabilities are not implemented.",
-    "Consumer": "Consumer sentiment history remains unconnected. Savings and debt-service rates have distinct denominators.",
     "Demand": "SEC company facts and industry feeds are not yet integrated. Cloud revenue is not AI-specific revenue.",
     "Forecasting": "SEC filed capex and cash-flow data are not integrated. Scenarios below are explicit analyst assumptions, not company forecasts.",
 }
 
 
 def render(title):
-<<<<<<< HEAD
     if title == "Workbook Administration":
         render_administration()
         return
-    st.title(title)
-    st.caption(
-        "MARKET & RISK INTELLIGENCE · Research workspace · Public-source observations, never real-time"
-    )
-    excel_primary = render_section(title)
-    if excel_primary:
-        if title not in MAPPING and title != "Valuation":
-            return
-        label = (
-            "Show independent valuation assumptions"
-            if title == "Valuation"
-            else "Show independent FRED observations for comparison"
-        )
-        if not st.checkbox(label, key="independent_" + title):
-            return
-    if title == "Supply":
-        st.info(
-            "No workbook source exists for AI Supply. Capacity, vacancy, supply-chain lead times and GPU rental prices require independently verified sources; see the integration audit for the source strategy."
-        )
-        return
-    if title in BLOCKERS and not excel_primary:
-        st.info("Coverage limitation · " + BLOCKERS[title])
-=======
     theme = theme_for(title, PAGES)
     page_header(title, theme)
 
@@ -140,9 +100,24 @@ def render(title):
     def chart(figure, **kwargs):
         research_chart(figure, theme, **kwargs)
 
-    if title in BLOCKERS:
+    if title in RENDERERS:
+        RENDERERS[title](PageContext(title, theme, chart, table_view, enqueue), render_section)
+        return
+    excel_primary = render_section(title)
+    if excel_primary:
+        if title not in MAPPING:
+            return
+        if not st.checkbox(
+            "Show independent FRED observations for comparison", key="independent_" + title
+        ):
+            return
+    if title == "Supply":
+        st.info(
+            "No workbook source exists for AI Supply. Capacity, vacancy, supply-chain lead times and GPU rental prices require independently verified sources; see the integration audit for the source strategy."
+        )
+        return
+    if title in BLOCKERS and not excel_primary:
         st.warning("Coverage limitation · " + BLOCKERS[title])
->>>>>>> f89f4d00cccaddf6a329fba779cce0c370332273
     if title == "Data Sources & System Status":
         st.subheader("Source registry")
         table_view(pd.DataFrame(REGISTRY), hide_index=True)
@@ -167,18 +142,6 @@ def render(title):
             "Download source registry", json.dumps(REGISTRY, indent=2), "sources.json"
         )
         return
-    if title == "Valuation":
-        a, b, c = st.columns(3)
-        cost = a.number_input("Assumed cost of equity (%)", value=9.0) / 100
-        growth = b.number_input("Assumed sustainable growth (%)", value=4.0) / 100
-        retention = c.slider("Assumed retention ratio", 0.0, 1.0, 0.5)
-        try:
-            st.metric("DERIVED · justified P/E", f"{justified_pe(cost, growth, retention):.2f}×")
-        except ValueError as exc:
-            st.error(str(exc))
-        st.caption(
-            "P/E = (1 − retention) / (cost of equity − growth). Constant-growth assumptions; unstable near zero denominator. ROE-implied growth and observed multiples are not connected."
-        )
     if title == "Forecasting":
         st.warning(
             "ASSUMPTIONS · Values entered below are illustrative analyst inputs, not reported company figures."
@@ -219,7 +182,7 @@ def render(title):
                 table_view(frame, hide_index=True)
     ids = MAPPING.get(title, [])
     if not ids:
-        if title in {"Valuation", "Forecasting"}:
+        if title == "Forecasting":
             return
         st.warning(
             "UNAVAILABLE · No verified observations connected for this page. See coverage report for outstanding work."
@@ -396,15 +359,10 @@ def render(title):
         width="stretch",
     )
     if key == "SP500":
-<<<<<<< HEAD
-        st.plotly_chart(
+        chart(
             px.line(
                 drawdown(h.value).loc[str(start) :], title="DERIVED · price-index drawdown (%)"
             ),
-=======
-        chart(
-            px.line(drawdown(selected.value), title="DERIVED · price-index drawdown (%)"),
->>>>>>> f89f4d00cccaddf6a329fba779cce0c370332273
             width="stretch",
         )
         chart(

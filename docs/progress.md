@@ -16,19 +16,19 @@
 - [ ] Market Data: complete full specification; see data_coverage.md for current partial functionality
 - [ ] Bear Market: complete full specification; see data_coverage.md for current partial functionality
 - [ ] S&P vs Bonds: complete full specification; see data_coverage.md for current partial functionality
-- [ ] Valuation: complete full specification; see data_coverage.md for current partial functionality
+- [ ] Valuation: rate-relative and aggregate valuation page delivered (docs/sections.md); sponsor acceptance and live FRED verification pending
 - [ ] S&P 500 Fundamentals: complete full specification; see data_coverage.md for current partial functionality
 - [ ] Margin Debt: complete full specification; see data_coverage.md for current partial functionality
 - [ ] S&P Relative: complete full specification; see data_coverage.md for current partial functionality
 - [ ] Gold to Oil: complete full specification; see data_coverage.md for current partial functionality
-- [ ] Banks: complete full specification; see data_coverage.md for current partial functionality
+- [ ] Banks: credit quality, SLOOS and funding page delivered; FDIC QBP outstanding; sponsor acceptance and live FRED verification pending
 - [ ] Bull vs Bear: complete full specification; see data_coverage.md for current partial functionality
 - [ ] VIX & Options: complete full specification; see data_coverage.md for current partial functionality
 - [ ] BTC: complete full specification; see data_coverage.md for current partial functionality
-- [ ] Housing: complete full specification; see data_coverage.md for current partial functionality
+- [ ] Housing: dedicated housing page delivered; NAR existing-home independent source outstanding; sponsor acceptance and live FRED verification pending
 - [ ] Energy: complete full specification; see data_coverage.md for current partial functionality
 - [ ] Recession: complete full specification; see data_coverage.md for current partial functionality
-- [ ] Consumer: complete full specification; see data_coverage.md for current partial functionality
+- [ ] Consumer: dedicated consumer page delivered; sponsor acceptance and live FRED verification pending
 - [ ] Demand: complete full specification; see data_coverage.md for current partial functionality
 - [ ] Forecasting: complete full specification; see data_coverage.md for current partial functionality
 
