@@ -2,7 +2,7 @@
 
 The saved sponsor workbook is primary on mapped pages. Workbook charts use saved Excel calculations; hover distinguishes forward estimates, and each chart names its source and latest historical observation. Tables retain Excel number formats and sponsor benchmarks. Missing caches remain unavailable. Use Workbook Administration to inspect import health and manual dependencies or request **Reimport Workbook**. Stable saved versions import in the background while the app is open; successful imports update the page automatically. Saving a file does not certify a Bloomberg refresh. See [local workbook operations](excel_operations.md) for the standalone watcher and range-extension limits.
 
-Applicable pages offer **Show independent FRED observations for comparison**. The following controls apply to those independent views; they do not refresh Bloomberg or change Excel calculations.
+Housing, Banks, Valuation and Consumer are dedicated pages with Sponsor workbook, Independent analytics, Indicators and Methodology tabs; see [dedicated pages](sections.md). Other applicable pages offer **Show independent FRED observations for comparison**. The following controls apply to those independent views; they do not refresh Bloomberg or change Excel calculations.
 
 Choose Market, Macro or AI sections in the grouped sidebar. Tables show available observations, units, observation dates, original retrieval timestamps and source links. Missing data is marked UNAVAILABLE. Charts support Plotly zoom, hover and export. Use chart start and series selection to inspect history; CSV downloads include source metadata.
 
