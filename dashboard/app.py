@@ -10,16 +10,13 @@ import streamlit as st
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-<<<<<<< HEAD
 from dashboard.excel_views import render_administration, render_section, synchronization_status
-=======
 from dashboard.styles.theme import (
     financial_table,
     page_header,
     research_chart,
     theme_for,
 )
->>>>>>> f89f4d00cccaddf6a329fba779cce0c370332273
 from src.analytics.core import (
     drawdown,
     historical_comparison,
@@ -37,14 +34,7 @@ from src.registry import BY_ID, REGISTRY
 
 st.set_page_config(page_title="Market & Risk Intelligence", page_icon="◈", layout="wide")
 initialize()
-<<<<<<< HEAD
 synchronization_status()
-st.markdown(
-    """<style>.stApp{background:#f7f8fa}h1,h2,h3{color:#30223d}div[data-testid=stMetric]{background:white;border:1px solid #e2e4e8;padding:16px;border-radius:6px}section[data-testid=stSidebar]{background:#eeeef3}</style>""",
-    unsafe_allow_html=True,
-)
-=======
->>>>>>> f89f4d00cccaddf6a329fba779cce0c370332273
 PAGES = json.loads((Path(__file__).resolve().parents[1] / "config/pages.json").read_text())
 MAPPING = {
     "Executive Overview": ["SP500", "DGS10", "VIXCLS", "UNRATE"],
@@ -104,14 +94,18 @@ BLOCKERS = {
 
 
 def render(title):
-<<<<<<< HEAD
     if title == "Workbook Administration":
         render_administration()
         return
-    st.title(title)
-    st.caption(
-        "MARKET & RISK INTELLIGENCE · Research workspace · Public-source observations, never real-time"
-    )
+    theme = theme_for(title, PAGES)
+    page_header(title, theme)
+
+    def table_view(frame, **kwargs):
+        financial_table(frame, theme, **kwargs)
+
+    def chart(figure, **kwargs):
+        research_chart(figure, theme, **kwargs)
+
     excel_primary = render_section(title)
     if excel_primary:
         if title not in MAPPING and title != "Valuation":
@@ -129,20 +123,7 @@ def render(title):
         )
         return
     if title in BLOCKERS and not excel_primary:
-        st.info("Coverage limitation · " + BLOCKERS[title])
-=======
-    theme = theme_for(title, PAGES)
-    page_header(title, theme)
-
-    def table_view(frame, **kwargs):
-        financial_table(frame, theme, **kwargs)
-
-    def chart(figure, **kwargs):
-        research_chart(figure, theme, **kwargs)
-
-    if title in BLOCKERS:
         st.warning("Coverage limitation · " + BLOCKERS[title])
->>>>>>> f89f4d00cccaddf6a329fba779cce0c370332273
     if title == "Data Sources & System Status":
         st.subheader("Source registry")
         table_view(pd.DataFrame(REGISTRY), hide_index=True)
@@ -396,15 +377,10 @@ def render(title):
         width="stretch",
     )
     if key == "SP500":
-<<<<<<< HEAD
-        st.plotly_chart(
+        chart(
             px.line(
                 drawdown(h.value).loc[str(start) :], title="DERIVED · price-index drawdown (%)"
             ),
-=======
-        chart(
-            px.line(drawdown(selected.value), title="DERIVED · price-index drawdown (%)"),
->>>>>>> f89f4d00cccaddf6a329fba779cce0c370332273
             width="stretch",
         )
         chart(
