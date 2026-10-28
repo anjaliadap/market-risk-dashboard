@@ -1,34 +1,26 @@
-/* Native Streamlit controls retain their focus behavior and accessible labels. */
-.stApp { background: #F5F7FA; color: #263445; }
-[data-testid="stMainBlockContainer"] { max-width: 1500px; padding-top: 2.5rem; padding-bottom: 3rem; }
-[data-testid="stVerticalBlock"] { gap: 1.1rem; }
-h1, h2, h3 { color: var(--research-accent); letter-spacing: -0.025em; }
-h1 { font-size: 2rem !important; font-weight: 650 !important; padding-top: .35rem !important; }
-h2, h3 { font-weight: 600 !important; }
-[data-testid="stCaptionContainer"] { color: #64748B; line-height: 1.6; }
-.research-eyebrow { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: .68rem; font-weight: 700; letter-spacing: .15em; color: #64748B; }
-.research-category { border: 1px solid #DFE5ED; border-radius: 4px; padding: .3rem .6rem; color: var(--research-accent); background: var(--research-soft); letter-spacing: .07em; }
-[data-testid="stSidebar"] { background: #172B46; color: #E6EDF5; border-right: 1px solid #263F5F; }
-[data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 { color: #E6EDF5; }
-[data-testid="stSidebarNav"] a { color: #D6E1EE; border-radius: 5px; margin-block: 2px; border-left: 3px solid transparent; }
-[data-testid="stSidebarNav"] a span { color: inherit; }
-[data-testid="stSidebarNav"] a:hover { background: #223D5C; color: #FFFFFF; }
-[data-testid="stSidebarNav"] a[aria-current="page"] { background: #2C4869; color: #FFFFFF; border-left-color: #A9C4DF; font-weight: 650; }
-[data-testid="stSidebarNav"] a:focus-visible { outline: 2px solid #A9C4DF; outline-offset: 2px; }
-[data-testid="stSidebarNav"] [data-testid="stSidebarNavSeparator"] { border-color: #35506E; }
-[data-testid="stMetric"] { background: #FFFFFF; border: 1px solid #DFE5ED; border-top: 3px solid var(--research-accent); border-radius: 8px; padding: 1.1rem 1.2rem; box-shadow: 0 2px 5px #233E6005; }
-[data-testid="stMetricLabel"] { color: #64748B; font-size: .8rem; }
-[data-testid="stMetricValue"] { color: var(--research-accent); font-variant-numeric: tabular-nums; font-size: 1.7rem; letter-spacing: -.03em; }
-[data-testid="stDataFrame"] { background: white; border: 1px solid #DFE5ED; border-radius: 7px; overflow: hidden; }
-[data-testid="stPlotlyChart"] { background: white; border: 1px solid #DFE5ED; border-radius: 8px; overflow: hidden; }
-[data-testid="stExpander"] { background: #FFFFFF; border-radius: 7px; }
-[data-testid="stAlert"] { border-radius: 6px; }
-[data-testid="stAlert"][data-baseweb="notification"] { border: 1px solid #DFE5ED; }
-[data-testid="stButton"] button, [data-testid="stDownloadButton"] button { background: white; color: var(--research-accent); border: 1px solid #CBD5E1; border-radius: 5px; font-weight: 500; }
-[data-testid="stButton"] button:hover, [data-testid="stDownloadButton"] button:hover { background: var(--research-soft); border-color: var(--research-accent); color: var(--research-accent); }
-[data-testid="stButton"] button:focus-visible, [data-testid="stDownloadButton"] button:focus-visible { outline: 2px solid var(--research-accent); outline-offset: 3px; }
-@media (max-width: 640px) {
-  [data-testid="stMainBlockContainer"] { padding: 1.5rem 1rem; }
-  h1 { font-size: 1.65rem !important; }
-  [data-testid="stMetricValue"] { font-size: 1.4rem; }
+/* Palette, widgets, table headers and sidebar surfaces use native config.toml.
+   Never set app-wide backgrounds or heading/button colors here. */
+.research-eyebrow { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center;
+  color: var(--research-muted); font-size: .75rem; font-weight: 650; letter-spacing: .08em; }
+.research-category { color: var(--research-accent); background: var(--research-soft);
+  padding: .3rem .6rem; border-radius: 4px; border: 1px solid var(--research-border); }
+[data-testid="stSidebarNav"] a[aria-current="page"] { border-left: 3px solid #FFFFFF; font-weight: 700; }
+[data-testid="stSidebarNav"] a:hover { outline: 1px solid #E2E8F0; outline-offset: -1px; }
+[data-testid="stSidebarNav"] a:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 2px; }
+[data-testid="stMain"] [data-testid="stCaptionContainer"],
+[data-testid="stMain"] [data-testid="stCaptionContainer"] p { color: var(--research-muted); opacity: 1; }
+[data-testid="stMetric"] { background: var(--research-surface); border: 1px solid var(--research-border);
+  border-top: 3px solid var(--research-accent); padding: 1rem; border-radius: 6px; }
+[data-testid="stMetricLabel"], [data-testid="stMetricValue"] { color: var(--research-text); }
+[data-testid="stTextInput"] input::placeholder,
+[data-testid="stNumberInput"] input::placeholder,
+[data-testid="stDateInput"] input::placeholder,
+[data-testid="stSelectbox"] input::placeholder { color: var(--research-muted); opacity: 1; }
+[data-testid="stButton"] button:disabled,
+[data-testid="stDownloadButton"] button:disabled { color: var(--research-muted); background: var(--research-surface); opacity: 1; border-style: dashed; cursor: not-allowed; }
+[data-testid="stPlotlyChart"] { background: var(--research-surface); border: 1px solid var(--research-border); border-radius: 6px; }
+@media (max-width: 760px) {
+  [data-testid="stMain"] [data-testid="stHorizontalBlock"] { flex-wrap: wrap; }
+  [data-testid="stMain"] [data-testid="stColumn"] { flex: 1 1 100%; min-width: 0; width: 100%; }
+  .research-eyebrow { letter-spacing: .04em; }
 }

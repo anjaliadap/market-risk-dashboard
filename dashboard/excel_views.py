@@ -5,11 +5,24 @@ import plotly.graph_objects as go
 import streamlit as st
 from plotly.subplots import make_subplots
 
+from dashboard.styles.theme import (
+    BACKGROUND,
+    CONFIG,
+    NEGATIVE,
+    SURFACE,
+    TEXT,
+    base_table_style,
+    financial_table,
+    page_header,
+    research_chart,
+    series_color,
+    signed_style,
+    style_figure,
+    theme_for,
+)
 from src.excel_sync import latest_import, poll_workbook, workbook_file_status
 from src.providers.excel import load_mapping
 from src.settings import settings
-
-COLORS = ["#540043", "#69c7b3", "#40576a", "#ed9b54", "#7b8fd9", "#9aa8b4"]
 
 
 def format_cell(cell):
@@ -32,21 +45,30 @@ def build_figure(chart):
     fig = make_subplots(specs=[[{"secondary_y": secondary}]])
     axis_formats = {False: [], True: []}
     markers = []
-    for idx, series in enumerate(chart["series"]):
+    for series in chart["series"]:
         points = series["points"]
         x = [p["date"] for p in points]
         y = [p["value"] for p in points]
         custom = [
             [p["cell"], "Forward estimate" if p["forward"] else "Saved history"] for p in points
         ]
+        number = (
+            "%{y:.1%}"
+            if "%" in series["unit"]
+            else "%{y:$,.2f}"
+            if "$" in series["unit"]
+            else "%{y:,.2f}"
+        )
         common = {
             "x": x,
             "y": y,
             "name": series["name"],
             "customdata": custom,
-            "hovertemplate": "%{x}<br>%{y}<br>%{customdata[1]}<br>Source cell %{customdata[0]}<extra>%{fullData.name}</extra>",
+            "hovertemplate": "%{x}<br>"
+            + number
+            + "<br>%{customdata[1]}<br>Source cell %{customdata[0]}<extra>%{fullData.name}</extra>",
         }
-        color = COLORS[idx % len(COLORS)]
+        color = series_color(series["name"])
         # Excel uses narrow full-height bars to mark the last reported quarter.
         # Render those as a proper vertical marker, leaving the financial series untouched.
         marker_series = series.get("role") == "reported_marker"
@@ -66,7 +88,7 @@ def build_figure(chart):
         if series.get("latest_reported"):
             markers.append(series["latest_reported"])
     for marker in sorted(set(markers)):
-        fig.add_vline(x=marker, line_color="#cc332f", line_width=1.3)
+        fig.add_vline(x=marker, line_color=NEGATIVE, line_width=1.3)
     for right, formats in axis_formats.items():
         if not formats:
             continue
@@ -84,7 +106,7 @@ def build_figure(chart):
         legend={"orientation": "h", "y": -0.22},
         margin={"l": 40, "r": 40, "t": 55, "b": 65},
     )
-    return fig
+    return style_figure(fig)
 
 
 def render_section(title):
@@ -100,7 +122,7 @@ def render_section(title):
         st.info(
             "Bloomberg refresh time is unknown. Workbook caches include both reported history and forward estimates."
         )
-        st.dataframe(
+        financial_table(
             pd.DataFrame(
                 [
                     {
@@ -135,7 +157,13 @@ def render_section(title):
     )
     for table in section["tables"]:
         st.subheader(table["title"])
-        st.dataframe(table_frame(table), hide_index=True, width="stretch")
+        financial_table(
+            table_frame(table),
+            hide_index=True,
+            width="stretch",
+            alt=table["title"],
+            column_config=table_columns(table),
+        )
         st.caption(
             f"Source: saved workbook · {table['sheet']} · as of {table['as_of'] or 'not supplied (undated snapshot)'} · number formats retained"
         )
@@ -148,7 +176,9 @@ def render_section(title):
                 for p in s["points"]
                 if p["value"] is not None and not p["forward"]
             ]
-            st.plotly_chart(build_figure(chart), width="stretch", key="excel_" + chart["id"])
+            research_chart(
+                build_figure(chart), theme_for(title), width="stretch", key="excel_" + chart["id"]
+            )
             st.caption(
                 f"Source: saved Excel / sponsor Bloomberg and manual inputs · latest valid history: {max(valid) if valid else 'unavailable'}"
             )
@@ -180,18 +210,69 @@ def table_frame(table):
         visible = [cells.get(col, {"value": None, "format": "General"}) for col, _ in columns]
         if not any(c["value"] is not None for c in visible):
             continue
-        values.append([format_cell(c) for c in visible])
         signal = cells.get(table.get("signal_column"), {}).get("value") == 1
-        styles.append(
-            [
-                "color: #c92b34"
-                if c.get("font_color") in ("FFFF0000", "00FF0000") or (signal and col in ("D", "F"))
-                else ""
-                for (col, _), c in zip(columns, visible, strict=True)
-            ]
-        )
+        output, row_styles = [], []
+        label = str(visible[0]["value"] or "").lower()
+        benchmark = label.strip() in {
+            "average",
+            "avg",
+            "median",
+            "total",
+            "total possible",
+            "# present",
+            "% present",
+            "current",
+        } or label.startswith(("avg ", "median ", "total ", "current "))
+        current_column = "D" if table.get("id") == "bear_checklist" else "F"
+        for (col, _), cell in zip(columns, visible, strict=True):
+            number = isinstance(cell["value"], (int, float)) and not isinstance(cell["value"], bool)
+            text = format_cell(cell)
+            heatmap = (
+                table.get("id") == "market_snapshot"
+                and col in {"E", "F", "G", "H", "I", "J", "K", "L", "M"}
+                and number
+            )
+            if heatmap and cell["value"] > 0:
+                text = "+" + text
+            color = NEGATIVE if cell.get("font_color") in ("FFFF0000", "00FF0000") else TEXT
+            background = (
+                CONFIG["grayBackgroundColor"]
+                if benchmark
+                else BACKGROUND
+                if len(values) % 2
+                else SURFACE
+            )
+            style = f"color: {color}; background-color: {background}; text-align: {'right' if number else 'left'}"
+            if heatmap:
+                style += "; " + signed_style(cell["value"])
+            if benchmark:
+                style += "; font-weight: 700"
+            if signal and col == current_column:
+                text += " · Signal present"
+                style += f"; color: {NEGATIVE}; font-weight: 700"
+            output.append(text)
+            row_styles.append(style)
+        values.append(output)
+        styles.append(row_styles)
     frame = pd.DataFrame(values, columns=[label for _, label in columns])
-    return frame.style.apply(lambda _: pd.DataFrame(styles, columns=frame.columns), axis=None)
+    return base_table_style(frame).apply(
+        lambda _: pd.DataFrame(styles, columns=frame.columns), axis=None
+    )
+
+
+def table_columns(table):
+    """String-formatted Excel cells need explicit native-grid alignment."""
+    numeric_columns = set()
+    for row in table["rows"]:
+        for cell in row:
+            if isinstance(cell["value"], (int, float)):
+                numeric_columns.add("".join(filter(str.isalpha, cell["cell"])))
+    return {
+        label: st.column_config.TextColumn(
+            label, alignment="right" if col in numeric_columns else "left"
+        )
+        for col, label in table.get("display_columns", [])
+    }
 
 
 @st.fragment(run_every="10s")
@@ -208,7 +289,7 @@ def synchronization_status():
 
 
 def render_administration():
-    st.title("Workbook Administration")
+    page_header("Workbook Administration")
     st.write(
         "Local saved workbook imports preserve the last valid snapshot. Bloomberg refresh time is not inferred from file saves."
     )
@@ -251,10 +332,18 @@ def render_administration():
             "Imported numeric metrics (chart series and table cells):", snapshot["metric_count"]
         )
         st.write("Workbook SHA-256:", snapshot["sha256"])
-        st.json(snapshot["diagnostics"])
+        financial_table(
+            pd.DataFrame(
+                [
+                    {"Validation check": key.replace("_", " ").capitalize(), "Count": value}
+                    for key, value in snapshot["diagnostics"].items()
+                ]
+            ),
+            alt="Workbook validation counts",
+        )
         st.caption(snapshot["refresh_attestation"])
         if snapshot["issues"]:
-            st.dataframe(pd.DataFrame(snapshot["issues"]), hide_index=True)
+            financial_table(pd.DataFrame(snapshot["issues"]), hide_index=True)
     rows = []
     for name, spec in load_mapping()["sections"].items():
         imported = valid["snapshot"]["sections"].get(name) if valid else None
@@ -280,7 +369,7 @@ def render_administration():
             "Manual dependencies / limitations": "Independent provider strategy in docs/excel_integration_map.md; no verified observations",
         }
     )
-    st.dataframe(pd.DataFrame(rows), hide_index=True)
+    financial_table(pd.DataFrame(rows), hide_index=True)
     st.caption(
         "Only local processing is enabled. OneDrive/SharePoint Graph authentication and redistribution permissions are not configured."
     )
