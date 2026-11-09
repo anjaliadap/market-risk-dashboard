@@ -16,19 +16,19 @@
 - [ ] Market Data: complete full specification; see data_coverage.md for current partial functionality
 - [ ] Bear Market: complete full specification; see data_coverage.md for current partial functionality
 - [ ] S&P vs Bonds: complete full specification; see data_coverage.md for current partial functionality
-- [ ] Valuation: complete full specification; see data_coverage.md for current partial functionality
+- [ ] Valuation: rate-relative and aggregate valuation page delivered (docs/sections.md); sponsor acceptance and live FRED verification pending
 - [ ] S&P 500 Fundamentals: complete full specification; see data_coverage.md for current partial functionality
 - [ ] Margin Debt: complete full specification; see data_coverage.md for current partial functionality
 - [ ] S&P Relative: complete full specification; see data_coverage.md for current partial functionality
 - [ ] Gold to Oil: complete full specification; see data_coverage.md for current partial functionality
-- [ ] Banks: complete full specification; see data_coverage.md for current partial functionality
+- [ ] Banks: credit quality, SLOOS and funding page delivered; FDIC QBP outstanding; sponsor acceptance and live FRED verification pending
 - [ ] Bull vs Bear: complete full specification; see data_coverage.md for current partial functionality
 - [ ] VIX & Options: complete full specification; see data_coverage.md for current partial functionality
 - [ ] BTC: complete full specification; see data_coverage.md for current partial functionality
-- [ ] Housing: complete full specification; see data_coverage.md for current partial functionality
+- [ ] Housing: dedicated housing page delivered; NAR existing-home independent source outstanding; sponsor acceptance and live FRED verification pending
 - [ ] Energy: complete full specification; see data_coverage.md for current partial functionality
 - [ ] Recession: complete full specification; see data_coverage.md for current partial functionality
-- [ ] Consumer: complete full specification; see data_coverage.md for current partial functionality
+- [ ] Consumer: dedicated consumer page delivered; sponsor acceptance and live FRED verification pending
 - [ ] Demand: complete full specification; see data_coverage.md for current partial functionality
 - [ ] Forecasting: complete full specification; see data_coverage.md for current partial functionality
 
@@ -54,6 +54,8 @@ No phase is marked complete merely because a page renders. This iteration establ
 - [ ] Sponsor visual acceptance and full heatmap/table presentation parity
 - [ ] Bloomberg refresh attestation and source workbook error/manual dependency resolution
 - [ ] Approved range/formula extensions beyond fixed chart endpoints
-- [ ] Independent Supply, productivity, semiconductor, SEC and EIA connectors
+- [x] Independent Supply proxies plus productivity and semiconductor connectors (FRED); analyst logs for GPU pricing, capacity, vacancy and lead times
+- [x] Automated Recession checklist and Demand/Financing trackers (see sections.md)
+- [ ] SEC and EIA connectors
 
 Older full-specification items remain unchecked pending acceptance and source gaps. Saved Excel coverage supersedes the earlier FRED-only coverage; see data_coverage.md.

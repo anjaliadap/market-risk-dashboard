@@ -29,7 +29,7 @@ uv run ruff check .
 uv run ruff format --check .
 ```
 
-`refresh_ai` currently reports that no verified AI provider exists; this is not a successful company-data ingestion. Jobs return nonzero on provider failure. FRED graph CSV does not require a key, but network access to `fred.stlouisfed.org` is required. Bloomberg is an optional interface only. SEC, EIA and other API credentials are not requested because those connectors are not implemented.
+`refresh_ai` ingests public AI-category proxies (productivity, semiconductor output and orders, grid-equipment prices, corporate debt). Company-level AI data still come only from the sponsor workbook. Jobs return nonzero on provider failure. FRED graph CSV does not require a key, but network access to `fred.stlouisfed.org` is required. Bloomberg is an optional interface only. SEC, EIA and other API credentials are not requested because those connectors are not implemented.
 
 Do not place credentials in source control. Ingestion preserves stored values on failure, logs errors, and retains changed observations as retrieval vintages. A button initiates bounded background refresh; independent scheduled commands are recommended. Windows Task Scheduler can execute the ingestion commands from this working directory. Data errors appear in System Status; no observations appear until ingestion succeeds. HTTP 403 proxy errors require environment network settings, not fabricated API keys.
 
