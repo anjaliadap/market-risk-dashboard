@@ -11,8 +11,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO)
     initialize()
-    ids = args.series or [s["id"] for s in REGISTRY if s["category"] in ["AI"]]
+    ids = args.series or [s["id"] for s in REGISTRY if s["category"] in []]
     if not ids:
-        print("No AI-category series registered; see docs/data_coverage.md")
+        print("No verified AI provider yet; see docs/data_coverage.md")
     results = [refresh_one(key) for key in ids]
     raise SystemExit(0 if all(results) else 1)
