@@ -6,6 +6,7 @@ from sqlalchemy import create_engine
 
 @pytest.fixture(autouse=True)
 def isolated_services(tmp_path, monkeypatch):
+    from dashboard import workbook_sections
     from src import refresh
     from src.database import store
     from src.settings import settings
@@ -13,7 +14,9 @@ def isolated_services(tmp_path, monkeypatch):
     engine = create_engine("sqlite:///" + str(tmp_path / "isolated.db"))
     monkeypatch.setattr(store, "engine", engine)
     monkeypatch.setattr(refresh, "engine", engine)
+    monkeypatch.setattr(workbook_sections, "engine", engine)
     monkeypatch.setattr(refresh, "enqueue", lambda ids: None)
+    monkeypatch.setattr(workbook_sections, "enqueue", lambda ids: None)
     monkeypatch.setattr(settings, "excel_workbook_path", "")
     store.initialize()
     yield

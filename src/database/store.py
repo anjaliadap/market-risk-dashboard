@@ -1,3 +1,4 @@
+import json
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -113,30 +114,86 @@ def history(series_id):
 
 
 def save(series, frame):
+    return save_many([(series, frame)])[series["id"]]
+
+
+def save_many(series_frames):
+    """Persist one validated source snapshot atomically, retaining revisions."""
     now = datetime.now(UTC)
+    counts = {}
     with Session(engine) as session, session.begin():
-        prior = {
-            r.date: r.value
-            for r in session.scalars(
-                select(Observation)
-                .where(Observation.series_id == series["id"])
-                .order_by(Observation.retrieved_at, Observation.id)
-            )
-        }
-        count = 0
-        for date, value in frame.items():
-            d = date.date()
-            if prior.get(d) != float(value):
-                session.add(
-                    Observation(
-                        series_id=series["id"],
-                        date=d,
-                        value=float(value),
-                        retrieved_at=now,
-                        source=series["url"],
-                        units=series["unit"],
-                    )
+        priors = {}
+        changed_dates = set()
+        for series, frame in series_frames:
+            priors[series["id"]] = {
+                r.date: r.value
+                for r in session.scalars(
+                    select(Observation)
+                    .where(Observation.series_id == series["id"])
+                    .order_by(Observation.retrieved_at, Observation.id)
                 )
-                count += 1
-        session.add(Job(series_id=series["id"], started_at=now, status="success", count=count))
-    return count
+            }
+            changed_dates.update(
+                date.date()
+                for date, value in frame.items()
+                if priors[series["id"]].get(date.date()) != float(value)
+            )
+        for series, frame in series_frames:
+            prior = priors[series["id"]]
+            count = 0
+            quote_time = frame.attrs.get("published_at")
+            for date, value in frame.items():
+                d = date.date()
+                # Quote timestamps matter even if its price is unchanged.
+                if (
+                    prior.get(d) != float(value)
+                    or quote_time is not None
+                    or (len(series_frames) > 1 and d in changed_dates)
+                ):
+                    session.add(
+                        Observation(
+                            series_id=series["id"],
+                            date=d,
+                            value=float(value),
+                            retrieved_at=now,
+                            published_at=quote_time,
+                            source=series["url"],
+                            units=series["unit"],
+                            quality=frame.attrs.get("quality", "AVAILABLE / DELAYED"),
+                        )
+                    )
+                    count += 1
+            session.add(Job(series_id=series["id"], started_at=now, status="success", count=count))
+            if frame.attrs:
+                latest_metadata = session.scalar(
+                    select(ResearchRecord)
+                    .where(
+                        ResearchRecord.kind == "source_snapshot",
+                        ResearchRecord.name == series["id"],
+                    )
+                    .order_by(ResearchRecord.version.desc())
+                    .limit(1)
+                )
+                payload = json.dumps(frame.attrs, default=str, sort_keys=True)
+                if latest_metadata is None or latest_metadata.payload != payload:
+                    session.add(
+                        ResearchRecord(
+                            kind="source_snapshot",
+                            name=series["id"],
+                            payload=payload,
+                            version=1 if latest_metadata is None else latest_metadata.version + 1,
+                        )
+                    )
+            counts[series["id"]] = count
+    return counts
+
+
+def source_metadata(series_id):
+    with Session(engine) as session:
+        row = session.scalar(
+            select(ResearchRecord)
+            .where(ResearchRecord.kind == "source_snapshot", ResearchRecord.name == series_id)
+            .order_by(ResearchRecord.version.desc())
+            .limit(1)
+        )
+        return json.loads(row.payload) if row else {}

@@ -1,0 +1,123 @@
+[
+  {
+    "id": "FINRA_MARGIN_DEBT",
+    "name": "FINRA customer securities margin debit balances",
+    "category": "Market", "unit": "USD millions", "frequency": "monthly",
+    "source": "FINRA", "provider": "finra", "min_value": 0,
+    "url": "https://www.finra.org/rules-guidance/key-topics/margin-accounts/margin-statistics",
+    "endpoint": "https://www.finra.org/sites/default/files/2021-03/margin-statistics.xlsx",
+    "coverage": "January 1997 onward", "refresh_minutes": 1440, "stale_days": 65,
+    "update_expectations": "Usually third week following the reference month",
+    "transformation": "Monthly source period normalized to calendar month end; no fill",
+    "license": "Public download; FINRA terms apply", "implementation_status": "live verified"
+  },
+  {
+    "id": "BOGZ1LM883164115Q",
+    "name": "Fed domestic public corporate equity market value (proxy)",
+    "category": "Market", "unit": "USD millions", "frequency": "quarterly",
+    "source": "Federal Reserve Board via FRED", "provider": "fred", "min_value": 0,
+    "url": "https://fred.stlouisfed.org/series/BOGZ1LM883164115Q",
+    "endpoint": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=BOGZ1LM883164115Q",
+    "refresh_minutes": 1440, "stale_days": 200,
+    "update_expectations": "Quarterly Z.1 release; revised history",
+    "transformation": "Quarter-end market value; differs from monthly Wilshire 5000 capitalization",
+    "license": "Public domain; source citation requested", "implementation_status": "live verified"
+  },
+  {
+    "id": "AAII_BULLISH", "name": "AAII bullish sentiment",
+    "category": "Market", "unit": "percent", "frequency": "weekly",
+    "source": "American Association of Individual Investors", "provider": "aaii", "min_value": 0,
+    "url": "https://www.aaii.com/sentimentsurvey/sent_results",
+    "endpoint": "https://www.aaii.com/files/surveys/sentiment.xls",
+    "refresh_minutes": 1440, "stale_days": 14,
+    "transformation": "Source fractions multiplied by 100; preserve XLS Reported Date",
+    "license": "Public download; AAII terms apply", "implementation_status": "live verified"
+  },
+  {
+    "id": "AAII_NEUTRAL", "name": "AAII neutral sentiment",
+    "category": "Market", "unit": "percent", "frequency": "weekly",
+    "source": "American Association of Individual Investors", "provider": "aaii", "min_value": 0,
+    "url": "https://www.aaii.com/sentimentsurvey/sent_results",
+    "endpoint": "https://www.aaii.com/files/surveys/sentiment.xls",
+    "refresh_minutes": 1440, "stale_days": 14,
+    "transformation": "Source fractions multiplied by 100; preserve XLS Reported Date",
+    "license": "Public download; AAII terms apply", "implementation_status": "live verified"
+  },
+  {
+    "id": "AAII_BEARISH", "name": "AAII bearish sentiment",
+    "category": "Market", "unit": "percent", "frequency": "weekly",
+    "source": "American Association of Individual Investors", "provider": "aaii", "min_value": 0,
+    "url": "https://www.aaii.com/sentimentsurvey/sent_results",
+    "endpoint": "https://www.aaii.com/files/surveys/sentiment.xls",
+    "refresh_minutes": 1440, "stale_days": 14,
+    "transformation": "Source fractions multiplied by 100; preserve XLS Reported Date",
+    "license": "Public download; AAII terms apply", "implementation_status": "live verified"
+  },
+  {
+    "id": "AAII_SP500_WEEKLY_CLOSE", "name": "AAII-reported weekly S&P 500 close",
+    "category": "Market", "unit": "index points", "frequency": "weekly",
+    "source": "AAII public sentiment workbook, S&P 500 Weekly Close column", "provider": "aaii", "min_value": 0,
+    "url": "https://www.aaii.com/sentimentsurvey/sent_results",
+    "endpoint": "https://www.aaii.com/files/surveys/sentiment.xls",
+    "refresh_minutes": 1440, "stale_days": 14,
+    "transformation": "Preserve reported-date labels; price-only, weekly resolution; exact close timestamp not supplied",
+    "license": "Publicly available; underlying index and AAII terms apply; no bundled redistribution",
+    "implementation_status": "live verified"
+  },
+  {
+    "id": "COINBASE_BTC_USD", "name": "Bitcoin completed UTC daily close",
+    "category": "Market", "unit": "USD/BTC", "frequency": "daily",
+    "source": "Coinbase Exchange BTC-USD", "provider": "coinbase", "min_value": 0,
+    "url": "https://docs.cdp.coinbase.com/api-reference/exchange-api/rest-api/products/get-product-candles",
+    "endpoint": "https://api.exchange.coinbase.com/products/BTC-USD/candles",
+    "refresh_minutes": 1440, "stale_days": 3,
+    "transformation": "UTC daily candle close; open current UTC day excluded; source gaps retained",
+    "license": "Public API; Coinbase terms apply", "implementation_status": "live verified"
+  },
+  {
+    "id": "COINBASE_BTC_SPOT", "name": "Bitcoin spot quote",
+    "category": "Market", "unit": "USD/BTC", "frequency": "spot",
+    "source": "Coinbase Exchange BTC-USD ticker", "provider": "coinbase", "min_value": 0,
+    "url": "https://docs.cdp.coinbase.com/api-reference/exchange-api/rest-api/products/get-product-ticker",
+    "endpoint": "https://api.exchange.coinbase.com/products/BTC-USD/ticker",
+    "refresh_minutes": 5, "stale_days": 1,
+    "transformation": "Last trade price with actual source UTC quote timestamp",
+    "license": "Public API; Coinbase terms apply", "implementation_status": "live verified"
+  },
+  {
+    "id": "STRATEGY_BTC_HOLDINGS", "name": "Strategy reported BTC holdings",
+    "category": "Market", "unit": "BTC", "frequency": "snapshot",
+    "source": "Strategy public analytics", "provider": "strategy", "min_value": 0,
+    "url": "https://www.strategy.com/", "endpoint": "https://cdn.contentstack.io/v3/content_types/btc_tracker/entries",
+    "refresh_minutes": 1440, "stale_days": 7,
+    "transformation": "Latest public snapshot; no backcast of present holdings",
+    "license": "Public page metrics; Strategy terms apply", "implementation_status": "live verified"
+  },
+  {
+    "id": "STRATEGY_DEBT_USD", "name": "Strategy total debt notional",
+    "category": "Market", "unit": "USD", "frequency": "snapshot",
+    "source": "Strategy public analytics", "provider": "strategy", "min_value": 0,
+    "url": "https://www.strategy.com/", "endpoint": "https://cdn.contentstack.io/v3/content_types/btc_tracker/entries",
+    "refresh_minutes": 1440, "stale_days": 7,
+    "transformation": "Source principal in USD; outstanding notional, not trading value",
+    "license": "Public page metrics; Strategy terms apply", "implementation_status": "live verified"
+  },
+  {
+    "id": "STRATEGY_PREFERRED_USD", "name": "Strategy preferred stock notional",
+    "category": "Market", "unit": "USD", "frequency": "snapshot",
+    "source": "Strategy public analytics", "provider": "strategy", "min_value": 0,
+    "url": "https://www.strategy.com/", "endpoint": "https://cdn.contentstack.io/v3/content_types/btc_tracker/entries",
+    "refresh_minutes": 1440, "stale_days": 7,
+    "transformation": "Source outstanding preferred notional in USD",
+    "license": "Public page metrics; Strategy terms apply", "implementation_status": "live verified"
+  },
+  {
+    "id": "STRATEGY_BTC_COST_USD", "name": "Strategy average acquisition cost per BTC",
+    "category": "Market", "unit": "USD/BTC", "frequency": "snapshot",
+    "source": "Strategy public Bitcoin ledger", "provider": "strategy", "min_value": 0,
+    "url": "https://www.strategy.com/ledger", "endpoint": "https://cdn.contentstack.io/v3/content_types/bitcoin_transaction/entries",
+    "refresh_minutes": 1440, "stale_days": 7,
+    "transformation": "Aggregate average USD per BTC, not latest individual purchase price",
+    "license": "Public page metrics; Strategy terms apply", "implementation_status": "live verified"
+  }
+]

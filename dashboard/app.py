@@ -17,6 +17,7 @@ from dashboard.styles.theme import (
     research_chart,
     theme_for,
 )
+from dashboard.workbook_sections import PAGE_IDS, render_workbook_section
 from src.analytics.core import (
     drawdown,
     historical_comparison,
@@ -77,13 +78,10 @@ BLOCKERS = {
     "S&P vs Bonds": "Earnings-yield spread requires dated index earnings/P-E history. A simple yield spread is not a modeled equity risk premium.",
     "Valuation": "Current index multiples need an authorized provider. The model below is assumption-driven, not observed valuation.",
     "S&P 500 Fundamentals": "Official index aggregates require a licensed dataset; constituent medians would not be equivalent.",
-    "Margin Debt": "FINRA margin history and comparable market capitalization ingestion are not implemented. GDP is in billions; FINRA figures require unit alignment.",
     "S&P Relative": "Gold history is not connected. Index/oil ratios mix index points and USD per barrel and are research ratios, not investable returns.",
     "Gold to Oil": "Verified USD gold spot history is required. No futures splice or synthetic observation is used.",
     "Banks": "FDIC quarterly industry ingestion is not yet implemented; population and ratio definitions must be verified.",
-    "Bull vs Bear": "AAII history requires permitted access. Conditional-return studies require publication dates and overlap controls.",
     "VIX & Options": "MOVE and put/call feeds are not connected; licensing and history must be verified.",
-    "BTC": "Exchange/reference-currency provider and history are not yet verified. No synthetic price feed.",
     "Housing": "Existing sales, NAHB, applications and affordability sources remain unconnected.",
     "Energy": "Spot prices only. EIA inventory, production, utilization, storage and seasonal balance ingestion remain unimplemented.",
     "Recession": "Current revised observations are unsuitable for real-time backtests. ALFRED vintages, GDPNow, policy futures and calibrated probabilities are not implemented.",
@@ -99,6 +97,21 @@ def render(title):
         return
     theme = theme_for(title, PAGES)
     page_header(title, theme)
+    if title in PAGE_IDS:
+        source = st.radio(
+            "Data source",
+            ["Public data (automatic updates)", "Imported workbook snapshot"],
+            key="section_source_" + title,
+            horizontal=True,
+        )
+        if source == "Public data (automatic updates)":
+            render_workbook_section(title)
+            return
+        if not render_section(title):
+            st.info(
+                "No imported workbook snapshot is available. Import a workbook in Workbook Administration or select public data."
+            )
+        return
 
     def table_view(frame, **kwargs):
         financial_table(frame, theme, **kwargs)

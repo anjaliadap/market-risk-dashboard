@@ -1,6 +1,18 @@
 # Implementation tracker
 
-## Foundation
+## Workbook integration update — October 22, 2026
+
+- [x] Inspect supplied Margin Debt, Bull vs Bear and BTC workbook formulas and Word Appearance examples
+- [x] Public FINRA/AAII/Coinbase/Strategy providers; live source verification
+- [x] GDP and Fed public-equity capitalization data; explicit proxy label
+- [x] Ratio, percentile/decile, matured price-return and BTC coverage calculations
+- [x] Atomic related-field writes, source provenance, last-valid retention and stale/error states
+- [x] Dedicated views, public-source refresh and CSV export integration
+- [x] Formula controls reconciled to supplied workbook; provider, database and populated-view tests
+
+The public market-cap proxy differs from Wilshire, and sentiment forward returns exclude dividends. These are visible methodology differences, not exact Bloomberg equivalents. Other employer-email sections remain outside this update.
+
+## Original foundation tracker
 - [x] Python 3.12, locked dependencies, layered architecture
 - [x] Existing grouped navigation preserved; Supply, Financing and Workbook Administration added
 - [x] SQLAlchemy observations/retrieval revisions/jobs and initial Alembic migration
