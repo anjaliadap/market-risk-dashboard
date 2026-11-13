@@ -37,6 +37,7 @@ class Theme:
 
 
 THEMES = {
+    "Empirical": Theme("Empirical", CONFIG["orangeTextColor"], CONFIG["orangeBackgroundColor"]),
     "Market": Theme("Market", CONFIG["primaryColor"], "#F4EBF1"),
     "Macro": Theme("Macro", CONFIG["blueTextColor"], CONFIG["blueBackgroundColor"]),
     "AI": Theme("AI", CONFIG["violetTextColor"], CONFIG["violetBackgroundColor"]),

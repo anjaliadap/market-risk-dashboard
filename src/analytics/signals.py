@@ -90,25 +90,26 @@ def _ready(check, value, as_of, source):
 
 # --- Recession checklist -------------------------------------------------------------------------
 
-# Sponsor workbook row for each item (Recession!B:G); used for side-by-side comparison/fallback.
+# Sponsor workbook row for each item (Recession!B:G, 2026-11 layout); used for side-by-side
+# comparison/fallback. The checklist moved up three rows versus the October workbook.
 RECESSION_ROWS = {
-    "Inflation": 8,
-    "Yield curve": 10,
-    "Inventory/sales ratio": 13,
-    "Cyclical components of GDP": 16,
-    "Employment (Y/Y change)": 20,
-    "Initial jobless claims": 23,
-    "Leading economic indicators (Y/Y)": 26,
-    "Industrial production (Y/Y)": 29,
-    "Personal income (Y/Y)": 32,
-    "Output gap": 35,
-    "Real money supply (Y/Y)": 37,
-    "Wage growth": 40,
-    "Composite PMI": 43,
-    "10Yr less GDP growth": 45,
-    "Credit spread": 47,
-    "Consumer confidence": 49,
-    "Equity markets": 52,
+    "Inflation": 5,
+    "Yield curve": 7,
+    "Inventory/sales ratio": 10,
+    "Cyclical components of GDP": 13,
+    "Employment (Y/Y change)": 17,
+    "Initial jobless claims": 20,
+    "Leading economic indicators (Y/Y)": 23,
+    "Industrial production (Y/Y)": 26,
+    "Personal income (Y/Y)": 29,
+    "Output gap": 32,
+    "Real money supply (Y/Y)": 34,
+    "Wage growth": 37,
+    "Composite PMI": 40,
+    "10Yr less GDP growth": 42,
+    "Credit spread": 44,
+    "Consumer confidence": 46,
+    "Equity markets": 49,
 }
 LICENSED = "Licensed source not connected (Conference Board / S&P Global / ISM)"
 

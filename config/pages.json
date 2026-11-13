@@ -1,4 +1,9 @@
 {
+  "Empirical": [
+    "Momentum",
+    "FC Data",
+    "Failure Candidates"
+  ],
   "Market": [
     "Market Data",
     "Bear Market",
@@ -8,10 +13,10 @@
     "Margin Debt",
     "S&P Relative",
     "Gold to Oil",
-    "Banks",
     "Bull vs Bear",
     "VIX & Options",
     "BTC",
+    "Banks",
     "Housing",
     "Energy"
   ],
@@ -20,9 +25,9 @@
     "Consumer"
   ],
   "AI": [
-    "Supply",
     "Demand",
     "Financing",
+    "Supply",
     "Forecasting"
   ]
 }

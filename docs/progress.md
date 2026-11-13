@@ -19,7 +19,8 @@
 - [ ] Valuation: rate-relative and aggregate valuation page delivered (docs/sections.md); sponsor acceptance and live FRED verification pending
 - [ ] S&P 500 Fundamentals: complete full specification; see data_coverage.md for current partial functionality
 - [ ] Margin Debt: complete full specification; see data_coverage.md for current partial functionality
-- [ ] S&P Relative: complete full specification; see data_coverage.md for current partial functionality
+- [ ] S&P Relative: dedicated page added (2026-11 layout); sponsor visual acceptance pending
+- [ ] Momentum, FC Data, Failure Candidates: dedicated pages added from the 2026-11 workbook; sponsor visual acceptance pending
 - [ ] Gold to Oil: complete full specification; see data_coverage.md for current partial functionality
 - [ ] Banks: credit quality, SLOOS and funding page delivered; FDIC QBP outstanding; sponsor acceptance and live FRED verification pending
 - [ ] Bull vs Bear: complete full specification; see data_coverage.md for current partial functionality

@@ -95,3 +95,24 @@ All 37 new FRED series were retrieved successfully on 2026-11-08.
 - Conference Board LEI, ISM/S&P Global PMI, SIA/WSTS billings, CBOE put/call, MOVE and GPU-price indices are licensed or not published as free series. No substitute is claimed except where labelled as a proxy.
 - FRED redistributes about three years of ICE BofA OAS history, so credit rules are change-based or refer only to that window.
 - Productivity comparisons across periods are descriptive and cannot attribute changes to AI.
+
+# Dedicated pages: Momentum, FC Data, Failure Candidates, S&P Relative
+
+These follow the 2026-11 workbook (`updated-PCM-Material`) and its Process document. Navigation now follows the workbook tab order. A new **Empirical** group comes first (Momentum = tab "Mo", FC Data, Failure Candidates), then Market, Macro and AI. Within AI, Demand and Financing follow the tabs; Supply and Forecasting have no tab and come last. Pure calculations are in `src/analytics/empirical.py` (tests: `tests/test_empirical.py`). Page renders against a synthetic snapshot built from the real mapping are tested in `tests/test_empirical_sections.py`.
+
+The three Empirical tabs are sponsor research data, updated manually each month, with no public equivalent. Their pages use the tabs **Sponsor workbook / Analytics / Data & export / Methodology & sources** and show UNAVAILABLE until a snapshot is imported. S&P Relative keeps the standard four tabs because it has an independent FRED cross-check.
+
+| Page | Sponsor workbook (mapped) | Analytics added |
+|---|---|---|
+| Momentum | Mo!E4:AGH7: score, average, 70 threshold; trailing-change table AGJ:AGM | Signal board (≥ threshold, top decile, building); history with shaded threshold episodes and labelled peaks; episode table; S&P 500 3/6/12M price returns after each upward crossing vs all months, using the saved monthly S&P 500 from S&P Relative |
+| FC Data | 14 charts: 11 sectors + Big Growers, Expensive, Leveraged Borrowers (F:UU, from 1980), recession bars from row 21 | Multi-group comparison with recession shading; heatmap of recent months; statistics recomputed with the sponsor's definitions (mean, sample SD, z, 1/3/6/12M changes) and checked against the saved Failure Candidates summary |
+| Failure Candidates | AC5:AS20: failure share, mean, SD from mean, trailing changes, OPP/Patient/S&P weights, relative weight, OW position | Overweight/Risk rules re-applied to the inputs with a mismatch warning; count and weight of each portfolio in 'Risk' sectors; color-coded matrix as in the sponsor sheet; active weight vs z-score quadrant; latest vs mean |
+| S&P Relative | Gold block B:H and oil block J:P (ratio, 7Yr MA, current), plus underlying monthly S&P 500, gold and WTI CL1 | Distance from 7-year average; percentiles and long-run median bands; S&P 500 / gold / oil implied by a return to the average; FRED S&P 500 ÷ WTI spot cross-check |
+
+## Workbook changes found in the 2026-11 file
+
+- **S&P Relative**: the oil block moved one column right (J dates, M ratio, N MA), "Current" lines were added (H, P), and rows now end at 926. The mapping is updated to match.
+- **Recession**: the checklist moved up three rows (B4:H53) and the Sahm chart now uses S5:U132, newest first, from 2015. The mapping and `RECESSION_ROWS` are updated. The sponsor's definitions also changed (Core inflation, Atlanta Fed wage tracker, BEA personal income), but the independent rules have **not** yet been changed to match.
+- **VIX & Options**: put/call cells now also use `#,##0.00` / `0.00`. These formats are allowed.
+- **Still blocking a full import** (import is all-or-nothing): Financing row 3 now holds text period labels ("2017 Q4 (Rep)") instead of dates, which needs importer support for label-based quarters; Bear Market (`B7`) and Bull vs Bear (`W3`) layouts changed and need their owners' mapping updates.
+- FC Data's Industrials chart in Excel plots G6:UU6 against F3:UU3 (one-column offset). The mapping uses F6:UU6 so that each value keeps its own date.

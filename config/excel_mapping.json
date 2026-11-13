@@ -2,6 +2,915 @@
   "version": 1,
   "policy": "Saved caches only; no Bloomberg refresh attestation",
   "sections": {
+    "Momentum": {
+      "sheets": [
+        "Mo"
+      ],
+      "notes": [
+        "Manually updated monthly (sponsor research data). Row 4 month-end dates; row 5 Momentum & Controversy Scores (large-cap stocks, top quintile of 9-month price trends, percentile ranks, 100 = highest, 3-month smoothing). Row 6 full-sample average (formula); row 7 fixed 70 threshold. Rows 8-11 are sparse chart annotations, not observations. AGJ:AGM trailing changes are sponsor formulas."
+      ],
+      "charts": [
+        {
+          "id": "momentum_0",
+          "title": "Large-cap stocks: top quintile of 9M price trend controversy scores",
+          "series": [
+            {
+              "id": "momentum_0_0",
+              "name": "Momentum & Controversy Scores",
+              "role": "metric",
+              "sheet": "Mo",
+              "values": "E5:AGH5",
+              "date_sheet": "Mo",
+              "dates": "E4:AGH4",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0",
+              "allowed_number_formats": [
+                "0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "momentum_0_1",
+              "name": "Average",
+              "role": "metric",
+              "sheet": "Mo",
+              "values": "E6:AGH6",
+              "date_sheet": "Mo",
+              "dates": "E4:AGH4",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0",
+              "allowed_number_formats": [
+                "0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "momentum_0_2",
+              "name": "Threshold",
+              "role": "metric",
+              "sheet": "Mo",
+              "values": "E7:AGH7",
+              "date_sheet": "Mo",
+              "dates": "E4:AGH4",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0",
+              "allowed_number_formats": [
+                "0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        }
+      ],
+      "tables": [
+        {
+          "id": "momentum_trailing",
+          "title": "Trailing change in score (percentile points)",
+          "sheet": "Mo",
+          "range": "AGJ5:AGM5",
+          "date_cell": "AGH4",
+          "expected_headers": {
+            "D5": "Momentum & Controversy Scores",
+            "AGJ4": "M/M",
+            "AGM4": "Trailing 12M"
+          },
+          "display_columns": [
+            [
+              "AGJ",
+              "M/M"
+            ],
+            [
+              "AGK",
+              "Trailing 3M"
+            ],
+            [
+              "AGL",
+              "Trailing 6M"
+            ],
+            [
+              "AGM",
+              "Trailing 12M"
+            ]
+          ]
+        }
+      ]
+    },
+    "FC Data": {
+      "sheets": [
+        "FC Data"
+      ],
+      "notes": [
+        "Manually updated monthly (sponsor research data). Universe: top 1,000 US stocks. Rows 4-19: share of each sector/style in the worst decile of the failure model (fractions; rows 24-41 are the percent inputs, row/100). Row 3 month dates from 1980-01; row 21 recession flag (bars). Leveraged Borrowers history starts at column NB. The sponsor's Industrials chart plots G6:UU6 against F3:UU3 (one-column offset); mapped to F6:UU6 so values align with their own dates. Column UU is the empty next-month slot."
+      ],
+      "charts": [
+        {
+          "id": "fc_data_0",
+          "title": "Energy: share in worst decile of failure model",
+          "series": [
+            {
+              "id": "fc_data_0_0",
+              "name": "Energy",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F4:UU4",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "fc_data_0_1",
+              "name": "Recession",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F21:UU21",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": true,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "fc_data_1",
+          "title": "Materials: share in worst decile of failure model",
+          "series": [
+            {
+              "id": "fc_data_1_0",
+              "name": "Materials",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F5:UU5",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "fc_data_1_1",
+              "name": "Recession",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F21:UU21",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": true,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "fc_data_2",
+          "title": "Industrials: share in worst decile of failure model",
+          "series": [
+            {
+              "id": "fc_data_2_0",
+              "name": "Industrials",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F6:UU6",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": true,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "fc_data_2_1",
+              "name": "Recession",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F21:UU21",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": true,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "fc_data_3",
+          "title": "Consumer Discretionary: share in worst decile of failure model",
+          "series": [
+            {
+              "id": "fc_data_3_0",
+              "name": "Consumer Discretionary",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F7:UU7",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "fc_data_3_1",
+              "name": "Recession",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F21:UU21",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": true,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "fc_data_4",
+          "title": "Consumer Staples: share in worst decile of failure model",
+          "series": [
+            {
+              "id": "fc_data_4_0",
+              "name": "Consumer Staples",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F8:UU8",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "fc_data_4_1",
+              "name": "Recession",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F21:UU21",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": true,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "fc_data_5",
+          "title": "Health Care: share in worst decile of failure model",
+          "series": [
+            {
+              "id": "fc_data_5_0",
+              "name": "Health Care",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F9:UU9",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "fc_data_5_1",
+              "name": "Recession",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F21:UU21",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": true,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "fc_data_6",
+          "title": "Financials: share in worst decile of failure model",
+          "series": [
+            {
+              "id": "fc_data_6_0",
+              "name": "Financials",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F10:UU10",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "fc_data_6_1",
+              "name": "Recession",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F21:UU21",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": true,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "fc_data_7",
+          "title": "Technology: share in worst decile of failure model",
+          "series": [
+            {
+              "id": "fc_data_7_0",
+              "name": "Technology",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F11:UU11",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "fc_data_7_1",
+              "name": "Recession",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F21:UU21",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": true,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "fc_data_8",
+          "title": "Communications: share in worst decile of failure model",
+          "series": [
+            {
+              "id": "fc_data_8_0",
+              "name": "Communications",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F12:UU12",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "fc_data_8_1",
+              "name": "Recession",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F21:UU21",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": true,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "fc_data_9",
+          "title": "Utilities: share in worst decile of failure model",
+          "series": [
+            {
+              "id": "fc_data_9_0",
+              "name": "Utilities",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F13:UU13",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "fc_data_9_1",
+              "name": "Recession",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F21:UU21",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": true,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "fc_data_10",
+          "title": "Real Estate: share in worst decile of failure model",
+          "series": [
+            {
+              "id": "fc_data_10_0",
+              "name": "Real Estate",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F14:UU14",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "fc_data_10_1",
+              "name": "Recession",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F21:UU21",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": true,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "fc_data_11",
+          "title": "Big Growers: share in worst decile of failure model",
+          "series": [
+            {
+              "id": "fc_data_11_0",
+              "name": "Big Growers",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F16:UU16",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "fc_data_11_1",
+              "name": "Recession",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F21:UU21",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": true,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "fc_data_12",
+          "title": "Expensive failure candidates: share of stocks with forward P/E > 50x or losses",
+          "series": [
+            {
+              "id": "fc_data_12_0",
+              "name": "Expensive",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F17:UU17",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "fc_data_12_1",
+              "name": "Recession",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "F21:UU21",
+              "date_sheet": "FC Data",
+              "dates": "F3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": true,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "fc_data_13",
+          "title": "Leveraged Borrowers: share in worst decile of failure model",
+          "series": [
+            {
+              "id": "fc_data_13_0",
+              "name": "Leveraged Borrowers",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "NB19:UU19",
+              "date_sheet": "FC Data",
+              "dates": "NB3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "fc_data_13_1",
+              "name": "Recession",
+              "role": "metric",
+              "sheet": "FC Data",
+              "values": "NB21:UU21",
+              "date_sheet": "FC Data",
+              "dates": "NB3:UU3",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": true,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        }
+      ],
+      "tables": []
+    },
+    "Failure Candidates": {
+      "sheets": [
+        "Failure Candidates"
+      ],
+      "notes": [
+        "Summary of FC Data for the latest month (P4). AD:AJ link to FC Data statistics; AK:AL OPP/Patient portfolio weights are manual inputs; AM S&P 500 sector weights (S5xxxx Index). AO:AP 'Overweight' if portfolio weight > S&P weight; AR:AS 'Risk' if overweight and the failure share is above its historical mean (std. dev. from mean > 0). Style rows (Big Growers, Expensive, Leveraged Borrowers) have no weights."
+      ],
+      "charts": [],
+      "tables": [
+        {
+          "id": "failure_candidates",
+          "title": "Share of failure candidates by sector & style",
+          "sheet": "Failure Candidates",
+          "range": "AC5:AS20",
+          "date_cell": "P4",
+          "expected_headers": {
+            "AC4": "Sector",
+            "AD3": "Failure",
+            "AK3": "Weight",
+            "AO3": "Relative Weight",
+            "AR3": "OW Positions"
+          },
+          "display_columns": [
+            [
+              "AC",
+              "Sector"
+            ],
+            [
+              "AD",
+              "Failure model"
+            ],
+            [
+              "AE",
+              "Historical mean"
+            ],
+            [
+              "AF",
+              "Std. dev. from mean"
+            ],
+            [
+              "AG",
+              "1M"
+            ],
+            [
+              "AH",
+              "3M"
+            ],
+            [
+              "AI",
+              "6M"
+            ],
+            [
+              "AJ",
+              "12M"
+            ],
+            [
+              "AK",
+              "Weight: OPP"
+            ],
+            [
+              "AL",
+              "Weight: Patient"
+            ],
+            [
+              "AM",
+              "Weight: S&P"
+            ],
+            [
+              "AO",
+              "Relative weight: OPP"
+            ],
+            [
+              "AP",
+              "Relative weight: Patient"
+            ],
+            [
+              "AR",
+              "OW position: OPP"
+            ],
+            [
+              "AS",
+              "OW position: Patient"
+            ]
+          ]
+        }
+      ]
+    },
     "Market Data": {
       "sheets": [
         "Market Data"
@@ -736,7 +1645,7 @@
         "S&P Relative"
       ],
       "notes": [
-        "P:Q index, S:T gold, V:W WTI. WTI hardcoded through 1999, individually dated formulas thereafter; authorized operator must append next month and extend B:N calculations. Sheet explicitly says 7-year MA/difference need updating. Do not silently repair rolling windows."
+        "Layout as of the 2026-11 workbook: gold block B:H (B date, C S&P 500, D gold, E ratio, F 7Yr MA, G diff., H current ratio); oil block J:P (J date, K S&P 500, L WTI CL1 front-month futures, M ratio, N 7Yr MA, O diff., P current ratio); raw inputs R:Y. The oil block moved one column right versus the prior workbook. Monthly rows are appended manually and 7-year MA formulas must be extended in Excel. Do not silently repair rolling windows."
       ],
       "charts": [
         {
@@ -748,9 +1657,9 @@
               "name": "Ratio",
               "role": "metric",
               "sheet": "S&P Relative",
-              "values": "E5:E925",
+              "values": "E5:E926",
               "date_sheet": "S&P Relative",
-              "dates": "B5:B925",
+              "dates": "B5:B926",
               "date_mapping_inferred": false,
               "kind": "LineChart",
               "secondary": false,
@@ -759,7 +1668,9 @@
               "date_type": "excel_date",
               "expected_number_format": "0.0\"x\"",
               "allowed_number_formats": [
-                "0.0\"x\""
+                "0.0\"x\"",
+                "0.0",
+                "General"
               ],
               "allow_forward": false,
               "period_labels_row": null
@@ -769,9 +1680,9 @@
               "name": "7Yr MA",
               "role": "metric",
               "sheet": "S&P Relative",
-              "values": "F5:F925",
+              "values": "F5:F926",
               "date_sheet": "S&P Relative",
-              "dates": "B5:B925",
+              "dates": "B5:B926",
               "date_mapping_inferred": false,
               "kind": "LineChart",
               "secondary": false,
@@ -780,7 +1691,32 @@
               "date_type": "excel_date",
               "expected_number_format": "0.0\"x\"",
               "allowed_number_formats": [
-                "0.0\"x\""
+                "0.0\"x\"",
+                "0.0",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "sandp_relative_0_2",
+              "name": "Current",
+              "role": "metric",
+              "sheet": "S&P Relative",
+              "values": "H5:H926",
+              "date_sheet": "S&P Relative",
+              "dates": "B5:B926",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0\"x\"",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0\"x\"",
+              "allowed_number_formats": [
+                "0.0\"x\"",
+                "0.0",
+                "General"
               ],
               "allow_forward": false,
               "period_labels_row": null
@@ -789,16 +1725,16 @@
         },
         {
           "id": "sandp_relative_1",
-          "title": "S&P 500 to WTI",
+          "title": "S&P 500 to Oil",
           "series": [
             {
               "id": "sandp_relative_1_0",
               "name": "Ratio",
               "role": "metric",
               "sheet": "S&P Relative",
-              "values": "L5:L925",
+              "values": "M5:M926",
               "date_sheet": "S&P Relative",
-              "dates": "I5:I925",
+              "dates": "J5:J926",
               "date_mapping_inferred": false,
               "kind": "LineChart",
               "secondary": false,
@@ -807,19 +1743,21 @@
               "date_type": "excel_date",
               "expected_number_format": "0.0\"x\"",
               "allowed_number_formats": [
-                "0.0\"x\""
+                "0.0\"x\"",
+                "0.0",
+                "General"
               ],
               "allow_forward": false,
               "period_labels_row": null
             },
             {
               "id": "sandp_relative_1_1",
-              "name": "7Yr Moving Avg",
+              "name": "7Yr MA",
               "role": "metric",
               "sheet": "S&P Relative",
-              "values": "M5:M925",
+              "values": "N5:N926",
               "date_sheet": "S&P Relative",
-              "dates": "I5:I925",
+              "dates": "J5:J926",
               "date_mapping_inferred": false,
               "kind": "LineChart",
               "secondary": false,
@@ -828,7 +1766,104 @@
               "date_type": "excel_date",
               "expected_number_format": "0.0\"x\"",
               "allowed_number_formats": [
-                "0.0\"x\""
+                "0.0\"x\"",
+                "0.0",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "sandp_relative_1_2",
+              "name": "Current",
+              "role": "metric",
+              "sheet": "S&P Relative",
+              "values": "P5:P926",
+              "date_sheet": "S&P Relative",
+              "dates": "J5:J926",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0\"x\"",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0\"x\"",
+              "allowed_number_formats": [
+                "0.0\"x\"",
+                "0.0",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "sandp_relative_2",
+          "title": "Underlying monthly prices: S&P 500, gold and WTI (CL1)",
+          "series": [
+            {
+              "id": "sandp_relative_2_0",
+              "name": "S&P 500",
+              "role": "metric",
+              "sheet": "S&P Relative",
+              "values": "C5:C926",
+              "date_sheet": "S&P Relative",
+              "dates": "B5:B926",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "\"$\"#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "\"$\"#,##0",
+              "allowed_number_formats": [
+                "\"$\"#,##0",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "sandp_relative_2_1",
+              "name": "Gold",
+              "role": "metric",
+              "sheet": "S&P Relative",
+              "values": "D5:D926",
+              "date_sheet": "S&P Relative",
+              "dates": "B5:B926",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": true,
+              "unit": "\"$\"#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "\"$\"#,##0",
+              "allowed_number_formats": [
+                "\"$\"#,##0",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "sandp_relative_2_2",
+              "name": "WTI (CL1)",
+              "role": "metric",
+              "sheet": "S&P Relative",
+              "values": "L5:L926",
+              "date_sheet": "S&P Relative",
+              "dates": "J5:J926",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": true,
+              "unit": "\"$\"#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "\"$\"#,##0",
+              "allowed_number_formats": [
+                "\"$\"#,##0",
+                "General"
               ],
               "allow_forward": false,
               "period_labels_row": null
@@ -1116,7 +2151,8 @@
               "date_type": "excel_date",
               "expected_number_format": "#,##0",
               "allowed_number_formats": [
-                "#,##0"
+                "#,##0",
+                "General"
               ],
               "allow_forward": false,
               "period_labels_row": null
@@ -1137,7 +2173,8 @@
               "date_type": "excel_date",
               "expected_number_format": "#,##0",
               "allowed_number_formats": [
-                "#,##0"
+                "#,##0",
+                "General"
               ],
               "allow_forward": false,
               "period_labels_row": null
@@ -1212,6 +2249,8 @@
               "date_type": "excel_date",
               "expected_number_format": "General",
               "allowed_number_formats": [
+                "#,##0.00",
+                "0.00",
                 "General"
               ],
               "allow_forward": false,
@@ -1233,6 +2272,8 @@
               "date_type": "excel_date",
               "expected_number_format": "General",
               "allowed_number_formats": [
+                "#,##0.00",
+                "0.00",
                 "General"
               ],
               "allow_forward": false,
@@ -1826,7 +2867,7 @@
         "Recession"
       ],
       "notes": [
-        "B/D/F/H checklist has manual text states and Bloomberg numbers; G saved flags; D55=17 denominator. F55 SUM(G8:G55) includes total row but G55 is blank. H notes govern thresholds. U Sahm warning line is hardcoded 0.5. Manual statuses are not proven current by a new save."
+        "Layout as of the 2026-11 workbook: checklist B4:H53 (items rows 5-49, total D52=17, F52 = SUM of G flags, F53 share). F is the current status (text or a number), G the sponsor's manual red flag, H the source note. Sponsor definitions changed: Core inflation, Atlanta Fed wage tracker (WGTROVER), BEA personal income (PITLYOY). Sahm chart S5:U132 is ordered newest first and covers 2015 onward; U is the hardcoded 0.5 warning line. New sell-side probability block J3:N is not mapped. Manual statuses are not proven current by a new save."
       ],
       "charts": [
         {
@@ -1838,9 +2879,9 @@
               "name": "Series 1",
               "role": "metric",
               "sheet": "Recession",
-              "values": "T8:T808",
+              "values": "T5:T132",
               "date_sheet": "Recession",
-              "dates": "S8:S808",
+              "dates": "S5:S132",
               "date_mapping_inferred": false,
               "kind": "LineChart",
               "secondary": false,
@@ -1849,9 +2890,9 @@
               "date_type": "excel_date",
               "expected_number_format": "General",
               "allowed_number_formats": [
+                "0.0",
                 "0.00",
-                "General",
-                "0.0"
+                "General"
               ],
               "allow_forward": false,
               "period_labels_row": null
@@ -1861,9 +2902,9 @@
               "name": "Series 2",
               "role": "metric",
               "sheet": "Recession",
-              "values": "U8:U808",
+              "values": "U5:U132",
               "date_sheet": "Recession",
-              "dates": "S8:S808",
+              "dates": "S5:S132",
               "date_mapping_inferred": false,
               "kind": "LineChart",
               "secondary": false,
@@ -1872,6 +2913,7 @@
               "date_type": "excel_date",
               "expected_number_format": "General",
               "allowed_number_formats": [
+                "0.00",
                 "General"
               ],
               "allow_forward": false,
@@ -1885,11 +2927,12 @@
           "id": "recession_checklist",
           "title": "Recession Checklist",
           "sheet": "Recession",
-          "range": "B6:H56",
+          "range": "B4:H53",
           "date_cell": null,
           "expected_headers": {
-            "D6": "Typical Pre-Recession/",
-            "F6": "Current"
+            "B4": "Metrics",
+            "D4": "Recession Reading",
+            "F4": "Status"
           },
           "display_columns": [
             [
