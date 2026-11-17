@@ -34,9 +34,13 @@ def _decode_snapshot(payload):
     return json.loads(payload)
 
 
-def latest_import(success_only=False):
+def latest_import(success_only=False, profile="legacy"):
     with Session(store.engine) as session:
-        query = select(store.WorkbookImport).order_by(store.WorkbookImport.id.desc())
+        query = (
+            select(store.WorkbookImport)
+            .where(store.WorkbookImport.profile == profile)
+            .order_by(store.WorkbookImport.id.desc())
+        )
         if success_only:
             query = query.where(store.WorkbookImport.status == "success")
         row = session.scalar(query.limit(1))
@@ -44,6 +48,7 @@ def latest_import(success_only=False):
             return None
         return {
             "id": row.id,
+            "profile": row.profile,
             "time": row.imported_at.isoformat(),
             "path": row.path,
             "sha256": row.sha256,
@@ -98,14 +103,28 @@ def validate_continuity(previous, current):
                         raise ValueError(f"Lost valid table value: {name} {cell['cell']}")
 
 
-def import_workbook(path, mapping=None, force=False):
+def import_workbook(path, mapping=None, force=False, profile="legacy"):
     """Validate entirely before one short transaction publishes a new active snapshot."""
+    if profile not in {"legacy", "process"}:
+        raise ValueError(f"Unknown workbook profile: {profile}")
     source = str(Path(path).expanduser().resolve())
     digest = None
     try:
-        snapshot = ExcelWorkbookProvider(source, mapping).read()
+        if profile == "process":
+            from src.providers.process_workbook import (
+                ProcessWorkbookProvider,
+                validate_process_continuity,
+            )
+
+            if mapping is not None:
+                raise ValueError("The process profile uses its own validated workbook layout")
+            snapshot = ProcessWorkbookProvider(source).read()
+            continuity = validate_process_continuity
+        else:
+            snapshot = ExcelWorkbookProvider(source, mapping).read()
+            continuity = validate_continuity
         digest = snapshot["sha256"]
-        previous = latest_import(success_only=True)
+        previous = latest_import(success_only=True, profile=profile)
         if (
             previous
             and not force
@@ -113,13 +132,14 @@ def import_workbook(path, mapping=None, force=False):
             and previous["snapshot"].get("mapping_sha256") == snapshot["mapping_sha256"]
         ):
             return "unchanged"
-        validate_continuity(previous["snapshot"] if previous else None, snapshot)
+        continuity(previous["snapshot"] if previous else None, snapshot)
         if hashlib.sha256(Path(source).read_bytes()).hexdigest() != digest:
             raise ValueError("Workbook changed during validation; prior snapshot retained")
         payload = json.dumps(snapshot, allow_nan=False, separators=(",", ":"))
         with Session(store.engine) as session, session.begin():
             session.add(
                 store.WorkbookImport(
+                    profile=profile,
                     imported_at=datetime.now(UTC),
                     path=source,
                     sha256=digest,
@@ -127,13 +147,19 @@ def import_workbook(path, mapping=None, force=False):
                     payload=payload,
                 )
             )
-        logger.info("Excel import success sha256=%s metrics=%s", digest, snapshot["metric_count"])
+        logger.info(
+            "Excel import success profile=%s sha256=%s metrics=%s",
+            profile,
+            digest,
+            snapshot["metric_count"],
+        )
         return "success"
     except Exception as exc:
         logger.exception("Excel import failed; prior valid snapshot retained")
         with Session(store.engine) as session, session.begin():
             session.add(
                 store.WorkbookImport(
+                    profile=profile,
                     imported_at=datetime.now(UTC),
                     path=source,
                     sha256=digest,

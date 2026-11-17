@@ -16,9 +16,8 @@ def test_page_render(title):
     # Exercise each page body via the app's public renderer. Navigation is tested separately.
     script = f"""from unittest.mock import patch
 import runpy
-with patch('streamlit.navigation'), patch('src.refresh.enqueue'):
+with patch('streamlit.navigation'), patch('src.refresh.enqueue'), patch('dashboard.workbook_sections.enqueue'):
     namespace=runpy.run_path({str(ROOT / "dashboard/app.py")!r})
-with patch.dict(namespace, enqueue=lambda ids: None):
     namespace['render']({title!r})
 """
     app = AppTest.from_string(script).run(timeout=30)
@@ -46,9 +45,8 @@ def test_page_with_saved_observations(title, tmp_path, monkeypatch):
         store.save(BY_ID[key], values)
     script = f"""from unittest.mock import patch
 import runpy
-with patch('streamlit.navigation'), patch('src.refresh.enqueue'):
+with patch('streamlit.navigation'), patch('src.refresh.enqueue'), patch('dashboard.workbook_sections.enqueue'):
     namespace = runpy.run_path({str(ROOT / "dashboard/app.py")!r})
-with patch.dict(namespace, enqueue=lambda ids: None):
     namespace['render']({title!r})
 """
     app = AppTest.from_string(script).run(timeout=30)

@@ -1,4 +1,8 @@
 {
+  "Empirical": [
+    "Intra-Sector Spread",
+    "Trend Following"
+  ],
   "Market": [
     "Market Data",
     "Bear Market",
@@ -8,6 +12,7 @@
     "Margin Debt",
     "S&P Relative",
     "Gold to Oil",
+    "NDR",
     "Banks",
     "Bull vs Bear",
     "VIX & Options",

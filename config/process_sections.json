@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "profile": "process",
+  "sections": {
+    "Gold to Oil": {
+      "sheet": "Gold to Oil",
+      "headers": {"B3": "Date", "C3": "Gold", "E3": "Date", "F3": "Brent", "K3": "Gold/Oil", "L3": "LT Avg."},
+      "first_row": 4,
+      "current_marker_column": "A",
+      "gold_date_column": "B",
+      "gold_column": "C",
+      "oil_date_column": "E",
+      "oil_column": "F",
+      "average_cell": "L4",
+      "gold_instrument": "XAUUSD Curncy",
+      "oil_instrument": "CO1 Comdty",
+      "gold_unit": "USD per troy ounce",
+      "oil_unit": "USD per barrel (Brent front-month futures)"
+    },
+    "Intra-Sector Spread": {
+      "sheet": "Intra-Sector Spreads",
+      "headers": {"F3": "Intra-Sector Spreads"},
+      "date_row": 3,
+      "first_column": "H",
+      "sector_column": "F",
+      "first_row": 4,
+      "last_row": 16,
+      "unit": "percentile points (0–100)",
+      "sectors": ["Consumer Durables", "Capital Equipment", "Industrial Commodities", "Software", "Hardware", "Pharma & Biotech", "Equipment & Services", "Retail, Media & Consumer Services", "Financials", "Consumer Staples", "Utilities", "Energy", "REITs"]
+    },
+    "Trend Following": {
+      "sheet": "Trend-Following",
+      "headers": {"D3": "Trend-Following Indicator", "D5": "Trend-Following Regime"},
+      "date_row": 3,
+      "value_row": 5,
+      "first_column": "E",
+      "unit": "quintile (1 least favorable, 5 most favorable)"
+    },
+    "NDR": {
+      "sheet": "NDR",
+      "headers": {"B3": "Model Name", "C3": "Reading", "D3": "% Gain p.a.", "E3": "Since", "B12": "% of Indicators Flashing", "D12": "Prior", "E12": "Current"},
+      "groups": [
+        {"name": "Equities", "rows": [5, 6, 7, 9, 10]},
+        {"name": "Sentiment — Equities", "rows": [19, 20, 21]},
+        {"name": "Sentiment — Commodities", "rows": [24, 25, 27, 28]},
+        {"name": "Credit", "rows": [31]}
+      ],
+      "warnings": [{"row": 13, "threshold": 0.5}, {"row": 14, "threshold": 0.4}, {"row": 15, "threshold": 0.5}],
+      "models": {
+        "5": "S&P 500 vs Modified Federal Reserve Valuation Model",
+        "6": "S&P 500 vs NDR Federal Reserve Valuation Model",
+        "7": "S&P 500 vs US OFR Financial Stress Index",
+        "9": "S&P 500 vs Record Highs per Year",
+        "10": "Next Year's Median Gain",
+        "19": "Sentiment Composite: Crowd Sentiment Poll & Daily Trading Sentiment Composite",
+        "20": "Sentiment Composite Adjusted for OFR Financial Stress Index",
+        "21": "AAII Bull Less Bear - PCM Internal",
+        "24": "Commodity Index vs NDR Daily Commodity Sentiment Composite",
+        "25": "NDR Daily Commodity Sentiment Adjusted for OFR Financial Stress Index",
+        "27": "West Texas Spot vs NDR Crown Sentiment Poll for Crude Futures",
+        "28": "NDR Crowd Sentiment for Crude Oil Adjusted for OFR Financial Stress Index",
+        "31": "Corporate Credit Trends (HY Performance)"
+      },
+      "unit": "annualized return fraction; warning shares are separate fractions"
+    }
+  }
+}
