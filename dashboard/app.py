@@ -11,6 +11,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from dashboard.excel_views import render_administration, render_section, synchronization_status
+from dashboard.process_sections import render_process_section
 from dashboard.styles.theme import (
     financial_table,
     page_header,
@@ -97,6 +98,8 @@ def render(title):
         return
     theme = theme_for(title, PAGES)
     page_header(title, theme)
+    if render_process_section(title):
+        return
     if title in PAGE_IDS:
         source = st.radio(
             "Data source",

@@ -64,6 +64,9 @@ class WorkbookImport(Base):
 
     __tablename__ = "workbook_imports"
     id: Mapped[int] = mapped_column(primary_key=True)
+    profile: Mapped[str] = mapped_column(
+        String(40), default="legacy", server_default="legacy", index=True
+    )
     imported_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     path: Mapped[str] = mapped_column(Text)
     sha256: Mapped[str | None] = mapped_column(String(64), nullable=True)

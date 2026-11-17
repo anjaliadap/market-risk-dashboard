@@ -18,6 +18,7 @@ def isolated_services(tmp_path, monkeypatch):
     monkeypatch.setattr(refresh, "enqueue", lambda ids: None)
     monkeypatch.setattr(workbook_sections, "enqueue", lambda ids: None)
     monkeypatch.setattr(settings, "excel_workbook_path", "")
+    monkeypatch.setattr(settings, "process_workbook_path", "")
     store.initialize()
     yield
     engine.dispose()

@@ -257,7 +257,8 @@ with patch('streamlit.navigation'), patch('src.refresh.enqueue'), patch('dashboa
     def saved_workbook(name):
         st.info('Imported snapshot for ' + name)
         return True
-    with patch.dict(namespace, render_section=saved_workbook):
+    # run_path returns a copy; patch the globals actually used by the renderer.
+    with patch.dict(namespace['render'].__globals__, render_section=saved_workbook):
         namespace['render']({title!r})
 """
     app = AppTest.from_string(script).run(timeout=30)

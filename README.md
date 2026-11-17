@@ -4,6 +4,8 @@ Python 3.12 / Streamlit research application with saved Excel ingestion and inde
 
 The three public views include validated calculations, source dates, refresh status and CSV exports. The market-cap comparison uses a labeled Federal Reserve proxy, and AAII forward-return comparisons use price returns rather than Bloomberg total returns. Start with [INTEGRATION.md](INTEGRATION.md) for setup and methodology. See the [workbook audit](docs/excel_integration_map.md), [source coverage](docs/data_coverage.md) and [local workbook operations guide](docs/excel_operations.md) for saved-workbook behavior and remaining dependencies. Supply, Financing and Workbook Administration remain navigable.
 
+Gold to Oil, NDR, Intra-Sector Spread and Trend Following use the updated sponsor workbook through a separate saved-workbook import profile. These four pages do not use public substitutes. See [updated workbook pages](PROCESS_PAGES.md) to configure the latest source, migrate the database, import it and maintain monthly updates. Gold display inconsistencies are checked against same-date workbook inputs; proprietary model readings retain their saved values.
+
 ## Local setup (Windows PowerShell)
 
 Install Python 3.12 and [uv](https://docs.astral.sh/uv/). From this repository:
