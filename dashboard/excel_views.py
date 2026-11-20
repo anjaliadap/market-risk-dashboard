@@ -5,6 +5,7 @@ import plotly.graph_objects as go
 import streamlit as st
 from plotly.subplots import make_subplots
 
+from dashboard.sections.common import saved_sources, section_notice
 from dashboard.styles.theme import (
     BACKGROUND,
     CONFIG,
@@ -20,6 +21,7 @@ from dashboard.styles.theme import (
     style_figure,
     theme_for,
 )
+from src import provenance
 from src.excel_sync import latest_import, poll_workbook, workbook_file_status
 from src.providers.excel import load_mapping
 from src.settings import settings
@@ -83,6 +85,7 @@ def build_figure(chart):
             trace = go.Scatter(
                 **common, mode="lines", connectgaps=False, line={"color": color, "width": 1.6}
             )
+        trace.meta = {"sources": saved_sources(series)}
         fig.add_trace(trace, secondary_y=series["secondary"] if secondary else None)
         axis_formats[series["secondary"]].append(series["unit"])
         if series.get("latest_reported"):
@@ -117,7 +120,7 @@ def render_section(title):
             return False
         snapshot = saved["snapshot"]
         st.caption(
-            f"Primary source: sponsor saved workbook · latest historical date {snapshot['latest_observation']} · imported {saved['time']} UTC"
+            f"Primary source: PCM - Monthly Market & Risk Monitor · latest historical date {snapshot['latest_observation']} · imported {saved['time']} UTC"
         )
         st.info(
             "Bloomberg refresh time is unknown. Workbook caches include both reported history and forward estimates."
@@ -127,30 +130,40 @@ def render_section(title):
                 [
                     {
                         "Section": name,
+                        "Status": "Out of date (kept from earlier import)"
+                        if name in snapshot.get("retained_sections", {})
+                        else "Imported",
                         "Charts": len(section["charts"]),
                         "Tables": len(section["tables"]),
                     }
                     for name, section in snapshot["sections"].items()
                 ]
+                + [
+                    {"Section": name, "Status": "Not imported (failed validation)"}
+                    for name in snapshot.get("rejected_sections", {})
+                    if name not in snapshot["sections"]
+                ]
             ),
             hide_index=True,
         )
         st.caption(
-            "Source: validated Excel snapshot. Supply has no workbook source; Forecasting retains analyst assumptions. Review Workbook Administration for missing values and manual dependencies."
+            "Source: validated Excel snapshot. Supply has no workbook source. Review Workbook Administration for missing values and manual dependencies."
         )
         return True
     if title not in load_mapping()["sections"]:
         return False
     saved = latest_import(success_only=True)
     if not saved or title not in saved["snapshot"]["sections"]:
-        if settings.excel_workbook_path:
+        rejected = section_notice(title)["state"] == "rejected"
+        if settings.excel_workbook_path and not rejected:
             st.info(
                 "Workbook is configured but no validated snapshot is available yet. Check Workbook Administration. Independent-source coverage follows below."
             )
         return False
+    section_notice(title)  # Out-of-date warning when this section is kept from an earlier import.
     section = saved["snapshot"]["sections"][title]
     st.caption(
-        f"Primary source: sponsor Excel workbook · imported {saved['time']} UTC · Bloomberg refresh time unknown"
+        f"Primary source: PCM - Monthly Market & Risk Monitor · imported {saved['time']} UTC · Bloomberg refresh time unknown"
     )
     st.caption(
         "Saved calculations and benchmarks are preserved. Forward estimates are distinguished from reported history."
@@ -165,7 +178,7 @@ def render_section(title):
             column_config=table_columns(table),
         )
         st.caption(
-            f"Source: saved workbook · {table['sheet']} · as of {table['as_of'] or 'not supplied (undated snapshot)'} · number formats retained"
+            f"Source: {provenance.describe(saved_sources(table))} · sheet {table['sheet']} · as of {table['as_of'] or 'not supplied (undated snapshot)'} · number formats retained"
         )
     columns = st.columns(2) if len(section["charts"]) > 1 else [st.container()]
     for i, chart in enumerate(section["charts"]):
@@ -179,9 +192,7 @@ def render_section(title):
             research_chart(
                 build_figure(chart), theme_for(title), width="stretch", key="excel_" + chart["id"]
             )
-            st.caption(
-                f"Source: saved Excel / sponsor Bloomberg and manual inputs · latest valid history: {max(valid) if valid else 'unavailable'}"
-            )
+            st.caption(f"Latest valid history: {max(valid) if valid else 'unavailable'}")
             if any(
                 p["value"] is None
                 for s in chart["series"]
@@ -195,7 +206,7 @@ def render_section(title):
         for note in section["notes"]:
             st.write(note)
         st.caption(
-            "Fixed source ranges reproduce the sponsor's saved charts; review the central mapping after extending Excel histories."
+            "Fixed source ranges reproduce the PCM - Monthly Market & Risk Monitor's saved charts; review the central mapping after extending Excel histories."
         )
     return True
 
@@ -310,7 +321,7 @@ def render_administration():
     if latest:
         st.write("Latest import attempt:", latest["time"], latest["status"])
         if latest["error"]:
-            st.error(latest["error"])
+            (st.warning if latest["status"] == "partial" else st.error)(latest["error"])
     if not valid:
         st.info(
             "No successful workbook import. Existing independent-source pages remain available."
@@ -345,16 +356,29 @@ def render_administration():
         if snapshot["issues"]:
             financial_table(pd.DataFrame(snapshot["issues"]), hide_index=True)
     rows = []
+    snapshot = valid["snapshot"] if valid else {}
     for name, spec in load_mapping()["sections"].items():
-        imported = valid["snapshot"]["sections"].get(name) if valid else None
+        imported = snapshot.get("sections", {}).get(name)
         points = (
             [p for c in imported["charts"] for s in c["series"] for p in s["points"]]
             if imported
             else []
         )
+        retained = snapshot.get("retained_sections", {}).get(name)
+        reason = snapshot.get("rejected_sections", {}).get(name)
+        if retained:
+            status = f"Out of date: kept from {str(retained['imported_at'])[:16]} UTC"
+        elif imported:
+            status = "Imported"
+        elif reason:
+            status = "Not imported"
+        else:
+            status = "No snapshot"
         rows.append(
             {
                 "Section": name,
+                "Import status": status,
+                "Validation failure": reason or "",
                 "Worksheets": ", ".join(spec["sheets"]),
                 "Charts": len(spec["charts"]),
                 "Valid saved chart points": sum(p["value"] is not None for p in points),

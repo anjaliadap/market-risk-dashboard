@@ -11,7 +11,13 @@ from openpyxl import load_workbook
 from openpyxl.utils.cell import range_boundaries
 from openpyxl.utils.datetime import from_excel
 
+from src.provenance import WorkbookTracer
+
 MAPPING_PATH = Path(__file__).resolve().parents[2] / "config/excel_mapping.json"
+# Bump when the snapshot gains fields, so an unchanged workbook is re-imported once.
+# 2: per-series and per-table data sources (src/provenance.py).
+# 3: workbook origins stored as stable keys (display names come from config/providers.json).
+SNAPSHOT_SCHEMA = 3
 ERROR_PREFIXES = (
     "#N/A",
     "#REF!",
@@ -116,10 +122,7 @@ class ExcelWorkbookProvider:
         required_sheets = {
             s for section in self.mapping["sections"].values() for s in section["sheets"]
         }
-        missing = required_sheets - set(cached.sheetnames)
-        if missing:
-            raise ValueError(f"Missing mapped worksheets: {', '.join(sorted(missing))}")
-        for name in required_sheets:
+        for name in sorted(required_sheets & set(cached.sheetnames)):
             for row in formulas[name]:
                 for cell in row:
                     val = cached[name][cell.coordinate]
@@ -129,153 +132,28 @@ class ExcelWorkbookProvider:
                         diagnostics["error_values"] += 1
                         if cell.data_type == "f" or "BQL" in str(val.value):
                             diagnostics["failed_bloomberg_values"] += 1
-        sections = {}
+        sections, rejected = {}, {}
         latest_dates = []
         metric_count = 0
+        self._tracer = WorkbookTracer(formulas, cached)
         for section_name, config in self.mapping["sections"].items():
-            section = {"notes": config["notes"], "charts": [], "tables": []}
-            for table in config["tables"]:
-                for coord, expected in table.get("expected_headers", {}).items():
-                    if cached[table["sheet"]][coord].value != expected:
-                        raise ValueError(f"Layout changed: {table['sheet']}!{coord}")
-                c1, r1, c2, r2 = range_boundaries(table["range"])
-                rows = []
-                for row in cached[table["sheet"]].iter_rows(
-                    min_row=r1, max_row=r2, min_col=c1, max_col=c2
-                ):
-                    output = []
-                    for cell in row:
-                        value, formula = cell_value(table["sheet"], cell.coordinate)
-                        if isinstance(value, float) and not math.isfinite(value):
-                            issues.append(
-                                {
-                                    "sheet": table["sheet"],
-                                    "cell": cell.coordinate,
-                                    "reason": "Nonfinite table value",
-                                }
-                            )
-                            value = None
-                        if isinstance(value, (date, datetime)):
-                            value = value.isoformat()[:10]
-                        output.append(
-                            {
-                                "cell": cell.coordinate,
-                                "value": value,
-                                "format": cell.number_format,
-                                "formula": formula,
-                                "font_color": str(
-                                    formulas[table["sheet"]][cell.coordinate].font.color.rgb
-                                )
-                                if formulas[table["sheet"]][cell.coordinate].font.color
-                                and formulas[table["sheet"]][cell.coordinate].font.color.type
-                                == "rgb"
-                                else None,
-                            }
-                        )
-                    rows.append(output)
-                observed = None
-                if table.get("date_cell"):
-                    value, _ = cell_value(table["sheet"], table["date_cell"])
-                    if value is not None:
-                        observed = normalize_date(value, cached.epoch)
-                        latest_dates.append(observed)
-                section["tables"].append({**table, "rows": rows, "as_of": observed})
-                metric_count += sum(
-                    isinstance(c["value"], (int, float)) for row in rows for c in row
+            # Each section is validated on its own: a tab whose layout, dates or units no longer
+            # match its mapping is rejected whole (never partly shown) without blocking the rest.
+            mark = (len(issues), len(latest_dates), metric_count)
+            try:
+                result = self._extract_section(
+                    config, cached, formulas, cell_value, latest_dates, issues
                 )
-            for chart in config["charts"]:
-                chart_out = {"id": chart["id"], "title": chart["title"], "series": []}
-                for spec in chart["series"]:
-                    if not spec.get("unit") or spec.get("value_type") != "number":
-                        raise ValueError(f"Metric unit/type contract missing: {spec['id']}")
-                    dates = range_cells(cached[spec["date_sheet"]], spec["dates"])
-                    values = range_cells(cached[spec["sheet"]], spec["values"])
-                    if len(dates) != len(values):
-                        raise ValueError(f"Date/value range length mismatch: {spec['id']}")
-                    points, seen = [], set()
-                    reported_dates = []
-                    for dc, vc in zip(dates, values, strict=True):
-                        d, _ = cell_value(spec["date_sheet"], dc.coordinate)
-                        v, _ = cell_value(spec["sheet"], vc.coordinate)
-                        if d is None and v is None:
-                            continue  # Explicit chart ranges may contain trailing empty rows.
-                        expected_format = spec.get("expected_number_format")
-                        allowed_formats = spec.get("allowed_number_formats", [expected_format])
-                        if (
-                            v is not None
-                            and expected_format
-                            and spec.get("role") != "reported_marker"
-                            and vc.number_format not in allowed_formats
-                        ):
-                            raise ValueError(
-                                f"Unit/number format changed: {spec['sheet']}!{vc.coordinate}"
-                            )
-                        try:
-                            normalized = normalize_date(d, cached.epoch)
-                        except ValueError as exc:
-                            raise ValueError(
-                                f"Invalid date {spec['date_sheet']}!{dc.coordinate}"
-                            ) from exc
-                        if normalized in seen:
-                            raise ValueError(f"Duplicate date in {spec['id']}: {normalized}")
-                        seen.add(normalized)
-                        try:
-                            v = numeric(v, spec)
-                        except ValueError as exc:
-                            if spec.get("role") != "reported_marker":
-                                issues.append(
-                                    {
-                                        "sheet": spec["sheet"],
-                                        "cell": vc.coordinate,
-                                        "reason": str(exc),
-                                    }
-                                )
-                            v = None
-                        forward = False
-                        if spec.get("period_labels_row"):
-                            label = (
-                                cached[spec["date_sheet"]]
-                                .cell(spec["period_labels_row"], dc.column)
-                                .value
-                            )
-                            if not isinstance(label, str) or not any(
-                                t in label for t in ("(Rep)", "(Fwd)")
-                            ):
-                                raise ValueError(
-                                    f"Missing reported/forward label for {spec['id']} {dc.coordinate}"
-                                )
-                            forward = "(Fwd)" in label
-                            if not forward:
-                                reported_dates.append(normalized)
-                        if v is not None and not forward:
-                            latest_dates.append(normalized)
-                        source_cell = formulas[spec["sheet"]][vc.coordinate]
-                        formula = (
-                            str(getattr(source_cell.value, "text", source_cell.value))
-                            if source_cell.data_type == "f"
-                            else None
-                        )
-                        points.append(
-                            {
-                                "date": normalized,
-                                "value": v,
-                                "cell": vc.coordinate,
-                                "forward": forward,
-                                "formula": formula,
-                            }
-                        )
-                    points.sort(key=lambda p: p["date"])
-                    chart_out["series"].append(
-                        {
-                            **spec,
-                            "points": points,
-                            "latest_reported": max(reported_dates, default=None),
-                        }
-                    )
-                    if spec.get("role") != "reported_marker":
-                        metric_count += any(p["value"] is not None for p in points)
-                section["charts"].append(chart_out)
-            sections[section_name] = section
+            except ValueError as exc:
+                rejected[section_name] = str(exc)
+                del issues[mark[0] :], latest_dates[mark[1] :]
+                metric_count = mark[2]
+                continue
+            sections[section_name], count = result
+            metric_count += count
+        if not sections:
+            reasons = "; ".join(f"{name}: {reason}" for name, reason in rejected.items())
+            raise ValueError(f"No mapped section passed validation. {reasons}")
         if not metric_count:
             raise ValueError("No valid mapped numeric metrics in workbook")
         return {
@@ -286,9 +164,182 @@ class ExcelWorkbookProvider:
             "path": str(self.path),
             "modified_at": modified_at,
             "sections": sections,
+            "rejected_sections": rejected,
             "metric_count": metric_count,
             "latest_observation": max(latest_dates, default=None),
             "diagnostics": diagnostics,
             "issues": issues,
             "refresh_attestation": "Unknown: saved workbook caches do not attest Bloomberg refresh",
+            "schema": SNAPSHOT_SCHEMA,
         }
+
+    def _extract_section(self, config, cached, formulas, cell_value, latest_dates, issues):
+        """One mapped section -> (section payload, numeric metric count). Raises ValueError."""
+        missing = set(config["sheets"]) - set(cached.sheetnames)
+        if missing:
+            raise ValueError(f"Missing mapped worksheets: {', '.join(sorted(missing))}")
+        metric_count = 0
+        section = {"notes": config["notes"], "charts": [], "tables": []}
+        for table in config["tables"]:
+            for coord, expected in table.get("expected_headers", {}).items():
+                if cached[table["sheet"]][coord].value != expected:
+                    raise ValueError(f"Layout changed: {table['sheet']}!{coord}")
+            c1, r1, c2, r2 = range_boundaries(table["range"])
+            rows = []
+            for row in cached[table["sheet"]].iter_rows(
+                min_row=r1, max_row=r2, min_col=c1, max_col=c2
+            ):
+                output = []
+                for cell in row:
+                    value, formula = cell_value(table["sheet"], cell.coordinate)
+                    if isinstance(value, float) and not math.isfinite(value):
+                        issues.append(
+                            {
+                                "sheet": table["sheet"],
+                                "cell": cell.coordinate,
+                                "reason": "Nonfinite table value",
+                            }
+                        )
+                        value = None
+                    if isinstance(value, (date, datetime)):
+                        value = value.isoformat()[:10]
+                    output.append(
+                        {
+                            "cell": cell.coordinate,
+                            "value": value,
+                            "format": cell.number_format,
+                            "formula": formula,
+                            "font_color": str(
+                                formulas[table["sheet"]][cell.coordinate].font.color.rgb
+                            )
+                            if formulas[table["sheet"]][cell.coordinate].font.color
+                            and formulas[table["sheet"]][cell.coordinate].font.color.type == "rgb"
+                            else None,
+                        }
+                    )
+                rows.append(output)
+            observed = None
+            if table.get("date_cell"):
+                value, _ = cell_value(table["sheet"], table["date_cell"])
+                if value is not None:
+                    observed = normalize_date(value, cached.epoch)
+                    latest_dates.append(observed)
+            value_cells = [
+                c["cell"]
+                for row in rows
+                for c in row
+                if isinstance(c["value"], (int, float)) and not isinstance(c["value"], bool)
+            ]
+            section["tables"].append(
+                {
+                    **table,
+                    "rows": rows,
+                    "as_of": observed,
+                    "sources": self._sources(table["sheet"], value_cells, sample=12),
+                }
+            )
+            metric_count += sum(isinstance(c["value"], (int, float)) for row in rows for c in row)
+        for chart in config["charts"]:
+            chart_out = {"id": chart["id"], "title": chart["title"], "series": []}
+            for spec in chart["series"]:
+                if not spec.get("unit") or spec.get("value_type") != "number":
+                    raise ValueError(f"Metric unit/type contract missing: {spec['id']}")
+                dates = range_cells(cached[spec["date_sheet"]], spec["dates"])
+                values = range_cells(cached[spec["sheet"]], spec["values"])
+                if len(dates) != len(values):
+                    raise ValueError(f"Date/value range length mismatch: {spec['id']}")
+                points, seen = [], set()
+                reported_dates = []
+                for dc, vc in zip(dates, values, strict=True):
+                    d, _ = cell_value(spec["date_sheet"], dc.coordinate)
+                    v, _ = cell_value(spec["sheet"], vc.coordinate)
+                    if d is None and v is None:
+                        continue  # Explicit chart ranges may contain trailing empty rows.
+                    expected_format = spec.get("expected_number_format")
+                    allowed_formats = spec.get("allowed_number_formats", [expected_format])
+                    if (
+                        v is not None
+                        and expected_format
+                        and spec.get("role") != "reported_marker"
+                        and vc.number_format not in allowed_formats
+                    ):
+                        raise ValueError(
+                            f"Unit/number format changed: {spec['sheet']}!{vc.coordinate}"
+                        )
+                    try:
+                        normalized = normalize_date(d, cached.epoch)
+                    except ValueError as exc:
+                        raise ValueError(
+                            f"Invalid date {spec['date_sheet']}!{dc.coordinate}"
+                        ) from exc
+                    if normalized in seen:
+                        raise ValueError(f"Duplicate date in {spec['id']}: {normalized}")
+                    seen.add(normalized)
+                    try:
+                        v = numeric(v, spec)
+                    except ValueError as exc:
+                        if spec.get("role") != "reported_marker":
+                            issues.append(
+                                {
+                                    "sheet": spec["sheet"],
+                                    "cell": vc.coordinate,
+                                    "reason": str(exc),
+                                }
+                            )
+                        v = None
+                    forward = False
+                    if spec.get("period_labels_row"):
+                        label = (
+                            cached[spec["date_sheet"]]
+                            .cell(spec["period_labels_row"], dc.column)
+                            .value
+                        )
+                        if not isinstance(label, str) or not any(
+                            t in label for t in ("(Rep)", "(Fwd)")
+                        ):
+                            raise ValueError(
+                                f"Missing reported/forward label for {spec['id']} {dc.coordinate}"
+                            )
+                        forward = "(Fwd)" in label
+                        if not forward:
+                            reported_dates.append(normalized)
+                    if v is not None and not forward:
+                        latest_dates.append(normalized)
+                    source_cell = formulas[spec["sheet"]][vc.coordinate]
+                    formula = (
+                        str(getattr(source_cell.value, "text", source_cell.value))
+                        if source_cell.data_type == "f"
+                        else None
+                    )
+                    points.append(
+                        {
+                            "date": normalized,
+                            "value": v,
+                            "cell": vc.coordinate,
+                            "forward": forward,
+                            "formula": formula,
+                        }
+                    )
+                points.sort(key=lambda p: p["date"])
+                chart_out["series"].append(
+                    {
+                        **spec,
+                        "points": points,
+                        "latest_reported": max(reported_dates, default=None),
+                        "sources": self._sources(
+                            spec["sheet"], [p["cell"] for p in points if p["value"] is not None]
+                        ),
+                    }
+                )
+                if spec.get("role") != "reported_marker":
+                    metric_count += any(p["value"] is not None for p in points)
+            section["charts"].append(chart_out)
+        return section, metric_count
+
+    def _sources(self, sheet, coordinates, sample=5):
+        """Origin of saved values (Bloomberg / manual / calculated). Never blocks an import."""
+        try:
+            return self._tracer.sources(sheet, coordinates, sample)
+        # Labelling is descriptive; a tracing problem must not reject data.
+        except (KeyError, ValueError, TypeError, AttributeError, IndexError, RecursionError):
+            return []

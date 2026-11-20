@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "notes": [
+    "Data-source labels shown under every chart and table. Labels are worked out from the data itself: the URL stored with each downloaded observation, or how a workbook cell was produced (Bloomberg formula, manual input or workbook calculation).",
+    "To label a new site, add a provider with its domains. Downloads from a domain not listed here are labelled with the site's host name.",
+    "preference: when the same metric is available from more than one provider (see equivalents), the earlier provider is used.",
+    "equivalents: opt-in only. Maps an independent series id (for example a FRED id) to the workbook series that measures the same thing in the same units and frequency. Leave empty until PCM confirms each pair."
+  ],
+  "providers": {
+    "Bloomberg": {
+      "url": "https://www.bloomberg.com/professional/solution/bloomberg-terminal/",
+      "formulas": ["BDH", "BDP", "BDS", "BQL", "BEQS", "BCURVE"]
+    },
+    "FRED": {"url": "https://fred.stlouisfed.org", "domains": ["fred.stlouisfed.org", "api.stlouisfed.org"]},
+    "BLS": {"url": "https://www.bls.gov", "domains": ["bls.gov"]},
+    "BEA": {"url": "https://www.bea.gov", "domains": ["bea.gov"]},
+    "Census Bureau": {"url": "https://www.census.gov", "domains": ["census.gov"]},
+    "Federal Reserve Board": {"url": "https://www.federalreserve.gov", "domains": ["federalreserve.gov"]},
+    "New York Fed": {"url": "https://www.newyorkfed.org", "domains": ["newyorkfed.org"]},
+    "U.S. Treasury": {"url": "https://home.treasury.gov", "domains": ["treasury.gov", "fiscaldata.treasury.gov"]},
+    "EIA": {"url": "https://www.eia.gov", "domains": ["eia.gov"]},
+    "SEC EDGAR": {"url": "https://www.sec.gov/edgar", "domains": ["sec.gov"]},
+    "Cboe": {"url": "https://www.cboe.com", "domains": ["cboe.com"]},
+    "FINRA": {"url": "https://www.finra.org", "domains": ["finra.org"]},
+    "AAII": {"url": "https://www.aaii.com", "domains": ["aaii.com"]},
+    "Freddie Mac": {"url": "https://www.freddiemac.com", "domains": ["freddiemac.com"]},
+    "NAR": {"url": "https://www.nar.realtor", "domains": ["nar.realtor"]},
+    "SIA": {"url": "https://www.semiconductors.org", "domains": ["semiconductors.org"]}
+  },
+  "workbook": {
+    "via": "PCM - Monthly Market & Risk Monitor",
+    "manual": "PCM - Monthly Market & Risk Monitor (manual input)",
+    "calculated": "PCM - Monthly Market & Risk Monitor (calculated)",
+    "unknown": "PCM - Monthly Market & Risk Monitor"
+  },
+  "analyst_log": "Analyst log",
+  "preference": ["Bloomberg", "FRED"],
+  "equivalents": {}
+}

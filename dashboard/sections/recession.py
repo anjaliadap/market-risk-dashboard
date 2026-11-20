@@ -94,13 +94,13 @@ TABLE = [
 CROSS_CHECKS = [("recession_0_0", "Sahm rule (Bloomberg SAHMRLRT)", "SAHMREALTIME")]
 NOTES = [
     (
-        "The independent checklist mirrors the sponsor's 17 Recession-tab items. Each rule is listed "
-        "in the table; thresholds come from the sponsor's notes column (e.g., claims > 475k, wage "
-        "growth > 3.5%, 10Y − GDP > 0). Score = red ÷ evaluated items, as in the sponsor sheet."
+        "The independent checklist mirrors the PCM - Monthly Market & Risk Monitor's 17 Recession-tab items. Each rule is listed "
+        "in the table; thresholds come from the PCM - Monthly Market & Risk Monitor's notes column (e.g., claims > 475k, wage "
+        "growth > 3.5%, 10Y − GDP > 0). Score = red ÷ evaluated items, as in the PCM - Monthly Market & Risk Monitor sheet."
     ),
     (
         "Leading Economic Indicators (Conference Board) and Composite PMI (S&P Global / ISM) are "
-        "licensed. They use the sponsor's saved manual flag when a workbook snapshot exists, and "
+        "licensed. They use the PCM - Monthly Market & Risk Monitor's saved manual flag when a workbook snapshot exists, and "
         "are otherwise UNAVAILABLE and excluded from the denominator."
     ),
     (
@@ -200,7 +200,7 @@ def _saved_flags(cells):
 def _checklist(ctx, data):
     st.subheader("Recession / economic stress checklist")
     st.caption(
-        "Rules evaluated automatically from public sources. Sponsor workbook statuses are shown "
+        "Rules evaluated automatically from public sources. PCM - Monthly Market & Risk Monitor statuses are shown "
         "alongside for comparison and are used only where no independent source exists."
     )
     checks = recession_checklist(data)
@@ -224,7 +224,7 @@ def _checklist(ctx, data):
     if saved:
         sponsor_red = sum(flag for _, flag in saved.values())
         st.caption(
-            f"Sponsor saved score: {sponsor_red} of {len(RECESSION_ROWS)} flagged "
+            f"PCM - Monthly Market & Risk Monitor saved score: {sponsor_red} of {len(RECESSION_ROWS)} flagged "
             f"({sponsor_red / len(RECESSION_ROWS):.0%}). Saved manual flags may lag current data."
         )
 
@@ -307,7 +307,7 @@ def _curve_and_credit(ctx, data, start):
 def _cyclicals(ctx, data, start):
     st.subheader("Cyclical components, output gap & money")
     st.caption(
-        "Mirrors the sponsor's durable goods / fixed investment / residential investment panels; "
+        "Mirrors the PCM - Monthly Market & Risk Monitor's durable goods / fixed investment / residential investment panels; "
         "dashed lines are averages since 2000."
     )
     empty = pd.Series(dtype=float)

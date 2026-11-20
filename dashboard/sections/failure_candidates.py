@@ -53,21 +53,21 @@ PERCENT = [
 PORTFOLIOS = {"OPP": "Weight: OPP", "Patient": "Weight: Patient"}
 NOTES = [
     (
-        "Failure model = latest share of the group's stocks in the worst decile of the sponsor's "
+        "Failure model = latest share of the group's stocks in the worst decile of the PCM - Monthly Market & Risk Monitor's "
         "failure model; historical mean, std. dev. from mean and trailing changes come from FC Data."
     ),
     (
-        "OPP and Patient weights are the sponsor's manual portfolio inputs; S&P weights are S&P 500 "
+        "OPP and Patient weights are the PCM - Monthly Market & Risk Monitor's manual portfolio inputs; S&P weights are S&P 500 "
         "GICS sector weights from Bloomberg (S5xxxx Index)."
     ),
     (
-        "Rules (sponsor formulas, re-applied here as a check): Overweight if portfolio weight > S&P "
+        "Rules (PCM - Monthly Market & Risk Monitor formulas, re-applied here as a check): Overweight if portfolio weight > S&P "
         "weight; 'Risk' if Overweight and std. dev. from mean > 0, 'Less Risk' if Overweight and ≤ 0. "
         "Underweight sectors carry no position flag."
     ),
     (
         "Colors: green = fewer failure candidates than usual / falling, red = more than usual / "
-        "rising. For relative weight, green = Overweight and red = Underweight, as in the sponsor "
+        "rising. For relative weight, green = Overweight and red = Underweight, as in the PCM - Monthly Market & Risk Monitor "
         "sheet."
     ),
 ]
@@ -163,10 +163,13 @@ def _risk_board(ctx, frame):
                         f"{row['Sector']} {kind.lower()} ({name}): saved {saved}, rule {rule}"
                     )
     if mismatches:
-        st.warning("Saved flags differ from the sponsor's rule: " + "; ".join(mismatches))
+        st.warning(
+            "Saved flags differ from the PCM - Monthly Market & Risk Monitor's rule: "
+            + "; ".join(mismatches)
+        )
     else:
         st.caption(
-            "Saved Overweight/Risk flags match the sponsor's rules re-applied to the inputs."
+            "Saved Overweight/Risk flags match the PCM - Monthly Market & Risk Monitor's rules re-applied to the inputs."
         )
 
 

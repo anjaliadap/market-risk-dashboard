@@ -28,15 +28,15 @@ DEFAULT_THRESHOLD = 70.0
 NOTES = [
     (
         "Score: share-weighted percentile rank (100 = highest) of large-cap stocks in the top quintile "
-        "of nine-month price trends, smoothed over three months. Sponsor research data, updated "
+        "of nine-month price trends, smoothed over three months. PCM - Monthly Market & Risk Monitor research data, updated "
         "manually each month; there is no public equivalent."
     ),
     (
-        "Threshold and average are the sponsor's saved rows (70 and the full-sample mean). Episodes "
+        "Threshold and average are the PCM - Monthly Market & Risk Monitor's saved rows (70 and the full-sample mean). Episodes "
         "are consecutive months at or above the threshold."
     ),
     (
-        "Forward S&P 500 returns use the sponsor's saved monthly S&P 500 level (S&P Relative tab) and "
+        "Forward S&P 500 returns use the PCM - Monthly Market & Risk Monitor's saved monthly S&P 500 level (S&P Relative tab) and "
         "exclude dividends. Crossings are few and their windows overlap, so the study is descriptive "
         "and is not evidence of predictive power."
     ),
@@ -89,7 +89,7 @@ def _signal_board(ctx, score, threshold):
         Check(
             "Crowded momentum",
             f"≥ {threshold:.0f}",
-            f"Score at or above the sponsor's {threshold:.0f} threshold",
+            f"Score at or above the PCM - Monthly Market & Risk Monitor's {threshold:.0f} threshold",
             f"{latest:.1f}",
             "Above threshold" if latest >= threshold else "Below threshold",
             latest >= threshold,

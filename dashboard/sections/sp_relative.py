@@ -46,8 +46,8 @@ PAIRS = {
 INDEX = "sandp_relative_2_0"
 NOTES = [
     (
-        "Ratios are the sponsor's saved monthly S&P 500 price index ÷ gold (USD/oz) and ÷ WTI "
-        "front-month futures (CL1, USD/bbl); the 7-year average is the sponsor's saved formula. The "
+        "Ratios are the PCM - Monthly Market & Risk Monitor's saved monthly S&P 500 price index ÷ gold (USD/oz) and ÷ WTI "
+        "front-month futures (CL1, USD/bbl); the 7-year average is the PCM - Monthly Market & Risk Monitor's saved formula. The "
         "latest row may be mid-month."
     ),
     (
@@ -132,7 +132,7 @@ def _summary(ctx):
         columns[2 * i + 1].metric(
             "vs 7-year average",
             "—" if np.isnan(row["vs 7Yr average (%)"]) else f"{row['vs 7Yr average (%)']:+.1f}%",
-            help="Latest ratio ÷ sponsor's saved 7-year moving average − 1",
+            help="Latest ratio ÷ PCM - Monthly Market & Risk Monitor's saved 7-year moving average − 1",
         )
         columns[2 * i + 1].caption(f"{row['Percentile since 1950']:.0f}th percentile since 1950")
     for row in rows:
@@ -182,7 +182,7 @@ def _independent(ctx, data):
     left = {"FRED: S&P 500 ÷ WTI spot (month-end)": monthly}
     right = {"Workbook: S&P 500 ÷ WTI CL1": clip(saved, start)} if len(saved) else {}
     fig = line_figure(
-        "S&P 500 ÷ WTI: independent spot vs sponsor futures-based ratio",
+        "S&P 500 ÷ WTI: independent spot vs PCM - Monthly Market & Risk Monitor futures-based ratio",
         {**left, **right},
         left_title="Ratio (x)",
     )

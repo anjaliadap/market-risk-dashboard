@@ -26,7 +26,7 @@ Saved sponsor Excel is primary wherever mapped. All 19 substantive worksheets we
 | Demand | Six company charts with reported/forward separation | Dedicated page: automated Demand Tracker; BLS productivity and Fed/Census semiconductor proxies; SIA billings via analyst log |
 | Financing | Four sponsor charts | Dedicated page: automated Financing Tracker; funding gap from saved data; FRED credit spreads, NFCI, SLOOS, corporate debt/GDP |
 | Supply | No workbook source | Dedicated page: FRED bottleneck proxies (backlogs, grid-equipment PPI, utilization); GPU pricing, capacity, vacancy and lead times via sourced analyst logs |
-| Forecasting | Existing analyst assumption tool | Scenarios distinct from reported company data |
+| Forecasting | Existing analyst assumption tool | Hidden from navigation (sponsors do not need it). Code kept; re-enable by adding it back to `config/pages.json` |
 
 Overview summarizes workbook coverage when a valid snapshot exists. Workbook Administration shows import health, missing values and manual dependencies. Data Sources & System Status retains independent FRED registry/job history. Optional independent FRED comparisons never merge with Excel under a shared metric identity.
 

@@ -203,7 +203,7 @@ def test_page_with_workbook_snapshot(title, database):
     app = run(title)
     assert not app.exception
     # The sponsor workbook tab leads when a validated snapshot exists.
-    assert app.tabs[0].label == "Sponsor workbook"
+    assert app.tabs[0].label == "PCM - Monthly Market & Risk Monitor"
     assert not any("No validated workbook snapshot" in i.value for i in app.info)
 
 

@@ -98,7 +98,7 @@ All 37 new FRED series were retrieved successfully on 2026-11-08.
 
 # Dedicated pages: Momentum, FC Data, Failure Candidates, S&P Relative
 
-These follow the 2026-11 workbook (`updated-PCM-Material`) and its Process document. Navigation now follows the workbook tab order. A new **Empirical** group comes first (Momentum = tab "Mo", FC Data, Failure Candidates), then Market, Macro and AI. Within AI, Demand and Financing follow the tabs; Supply and Forecasting have no tab and come last. Pure calculations are in `src/analytics/empirical.py` (tests: `tests/test_empirical.py`). Page renders against a synthetic snapshot built from the real mapping are tested in `tests/test_empirical_sections.py`.
+These follow the 2026-11 workbook (`updated-PCM-Material`) and its Process document. Navigation now follows the workbook tab order. A new **Empirical** group comes first (Momentum = tab "Mo", FC Data, Failure Candidates), then Market, Macro and AI. Within AI, Demand and Financing follow the tabs and Supply, which has no tab, comes last. Forecasting is hidden from navigation (sponsors do not need it) but its code is kept; add it back to `config/pages.json` to show it again. Pure calculations are in `src/analytics/empirical.py` (tests: `tests/test_empirical.py`). Page renders against a synthetic snapshot built from the real mapping are tested in `tests/test_empirical_sections.py`.
 
 The three Empirical tabs are sponsor research data, updated manually each month, with no public equivalent. Their pages use the tabs **Sponsor workbook / Analytics / Data & export / Methodology & sources** and show UNAVAILABLE until a snapshot is imported. S&P Relative keeps the standard four tabs because it has an independent FRED cross-check.
 
@@ -114,5 +114,7 @@ The three Empirical tabs are sponsor research data, updated manually each month,
 - **S&P Relative**: the oil block moved one column right (J dates, M ratio, N MA), "Current" lines were added (H, P), and rows now end at 926. The mapping is updated to match.
 - **Recession**: the checklist moved up three rows (B4:H53) and the Sahm chart now uses S5:U132, newest first, from 2015. The mapping and `RECESSION_ROWS` are updated. The sponsor's definitions also changed (Core inflation, Atlanta Fed wage tracker, BEA personal income), but the independent rules have **not** yet been changed to match.
 - **VIX & Options**: put/call cells now also use `#,##0.00` / `0.00`. These formats are allowed.
-- **Still blocking a full import** (import is all-or-nothing): Financing row 3 now holds text period labels ("2017 Q4 (Rep)") instead of dates, which needs importer support for label-based quarters; Bear Market (`B7`) and Bull vs Bear (`W3`) layouts changed and need their owners' mapping updates.
+- **Sections not imported from the 2026-11 file** (the rest import; see [excel_operations.md](excel_operations.md#per-section-publication)):
+  - **Financing** was saved without recalculating. Every column of W2:BL13 holds the first quarter's cached values ("2017 Q4 (Rep)", 0.50, 13,000, …), although the Demand cells it links to hold the correct dates. The fix is a recalculation and save on a Bloomberg terminal, not a mapping change.
+  - **Bear Market** (`B7`) and **Bull vs Bear** (`W3`) were redesigned and need their owners' mapping updates.
 - FC Data's Industrials chart in Excel plots G6:UU6 against F3:UU3 (one-column offset). The mapping uses F6:UU6 so that each value keeps its own date.

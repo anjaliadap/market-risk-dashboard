@@ -51,16 +51,16 @@ RECESSION = "fc_data_0_1"
 NOTES = [
     (
         "Share = fraction of each group's stocks (top 1,000 US stocks) that fall in the worst decile "
-        "of the sponsor's failure model. 'Expensive' is the share of failure candidates with a "
-        "forward P/E above 50x or losses. Sponsor research data, updated manually each month."
+        "of the PCM - Monthly Market & Risk Monitor's failure model. 'Expensive' is the share of failure candidates with a "
+        "forward P/E above 50x or losses. PCM - Monthly Market & Risk Monitor research data, updated manually each month."
     ),
     (
-        "Statistics are recomputed from the saved monthly history with the sponsor's definitions "
+        "Statistics are recomputed from the saved monthly history with the PCM - Monthly Market & Risk Monitor's definitions "
         "(FC Data!UV:VE): mean, sample standard deviation, (latest − mean) ÷ std, and changes over "
-        "1/3/6/12 months. The 'Matches sponsor' column compares them with the saved Failure "
+        "1/3/6/12 months. The 'Matches PCM - Monthly Market & Risk Monitor' column compares them with the saved Failure "
         "Candidates summary (tolerance 0.001)."
     ),
-    "Recession bars come from the sponsor's own recession row (FC Data row 21).",
+    "Recession bars come from the PCM - Monthly Market & Risk Monitor's own recession row (FC Data row 21).",
 ]
 
 
@@ -164,7 +164,11 @@ def _statistics(ctx, series):
                 "3M (pp)": stats["chg_3m"] * 100,
                 "12M (pp)": stats["chg_12m"] * 100,
                 "Max (%)": stats["max"] * 100,
-                "Matches sponsor": "—" if match is None else "Yes" if match else "No",
+                "Matches PCM - Monthly Market & Risk Monitor": "—"
+                if match is None
+                else "Yes"
+                if match
+                else "No",
             }
         )
     frame = pd.DataFrame(rows)
@@ -201,12 +205,15 @@ def _statistics(ctx, series):
             tone_style(lambda v: v < 0, lambda v: v > 0),
             subset=["Std. dev. from mean", "1M (pp)", "3M (pp)", "12M (pp)"],
         )
-        .map(tone_style(lambda v: v == "Yes", lambda v: v == "No"), subset=["Matches sponsor"])
+        .map(
+            tone_style(lambda v: v == "Yes", lambda v: v == "No"),
+            subset=["Matches PCM - Monthly Market & Risk Monitor"],
+        )
     )
     ctx.table_view(styled, hide_index=True, alt="Failure-candidate statistics by group")
-    mismatches = (frame["Matches sponsor"] == "No").sum()
+    mismatches = (frame["Matches PCM - Monthly Market & Risk Monitor"] == "No").sum()
     if mismatches:
         st.warning(
-            f"{mismatches} group(s) differ from the sponsor's saved summary. The workbook "
+            f"{mismatches} group(s) differ from the PCM - Monthly Market & Risk Monitor's saved summary. The workbook "
             "statistics may reference a different date range; review FC Data!UV:VE."
         )

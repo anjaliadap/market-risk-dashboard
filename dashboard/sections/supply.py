@@ -72,8 +72,8 @@ SOURCES = {
 }
 NOTES = [
     (
-        "The sponsor has no Bloomberg tab for Supply. This page is a proposed structure: public "
-        "proxies that are refreshed automatically, plus analyst logs for items the sponsor listed "
+        "The PCM - Monthly Market & Risk Monitor has no Bloomberg tab for Supply. This page is a proposed structure: public "
+        "proxies that are refreshed automatically, plus analyst logs for items the PCM - Monthly Market & Risk Monitor listed "
         "(capacity, vacancy, available supply, lead times, GPU rental prices)."
     ),
     (
@@ -106,7 +106,7 @@ def render(ctx, render_section):
     proxies, analyst, indicators, method = st.tabs(labels)
     with proxies:
         st.info(
-            "No sponsor workbook source exists for Supply. Indicators below are public proxies; "
+            "No PCM - Monthly Market & Risk Monitor source exists for Supply. Indicators below are public proxies; "
             "direct capacity, vacancy and GPU pricing data are recorded in Analyst-sourced data."
         )
         refresh_controls(ctx, IDS)

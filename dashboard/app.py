@@ -18,6 +18,7 @@ from dashboard.styles.theme import (
     research_chart,
     theme_for,
 )
+from src import provenance
 from src.analytics.core import (
     drawdown,
     historical_comparison,
@@ -55,7 +56,7 @@ MAPPING = {
 }
 BLOCKERS = {
     "Market Data": "Remaining indices, all 11 sector histories, breadth, MOVE and metals need verified permitted feeds. No ETF substitutions. Rates are changes in basis points; VIX changes are index points. Spot commodity returns are not futures returns.",
-    "Bear Market": "Historical peak comparison requires sponsor event dates and publication-aligned history. No aggregate predictive score is claimed.",
+    "Bear Market": "Historical peak comparison requires PCM - Monthly Market & Risk Monitor event dates and publication-aligned history. No aggregate predictive score is claimed.",
     "S&P vs Bonds": "Earnings-yield spread requires dated index earnings/P-E history. A simple yield spread is not a modeled equity risk premium.",
     "S&P 500 Fundamentals": "Official index aggregates require a licensed dataset; constituent medians would not be equivalent.",
     "Margin Debt": "FINRA margin history and comparable market capitalization ingestion are not implemented. GDP is in billions; FINRA figures require unit alignment.",
@@ -71,6 +72,7 @@ def render(title):
     if title == "Workbook Administration":
         render_administration()
         return
+    provenance.reset_page()  # Chart captions attribute derived lines to this page's inputs.
     theme = theme_for(title, PAGES)
     page_header(title, theme)
 
@@ -187,6 +189,12 @@ def render(title):
             )
             continue
         histories[key] = h
+        stored = h["source"].dropna()
+        provenance.note_page(
+            provenance.independent_sources(
+                key, stored.iloc[-1] if len(stored) else meta["url"], meta
+            )
+        )
         s = h.value
         rate = key.startswith("DGS") or key == "MORTGAGE30US"
         changes = (
@@ -345,7 +353,7 @@ def render(title):
                     width="stretch",
                 )
         st.caption(
-            "These independent FRED calculations measure index-price distance from its trailing average. The sponsor workbook's Market Data charts measure constituent breadth and are shown separately."
+            "These independent FRED calculations measure index-price distance from its trailing average. The PCM - Monthly Market & Risk Monitor's Market Data charts measure constituent breadth and are shown separately."
         )
     with st.expander("Source, methodology and observation metadata"):
         table_view(

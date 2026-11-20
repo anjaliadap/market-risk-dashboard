@@ -7,7 +7,7 @@
         "Mo"
       ],
       "notes": [
-        "Manually updated monthly (sponsor research data). Row 4 month-end dates; row 5 Momentum & Controversy Scores (large-cap stocks, top quintile of 9-month price trends, percentile ranks, 100 = highest, 3-month smoothing). Row 6 full-sample average (formula); row 7 fixed 70 threshold. Rows 8-11 are sparse chart annotations, not observations. AGJ:AGM trailing changes are sponsor formulas."
+        "Manually updated monthly (PCM - Monthly Market & Risk Monitor research data). Row 4 month-end dates; row 5 Momentum & Controversy Scores (large-cap stocks, top quintile of 9-month price trends, percentile ranks, 100 = highest, 3-month smoothing). Row 6 full-sample average (formula); row 7 fixed 70 threshold. Rows 8-11 are sparse chart annotations, not observations. AGJ:AGM trailing changes are PCM - Monthly Market & Risk Monitor formulas."
       ],
       "charts": [
         {
@@ -118,7 +118,7 @@
         "FC Data"
       ],
       "notes": [
-        "Manually updated monthly (sponsor research data). Universe: top 1,000 US stocks. Rows 4-19: share of each sector/style in the worst decile of the failure model (fractions; rows 24-41 are the percent inputs, row/100). Row 3 month dates from 1980-01; row 21 recession flag (bars). Leveraged Borrowers history starts at column NB. The sponsor's Industrials chart plots G6:UU6 against F3:UU3 (one-column offset); mapped to F6:UU6 so values align with their own dates. Column UU is the empty next-month slot."
+        "Manually updated monthly (PCM - Monthly Market & Risk Monitor research data). Universe: top 1,000 US stocks. Rows 4-19: share of each sector/style in the worst decile of the failure model (fractions; rows 24-41 are the percent inputs, row/100). Row 3 month dates from 1980-01; row 21 recession flag (bars). Leveraged Borrowers history starts at column NB. The PCM - Monthly Market & Risk Monitor's Industrials chart plots G6:UU6 against F3:UU3 (one-column offset); mapped to F6:UU6 so values align with their own dates. Column UU is the empty next-month slot."
       ],
       "charts": [
         {
@@ -1124,7 +1124,7 @@
         "Bear Market"
       ],
       "notes": [
-        "D8:D21 current, E8:E21 historical averages (linked to row 22, preserve them), G8:G21 explicit direction rules; F8:F21 saved flags. D23=14 denominator. Historical peaks and IPO inputs are sponsor assumptions. Never infer red flags from font colors."
+        "D8:D21 current, E8:E21 historical averages (linked to row 22, preserve them), G8:G21 explicit direction rules; F8:F21 saved flags. D23=14 denominator. Historical peaks and IPO inputs are PCM - Monthly Market & Risk Monitor assumptions. Never infer red flags from font colors."
       ],
       "charts": [],
       "tables": [
@@ -1163,7 +1163,7 @@
         "S&P vs Bonds"
       ],
       "notes": [
-        "T:AA Bloomberg inputs; J:R cached Excel outputs. P/S yield less Baa yield and equity P/E less Baa P/E are sponsor definitions, not an equity risk premium."
+        "T:AA Bloomberg inputs; J:R cached Excel outputs. P/S yield less Baa yield and equity P/E less Baa P/E are PCM - Monthly Market & Risk Monitor definitions, not an equity risk premium."
       ],
       "charts": [
         {
@@ -1280,7 +1280,7 @@
         "S&P 500 Fundamentals"
       ],
       "notes": [
-        "B:R Bloomberg/BQL sources; W:AC sponsor calculations. L23 and Q23 have no formula cache (BQL spill anchors); downstream dated numeric results are independent saved values. Large BQL tables include identity/header rows, not observations."
+        "B:R Bloomberg/BQL sources; W:AC PCM - Monthly Market & Risk Monitor calculations. L23 and Q23 have no formula cache (BQL spill anchors); downstream dated numeric results are independent saved values. Large BQL tables include identity/header rows, not observations."
       ],
       "charts": [
         {
@@ -1504,7 +1504,7 @@
         "Margin Debt"
       ],
       "notes": [
-        "W:X GDP, Z:AA FINRA margin debt in millions, AC:AD Wilshire market cap in millions. FINRA data must be manually updated; market cap hardcoded through early 2026 then Bloomberg. K:U retains sponsor unit alignment/calculations. B:G peak/trough benchmarks preserved."
+        "W:X GDP, Z:AA FINRA margin debt in millions, AC:AD Wilshire market cap in millions. FINRA data must be manually updated; market cap hardcoded through early 2026 then Bloomberg. K:U retains PCM - Monthly Market & Risk Monitor unit alignment/calculations. B:G peak/trough benchmarks preserved."
       ],
       "charts": [
         {
@@ -1982,7 +1982,7 @@
       ],
       "notes": [
         "B:F and N:Q Bloomberg; H:L Excel; S:T fixed decile lookup; V:AA saved conditional returns. Forward returns contain BQL capacity-error text. Unavailable values stay missing, never zero. Historical conditional returns are descriptive and overlap/publication controls are not established.",
-        "Auxiliary substantive worksheet, not a separate sponsor section. Additional Bloomberg returns and hardcoded decile lookup; mapped as an optional Bull vs Bear chart. Do not substitute it for the requested bull-minus-bear study."
+        "Auxiliary substantive worksheet, not a separate PCM - Monthly Market & Risk Monitor section. Additional Bloomberg returns and hardcoded decile lookup; mapped as an optional Bull vs Bear chart. Do not substitute it for the requested bull-minus-bear study."
       ],
       "charts": [
         {
@@ -2289,7 +2289,7 @@
         "BTC"
       ],
       "notes": [
-        "D4 Bitcoin position, D8 debt/preferred sum, D15 cost basis manually maintained from Strategy Analytics/Ledger. D5 Bloomberg BTC price; D6:D16 cached sponsor outputs; USD millions vs USD/BTC preserved."
+        "D4 Bitcoin position, D8 debt/preferred sum, D15 cost basis manually maintained from Strategy Analytics/Ledger. D5 Bloomberg BTC price; D6:D16 cached PCM - Monthly Market & Risk Monitor outputs; USD millions vs USD/BTC preserved."
       ],
       "charts": [],
       "tables": [
@@ -2321,7 +2321,7 @@
         "Banks"
       ],
       "notes": [
-        "Bloomberg quarterly net charge-offs; population/units are from sponsor workbook, do not replace with another bank universe."
+        "Bloomberg quarterly net charge-offs; population/units are from PCM - Monthly Market & Risk Monitor, do not replace with another bank universe."
       ],
       "charts": [
         {
@@ -2867,7 +2867,7 @@
         "Recession"
       ],
       "notes": [
-        "Layout as of the 2026-11 workbook: checklist B4:H53 (items rows 5-49, total D52=17, F52 = SUM of G flags, F53 share). F is the current status (text or a number), G the sponsor's manual red flag, H the source note. Sponsor definitions changed: Core inflation, Atlanta Fed wage tracker (WGTROVER), BEA personal income (PITLYOY). Sahm chart S5:U132 is ordered newest first and covers 2015 onward; U is the hardcoded 0.5 warning line. New sell-side probability block J3:N is not mapped. Manual statuses are not proven current by a new save."
+        "Layout as of the 2026-11 workbook: checklist B4:H53 (items rows 5-49, total D52=17, F52 = SUM of G flags, F53 share). F is the current status (text or a number), G the PCM - Monthly Market & Risk Monitor's manual red flag, H the source note. PCM - Monthly Market & Risk Monitor definitions changed: Core inflation, Atlanta Fed wage tracker (WGTROVER), BEA personal income (PITLYOY). Sahm chart S5:U132 is ordered newest first and covers 2015 onward; U is the hardcoded 0.5 warning line. New sell-side probability block J3:N is not mapped. Manual statuses are not proven current by a new save."
       ],
       "charts": [
         {
@@ -2949,7 +2949,7 @@
             ],
             [
               "H",
-              "Sponsor notes"
+              "PCM - Monthly Market & Risk Monitor notes"
             ]
           ],
           "signal_column": "G"
@@ -3583,7 +3583,7 @@
         "Financing"
       ],
       "notes": [
-        "Sponsor Financing section is additional to existing Forecasting. Horizontal hyperscaler ratios and combined quarterly cash flows, plus credit/relative-performance histories. Forward estimates must be distinguished from reported quarters."
+        "PCM - Monthly Market & Risk Monitor Financing section is additional to existing Forecasting. Horizontal hyperscaler ratios and combined quarterly cash flows, plus credit/relative-performance histories. Forward estimates must be distinguished from reported quarters."
       ],
       "charts": [
         {

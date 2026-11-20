@@ -189,15 +189,15 @@ def synthetic_snapshot():
     }
 
 
-def seed_snapshot(store):
+def seed_snapshot(store, snapshot=None, status="success"):
     with Session(store.engine) as session, session.begin():
         session.add(
             store.WorkbookImport(
                 imported_at=datetime.now(UTC),
                 path="synthetic.xlsx",
                 sha256="0" * 64,
-                status="success",
-                payload=json.dumps(synthetic_snapshot()),
+                status=status,
+                payload=json.dumps(snapshot or synthetic_snapshot()),
             )
         )
 
@@ -222,7 +222,7 @@ def test_page_with_snapshot(title, charts, database):
     assert not app.exception
     assert app.title[0].value == title
     assert len(app.tabs) == 4
-    assert app.tabs[0].label == "Sponsor workbook"
+    assert app.tabs[0].label == "PCM - Monthly Market & Risk Monitor"
     assert len(app.get("plotly_chart")) >= charts
     assert not any("UNAVAILABLE · No validated workbook snapshot" in w.value for w in app.warning)
 
@@ -250,9 +250,11 @@ def test_momentum_signal_board_and_study(database):
 def test_fc_statistics_match_saved_summary(database):
     seed_snapshot(database)
     app = run("FC Data")
-    stats = next(f for f in frames(app) if "Matches sponsor" in f.columns)
+    stats = next(
+        f for f in frames(app) if "Matches PCM - Monthly Market & Risk Monitor" in f.columns
+    )
     assert len(stats) == 14
-    assert (stats["Matches sponsor"] == "Yes").all()
+    assert (stats["Matches PCM - Monthly Market & Risk Monitor"] == "Yes").all()
 
 
 def test_failure_candidates_rules_and_exposure(database):
@@ -302,3 +304,32 @@ def test_navigation_follows_workbook_tab_order():
     ]
     assert [t for t in order if t in tabs] == tabs
     assert next(iter(pages)) == "Empirical"
+
+
+def test_rejected_tab_explains_itself_while_other_tabs_load(database):
+    snapshot = synthetic_snapshot()
+    del snapshot["sections"]["Momentum"]
+    snapshot["rejected_sections"] = {"Momentum": "Layout changed: Mo!E4"}
+    seed_snapshot(database, snapshot, status="partial")
+    app = run("Momentum")
+    assert not app.exception
+    assert any("did not pass validation" in w.value and "Mo!E4" in w.value for w in app.warning)
+    assert len(app.get("plotly_chart")) == 0
+    other = run("FC Data")  # imported in the same partial snapshot
+    assert not other.exception
+    assert len(other.get("plotly_chart")) >= 17
+
+
+def test_retained_tab_is_marked_out_of_date(database):
+    snapshot = synthetic_snapshot()
+    snapshot["retained_sections"] = {
+        "Failure Candidates": {
+            "reason": "Layout changed: Failure Candidates!AC4",
+            "imported_at": "2026-10-01T12:00:00+00:00",
+        }
+    }
+    seed_snapshot(database, snapshot, status="partial")
+    app = run("Failure Candidates")
+    assert not app.exception
+    assert any("OUT OF DATE" in w.value and "2026-10-01 12:00" in w.value for w in app.warning)
+    assert len(app.get("plotly_chart")) >= 2  # the kept data is still shown

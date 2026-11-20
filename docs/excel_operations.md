@@ -25,7 +25,19 @@ uv run python -m scripts.compare_excel
 uv run streamlit run dashboard/app.py
 ```
 
-The app polls every 10 seconds while a session is open. It waits for stable size/mtime observations over the settling interval, then hashes bytes. A single background worker validates a consistent bytes snapshot, checks required sheets, header anchors, metric types/number formats, dates, duplicates and prior-value continuity. It rechecks the file hash before publication. One short database transaction publishes the whole validated snapshot; unsuccessful imports only add a failure log. Previously valid points cannot silently become missing. Existing initial gaps and error text are retained as unavailable with diagnostics. File modification time, formula TODAY() and successful import are not Bloomberg refresh evidence.
+The app polls every 10 seconds while a session is open. It waits for stable size/mtime observations over the settling interval, then hashes bytes. A single background worker validates a consistent bytes snapshot, checks required sheets, header anchors, metric types/number formats, dates, duplicates and prior-value continuity. It rechecks the file hash before publication. One short database transaction publishes the validated snapshot; sections that fail validation are handled per section (below), and an import with no publishable section only adds a failure log. Previously valid points cannot silently become missing. Existing initial gaps and error text are retained as unavailable with diagnostics. File modification time, formula TODAY() and successful import are not Bloomberg refresh evidence.
+
+### Per-section publication
+
+Each mapped section is validated on its own. A section whose sheets, header anchors, dates, units or number formats no longer match its mapping, or that would lose a previously valid value, is **rejected whole**; it is never shown partly. The other sections are still published:
+
+| Import status | Meaning |
+|---|---|
+| `success` | Every mapped section passed and was published from this save |
+| `partial` | At least one section was rejected. Valid sections were published. A rejected section that an earlier import had is carried forward unchanged and listed under `retained_sections` with the reason and the time of the import it came from. A section with no earlier data stays unavailable. |
+| `failed` | No section could be published from this save; the previous snapshot stays active |
+
+Pages show an **OUT OF DATE** warning for carried-forward sections and an **UNAVAILABLE** warning with the validation failure for rejected ones. Workbook Administration lists the status and failure of each section, and the Executive Overview marks them. A carried-forward section keeps the time of its original import across later partial imports, so its age is never understated.
 
 In Workbook Administration, review the current path/modification time, last successful import, latest validated historical date (excluding estimates), numeric metric count, errors, missing caches, manual notes and coverage. **Reimport Workbook** requests another validation even for identical bytes and still waits for writes to settle. A successful automatic import triggers a full app rerun so charts update without manually refreshing the browser. Closed browser sessions do not run a watcher.
 

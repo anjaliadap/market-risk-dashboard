@@ -320,3 +320,140 @@ def test_source_change_during_validation_is_not_published(tmp_path, mapping, mon
     assert excel_sync.import_workbook(path, mapping, force=True) == "failed"
     assert "changed during validation" in excel_sync.latest_import()["error"]
     assert excel_sync.latest_import(True)["id"] == valid
+
+
+def with_second_section(mapping, header):
+    """Add a table-only section whose layout check passes or fails depending on ``header``."""
+    out = copy.deepcopy(mapping)
+    out["sections"]["Benchmarks"] = {
+        "sheets": ["Snapshot"],
+        "notes": [],
+        "charts": [],
+        "tables": [
+            {
+                "id": "second",
+                "title": "Second",
+                "sheet": "Snapshot",
+                "range": "A1:B2",
+                "date_cell": None,
+                "expected_headers": {"A1": header},
+            }
+        ],
+    }
+    return out
+
+
+def test_rejected_section_does_not_block_the_rest(tmp_path, mapping):
+    partial = with_second_section(mapping, "Renamed header")
+    snapshot = ExcelWorkbookProvider(tmp_path / "x.xlsx", partial).read_bytes(workbook_bytes())
+    assert list(snapshot["sections"]) == ["Market Data"]
+    assert snapshot["rejected_sections"] == {"Benchmarks": "Layout changed: Snapshot!A1"}
+    # A rejected section is dropped whole: none of its cells, issues or dates leak through.
+    assert all(
+        issue["sheet"] != "Snapshot" or issue["cell"] != "A1" for issue in snapshot["issues"]
+    )
+
+
+def test_every_section_rejected_still_fails(tmp_path, mapping):
+    wrong = copy.deepcopy(mapping)
+    wrong["sections"]["Market Data"]["tables"][0]["expected_headers"]["A1"] = "Wrong header"
+    with pytest.raises(ValueError, match="No mapped section passed validation"):
+        ExcelWorkbookProvider(tmp_path / "x.xlsx", wrong).read_bytes(workbook_bytes())
+
+
+def test_partial_import_publishes_valid_sections(tmp_path, mapping):
+    path = tmp_path / "master.xlsx"
+    path.write_bytes(workbook_bytes())
+    partial = with_second_section(mapping, "Renamed header")
+    assert excel_sync.import_workbook(path, partial) == "partial"
+    saved = excel_sync.latest_import(True)
+    assert saved["status"] == "partial"
+    assert "Benchmarks: Layout changed" in saved["error"]
+    assert excel_sync.section_state("Market Data")["state"] == "imported"
+    rejected = excel_sync.section_state("Benchmarks")
+    assert rejected["state"] == "rejected"
+    assert rejected["reason"] == "Layout changed: Snapshot!A1"
+    assert excel_sync.section_state("Never mapped")["state"] == "missing"
+
+
+def test_rejected_section_keeps_last_valid_data(tmp_path, mapping):
+    path = tmp_path / "master.xlsx"
+    path.write_bytes(workbook_bytes())
+    assert excel_sync.import_workbook(path, with_second_section(mapping, "Benchmark")) == "success"
+    first = excel_sync.latest_import(True)
+    old = first["snapshot"]["sections"]["Benchmarks"]
+
+    broken = with_second_section(mapping, "Renamed header")
+    path.write_bytes(workbook_bytes(value=130))
+    assert excel_sync.import_workbook(path, broken) == "partial"
+    second = excel_sync.latest_import(True)["snapshot"]
+    assert second["sections"]["Benchmarks"] == old  # carried forward, unchanged
+    state = excel_sync.section_state("Benchmarks")
+    assert state["state"] == "retained"
+    assert state["imported_at"] == first["time"]
+    assert "Layout changed" in state["reason"]
+    # Market Data itself updated from the new save.
+    points = second["sections"]["Market Data"]["charts"][0]["series"][0]["points"]
+    assert points[-1]["value"] == 130
+
+    # Still broken next month: the data stays dated to the original import, not the latest one.
+    path.write_bytes(workbook_bytes(value=140))
+    assert excel_sync.import_workbook(path, broken) == "partial"
+    assert excel_sync.section_state("Benchmarks")["imported_at"] == first["time"]
+
+    # Fixed: imported fresh again and no longer marked out of date.
+    path.write_bytes(workbook_bytes(value=150))
+    assert excel_sync.import_workbook(path, with_second_section(mapping, "Benchmark")) == "success"
+    assert excel_sync.section_state("Benchmarks")["state"] == "imported"
+
+
+def test_section_losing_saved_values_is_retained_not_published(tmp_path, mapping):
+    path = tmp_path / "master.xlsx"
+    two = with_second_section(mapping, "Benchmark")
+    path.write_bytes(workbook_bytes())
+    assert excel_sync.import_workbook(path, two) == "success"
+    path.write_bytes(workbook_bytes(cached=None, value=130))  # Market Data loses a saved value
+    assert excel_sync.import_workbook(path, two) == "partial"
+    state = excel_sync.section_state("Market Data")
+    assert state["state"] == "retained"
+    assert "Lost valid saved value" in state["reason"]
+    points = excel_sync.latest_import(True)["snapshot"]["sections"]["Market Data"]["charts"][0][
+        "series"
+    ][0]["points"]
+    assert [p["value"] for p in points] == [110, 120]  # the earlier valid data, untouched
+
+
+def test_import_records_the_source_of_each_series(tmp_path, mapping):
+    from src.provenance import providers
+
+    snapshot = ExcelWorkbookProvider(tmp_path / "x.xlsx", mapping).read_bytes(workbook_bytes())
+    series = snapshot["sections"]["Market Data"]["charts"][0]["series"][0]
+    # B2 is "=100+10" (a workbook calculation) and B3 a typed value (manual input).
+    assert set(providers(series["sources"])) == {
+        "PCM - Monthly Market & Risk Monitor (calculated)",
+        "PCM - Monthly Market & Risk Monitor (manual input)",
+    }
+    table = snapshot["sections"]["Market Data"]["tables"][0]
+    assert providers(table["sources"]) == ["PCM - Monthly Market & Risk Monitor (manual input)"]
+
+
+def test_snapshot_schema_change_reimports_unchanged_workbook(tmp_path, mapping):
+    from sqlalchemy import update
+    from sqlalchemy.orm import Session
+
+    from src.database import store
+
+    path = tmp_path / "master.xlsx"
+    path.write_bytes(workbook_bytes())
+    assert excel_sync.import_workbook(path, mapping) == "success"
+    assert excel_sync.import_workbook(path, mapping) == "unchanged"
+    saved = excel_sync.latest_import(True)
+    old = {**saved["snapshot"], "schema": 1}  # a snapshot written before data sources existed
+    with Session(store.engine) as session, session.begin():
+        session.execute(
+            update(store.WorkbookImport)
+            .where(store.WorkbookImport.id == saved["id"])
+            .values(payload=json.dumps(old))
+        )
+    excel_sync._decode_snapshot.cache_clear()
+    assert excel_sync.import_workbook(path, mapping) == "success"

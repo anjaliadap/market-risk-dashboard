@@ -354,7 +354,7 @@ def apply_workbook_fallback(checks, saved):
             status, flagged = saved[c.metric]
             c.red = bool(flagged)
             c.status = status or ("Flagged" if flagged else "Not flagged")
-            c.reading = "Sponsor saved status"
+            c.reading = "PCM - Monthly Market & Risk Monitor saved status"
             c.source = "Workbook (saved manual flag)"
     return checks
 
@@ -578,7 +578,7 @@ def spread_vs_average_check(spread, average, source, independent=None):
     c = Check(
         "Tech HY spreads",
         "Widening above average",
-        "Sponsor HY Tech − IG spread above its saved average; FRED HY − IG OAS proxy otherwise",
+        "PCM - Monthly Market & Risk Monitor HY Tech − IG spread above its saved average; FRED HY − IG OAS proxy otherwise",
     )
     now, as_of = last(spread)
     avg, _ = last(average)
