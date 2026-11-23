@@ -10,7 +10,13 @@ import streamlit as st
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from dashboard.additional_workbook_pages import render_additional_workbook_page
+from dashboard.additional_workbook_pages import (
+    FULL_WORKSHEET_PAGES,
+    REVIEWED_LEGACY_PAGES,
+    render_additional_workbook_page,
+    workbook_path,
+    worksheet_name,
+)
 from dashboard.excel_views import render_administration, render_section, synchronization_status
 from dashboard.process_sections import render_process_section
 from dashboard.sections import RENDERERS, PageContext
@@ -21,6 +27,7 @@ from dashboard.styles.theme import (
     theme_for,
 )
 from dashboard.workbook_sections import PAGE_IDS, render_workbook_section
+from dashboard.worksheet_data import render_worksheet_data
 from src import provenance
 from src.analytics.core import (
     drawdown,
@@ -74,7 +81,22 @@ def render(title):
     provenance.reset_page()  # Chart captions attribute derived lines to this page's inputs.
     theme = theme_for(title, PAGES)
     page_header(title, theme)
-    if render_additional_workbook_page(title, theme):
+    if title in FULL_WORKSHEET_PAGES:
+        summary, worksheet = st.tabs(
+            ["Summary", "Full worksheet"], key=f"workbook_tabs_{title}", on_change="rerun"
+        )
+        if worksheet.open:
+            with worksheet:
+                render_worksheet_data(workbook_path(title), worksheet_name(title))
+        else:
+            with summary:
+                render_page_content(title, theme)
+        return
+    render_page_content(title, theme)
+
+
+def render_page_content(title, theme):
+    if title not in REVIEWED_LEGACY_PAGES and render_additional_workbook_page(title, theme):
         return
     if render_process_section(title):
         return
@@ -103,7 +125,10 @@ def render(title):
     if title in RENDERERS:
         RENDERERS[title](PageContext(title, theme, chart, table_view, enqueue), render_section)
         return
-    excel_primary = render_section(title)
+    excel_primary = (
+        title in REVIEWED_LEGACY_PAGES
+        and render_additional_workbook_page(title, theme, fallback=True)
+    ) or render_section(title)
     if excel_primary:
         if title not in MAPPING:
             return

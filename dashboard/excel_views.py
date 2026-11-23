@@ -240,7 +240,9 @@ def table_frame(table, *, mapped_headers=False):
             "% present",
             "current",
         } or label.startswith(("avg ", "median ", "total ", "current "))
-        current_column = "D" if table.get("id") == "bear_checklist" else "F"
+        current_column = table.get(
+            "current_column", "D" if table.get("id") == "bear_checklist" else "F"
+        )
         for (col, _), cell in zip(columns, visible, strict=True):
             number = isinstance(cell["value"], (int, float)) and not isinstance(cell["value"], bool)
             text = format_cell(cell)

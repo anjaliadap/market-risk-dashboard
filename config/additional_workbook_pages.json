@@ -720,6 +720,621 @@
           ]
         }
       ]
+    },
+    "Market Data": {
+      "sheets": [
+        "Market Data"
+      ],
+      "notes": [
+        "Refresh in authorized Excel where required, recalculate and save. Appended chart observations are read through contiguous source dates."
+      ],
+      "tables": [
+        {
+          "id": "market_snapshot",
+          "title": "Market Snapshot",
+          "sheet": "Market Data",
+          "range": "B3:P54",
+          "date_cell": null,
+          "expected_headers": {
+            "B3": "Equities",
+            "D3": "Current",
+            "E3": "YTD",
+            "F3": "1M",
+            "G3": "3M",
+            "H3": "6M",
+            "I3": "12M",
+            "J3": "50-DMA",
+            "K3": "200-DMA",
+            "L3": "Low",
+            "M3": "High",
+            "N3": "P/E",
+            "O3": "LT Avg",
+            "P3": "Prem/Disc"
+          },
+          "display_columns": [
+            [
+              "B",
+              "Market"
+            ],
+            [
+              "D",
+              "Current"
+            ],
+            [
+              "E",
+              "YTD"
+            ],
+            [
+              "F",
+              "1M"
+            ],
+            [
+              "G",
+              "3M"
+            ],
+            [
+              "H",
+              "6M"
+            ],
+            [
+              "I",
+              "12M"
+            ],
+            [
+              "J",
+              "50-DMA"
+            ],
+            [
+              "K",
+              "200-DMA"
+            ],
+            [
+              "L",
+              "52W Low"
+            ],
+            [
+              "M",
+              "52W High"
+            ],
+            [
+              "N",
+              "P/E"
+            ],
+            [
+              "O",
+              "P/S"
+            ],
+            [
+              "P",
+              "LT average vs current"
+            ]
+          ],
+          "header_row": 3,
+          "follow_header": false
+        }
+      ],
+      "charts": [
+        {
+          "id": "market_data_0",
+          "title": "% of S&P 500 Trading > 50-DMA",
+          "series": [
+            {
+              "id": "market_data_0_0",
+              "name": "%",
+              "role": "metric",
+              "sheet": "Market Data",
+              "values": "AY4:AY5686",
+              "date_sheet": "Market Data",
+              "dates": "AX4:AX5686",
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "0.0",
+              "allowed_number_formats": [
+                "0.0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "%",
+              "trendline": null
+            },
+            {
+              "id": "market_data_0_1",
+              "name": "Avg",
+              "role": "metric",
+              "sheet": "Market Data",
+              "values": "AZ4:AZ5686",
+              "date_sheet": "Market Data",
+              "dates": "AX4:AX5686",
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "0.0",
+              "allowed_number_formats": [
+                "0.0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Avg",
+              "trendline": null
+            }
+          ]
+        },
+        {
+          "id": "market_data_1",
+          "title": "% of S&P 500 Trading > 200-DMA",
+          "series": [
+            {
+              "id": "market_data_1_0",
+              "name": "%",
+              "role": "metric",
+              "sheet": "Market Data",
+              "values": "BC4:BC5426",
+              "date_sheet": "Market Data",
+              "dates": "BB4:BB5426",
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "0.0",
+              "allowed_number_formats": [
+                "0.0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "%",
+              "trendline": null
+            },
+            {
+              "id": "market_data_1_1",
+              "name": "Avg",
+              "role": "metric",
+              "sheet": "Market Data",
+              "values": "BD4:BD5426",
+              "date_sheet": "Market Data",
+              "dates": "BB4:BB5426",
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "0.0",
+              "allowed_number_formats": [
+                "0.0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Avg",
+              "trendline": null
+            }
+          ]
+        },
+        {
+          "id": "market_data_2",
+          "title": "% of S&P at 52Wk High vs Low",
+          "series": [
+            {
+              "id": "market_data_2_0",
+              "name": "High",
+              "role": "metric",
+              "sheet": "Market Data",
+              "values": "BG4:BG4225",
+              "date_sheet": "Market Data",
+              "dates": "BF4:BF4225",
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0.0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "0.0",
+              "allowed_number_formats": [
+                "0.0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "High",
+              "trendline": null
+            },
+            {
+              "id": "market_data_2_1",
+              "name": "Low (Formula for Chart)",
+              "role": "metric",
+              "sheet": "Market Data",
+              "values": "BI4:BI4225",
+              "date_sheet": "Market Data",
+              "dates": "BF4:BF4225",
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0.0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "0.0",
+              "allowed_number_formats": [
+                "0.0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Low (Formula for Chart)",
+              "trendline": null
+            }
+          ]
+        },
+        {
+          "id": "market_data_3",
+          "title": "NYSE Advance Decline Line",
+          "series": [
+            {
+              "id": "market_data_3_0",
+              "name": "Value",
+              "role": "metric",
+              "sheet": "Market Data",
+              "values": "BP4:BP1707",
+              "date_sheet": "Market Data",
+              "dates": "BO4:BO1707",
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "\"$\"#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "\"$\"#,##0",
+              "allowed_number_formats": [
+                "\"$\"#,##0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Value",
+              "trendline": null
+            }
+          ]
+        },
+        {
+          "id": "market_data_4",
+          "title": "TTM SPY Flows",
+          "series": [
+            {
+              "id": "market_data_4_0",
+              "name": "TTM",
+              "role": "metric",
+              "sheet": "Market Data",
+              "values": "BM4:BM70",
+              "date_sheet": "Market Data",
+              "dates": "BK4:BK70",
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "\"$\"#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "\"$\"#,##0",
+              "allowed_number_formats": [
+                "\"$\"#,##0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "TTM",
+              "trendline": null,
+              "name_sheet": "Market Data",
+              "name_cell": "BM3"
+            }
+          ]
+        }
+      ]
+    },
+    "Bear Market": {
+      "sheets": [
+        "Bear Market"
+      ],
+      "notes": [
+        "Both checklist tables retained. Manual status and saved flags remain operator judgments; financial metrics use saved formulas and historical benchmarks."
+      ],
+      "tables": [
+        {
+          "id": "bear_status",
+          "title": "Bear Status",
+          "sheet": "Bear Market",
+          "range": "B3:F9",
+          "date_cell": null,
+          "expected_headers": {
+            "B3": "Bear Market Checklist",
+            "D3": "Status"
+          },
+          "display_columns": [
+            [
+              "B",
+              "Bear Market Checklist"
+            ],
+            [
+              "D",
+              "Status"
+            ]
+          ],
+          "header_row": 3,
+          "follow_header": false,
+          "signal_column": "F",
+          "current_column": "D"
+        },
+        {
+          "id": "bear_checklist",
+          "title": "Bear Checklist",
+          "sheet": "Bear Market",
+          "range": "B12:F31",
+          "date_cell": null,
+          "expected_headers": {
+            "B12": "Bear Market Checklist",
+            "D12": "Current",
+            "E12": "Average*"
+          },
+          "display_columns": [
+            [
+              "B",
+              "Indicator"
+            ],
+            [
+              "D",
+              "Current"
+            ],
+            [
+              "E",
+              "Historical average"
+            ]
+          ],
+          "header_row": 12,
+          "follow_header": false,
+          "signal_column": "F",
+          "current_column": "D"
+        }
+      ],
+      "charts": []
+    },
+    "S&P vs Bonds": {
+      "sheets": [
+        "S&P vs Bonds"
+      ],
+      "notes": [
+        "Refresh in authorized Excel where required, recalculate and save. Appended chart observations are read through contiguous source dates."
+      ],
+      "tables": [],
+      "charts": [
+        {
+          "id": "sandp_vs_bonds_0",
+          "title": "P/S yield less Baa bond yield",
+          "series": [
+            {
+              "id": "sandp_vs_bonds_0_0",
+              "name": "P/S Yield -  Baa Bond Yield",
+              "role": "metric",
+              "sheet": "S&P vs Bonds",
+              "values": "M4:M327",
+              "date_sheet": "S&P vs Bonds",
+              "dates": "J4:J327",
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "P/S Yield -  Baa Bond Yield",
+              "trendline": null,
+              "name_sheet": "S&P vs Bonds",
+              "name_cell": "M3"
+            }
+          ]
+        },
+        {
+          "id": "sandp_vs_bonds_1",
+          "title": "Equity P/E less Baa bond P/E",
+          "series": [
+            {
+              "id": "sandp_vs_bonds_1_0",
+              "name": "Equity P/E -  Baa Bond P/E",
+              "role": "metric",
+              "sheet": "S&P vs Bonds",
+              "values": "R4:R327",
+              "date_sheet": "S&P vs Bonds",
+              "dates": "O4:O327",
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0\\x",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "0.0\\x",
+              "allowed_number_formats": [
+                "0.0\\x"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Equity P/E -  Baa Bond P/E",
+              "trendline": null,
+              "name_sheet": "S&P vs Bonds",
+              "name_cell": "R3"
+            }
+          ]
+        }
+      ]
+    },
+    "S&P 500 Fundamentals": {
+      "sheets": [
+        "S&P 500 Fundamentals"
+      ],
+      "notes": [
+        "Refresh in authorized Excel where required, recalculate and save. Appended chart observations are read through contiguous source dates."
+      ],
+      "tables": [],
+      "charts": [
+        {
+          "id": "sandp_500_fundamentals_0",
+          "title": "S&P 500 P/E vs Operating Margin",
+          "series": [
+            {
+              "id": "sandp_500_fundamentals_0_0",
+              "name": "S&P 500 P/E",
+              "role": "metric",
+              "sheet": "S&P 500 Fundamentals",
+              "values": "C23:C500",
+              "date_sheet": "S&P 500 Fundamentals",
+              "dates": "B23:B500",
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0\"x\"",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "0.0\"x\"",
+              "allowed_number_formats": [
+                "0.0\"x\""
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "S&P 500 P/E",
+              "trendline": null,
+              "name_sheet": "S&P 500 Fundamentals",
+              "name_cell": "C22"
+            },
+            {
+              "id": "sandp_500_fundamentals_0_1",
+              "name": "Operating Margin",
+              "role": "metric",
+              "sheet": "S&P 500 Fundamentals",
+              "values": "F23:F500",
+              "date_sheet": "S&P 500 Fundamentals",
+              "dates": "E23:E500",
+              "kind": "LineChart",
+              "secondary": true,
+              "unit": "0.0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "0.0",
+              "allowed_number_formats": [
+                "0.0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Operating Margin",
+              "trendline": null,
+              "name_sheet": "S&P 500 Fundamentals",
+              "name_cell": "F22"
+            }
+          ]
+        },
+        {
+          "id": "sandp_500_fundamentals_1",
+          "title": "S&P 500 P/E vs ROE",
+          "series": [
+            {
+              "id": "sandp_500_fundamentals_1_0",
+              "name": "S&P 500 P/E",
+              "role": "metric",
+              "sheet": "S&P 500 Fundamentals",
+              "values": "C23:C500",
+              "date_sheet": "S&P 500 Fundamentals",
+              "dates": "B23:B500",
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0\"x\"",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "0.0\"x\"",
+              "allowed_number_formats": [
+                "0.0\"x\""
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "S&P 500 P/E",
+              "trendline": null,
+              "name_sheet": "S&P 500 Fundamentals",
+              "name_cell": "C22"
+            },
+            {
+              "id": "sandp_500_fundamentals_1_1",
+              "name": "ROE",
+              "role": "metric",
+              "sheet": "S&P 500 Fundamentals",
+              "values": "I23:I500",
+              "date_sheet": "S&P 500 Fundamentals",
+              "dates": "H23:H500",
+              "kind": "LineChart",
+              "secondary": true,
+              "unit": "0.0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "0.0",
+              "allowed_number_formats": [
+                "0.0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "ROE",
+              "trendline": null,
+              "name_sheet": "S&P 500 Fundamentals",
+              "name_cell": "I22"
+            }
+          ]
+        }
+      ]
     }
-  }
+  },
+  "reviewed_legacy_pages": [
+    "Market Data",
+    "Bear Market",
+    "S&P vs Bonds",
+    "S&P 500 Fundamentals"
+  ],
+  "full_worksheet_pages": [
+    "Growth Regime Indicator",
+    "Valuation Spreads",
+    "Market Data",
+    "Bear Market",
+    "S&P vs Bonds",
+    "S&P 500 Fundamentals"
+  ]
 }

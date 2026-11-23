@@ -13,9 +13,22 @@ from dashboard.excel_views import build_figure, table_columns, table_frame
 from dashboard.styles.theme import financial_table, research_chart
 from src.process_sync import configured_workbook_path
 from src.providers.excel import ExcelWorkbookProvider
+from src.settings import settings
 
 MAPPING_PATH = Path(__file__).resolve().parents[1] / "config/additional_workbook_pages.json"
 MAPPING = json.loads(MAPPING_PATH.read_text(encoding="utf-8"))
+REVIEWED_LEGACY_PAGES = frozenset(MAPPING["reviewed_legacy_pages"])
+FULL_WORKSHEET_PAGES = frozenset(MAPPING["full_worksheet_pages"])
+
+
+def worksheet_name(title):
+    return MAPPING["sections"][title]["sheets"][0]
+
+
+def workbook_path(title):
+    if title in REVIEWED_LEGACY_PAGES and settings.excel_workbook_path:
+        return settings.excel_workbook_path
+    return configured_workbook_path()
 
 
 @st.cache_data(show_spinner="Reading the saved workbook…", max_entries=20)
@@ -65,11 +78,13 @@ def workbook_figure(chart):
     return figure
 
 
-def render_additional_workbook_page(title, theme):
+def render_additional_workbook_page(title, theme, *, fallback=False):
     if title not in MAPPING["sections"]:
         return False
-    configured = configured_workbook_path()
+    configured = workbook_path(title)
     if not configured:
+        if fallback:
+            return False
         st.info("Set PROCESS_WORKBOOK_PATH or EXCEL_WORKBOOK_PATH to the saved sponsor workbook.")
         return True
     path = Path(configured).expanduser()
@@ -77,12 +92,18 @@ def render_additional_workbook_page(title, theme):
         stat = path.stat()
         section = read_section(str(path), stat.st_mtime_ns, stat.st_size, title)
     except (OSError, ValueError, BadZipFile, InvalidFileException) as exc:
-        st.warning(f"The saved workbook section is unavailable. {exc}")
-        return True
+        if title in FULL_WORKSHEET_PAGES:
+            st.warning(f"The workbook summary could not be loaded. {exc}")
+        else:
+            st.warning(f"The saved workbook section is unavailable. {exc}")
+        return not fallback
 
-    st.caption("Source: sponsor’s saved Excel workbook · Bloomberg refresh time unknown")
-    for note in section["notes"]:
-        st.caption(note)
+    if title in FULL_WORKSHEET_PAGES:
+        st.caption(f"Source: saved Excel · {path.name} · Bloomberg refresh time unknown")
+    else:
+        st.caption("Source: sponsor’s saved Excel workbook · Bloomberg refresh time unknown")
+        for note in section["notes"]:
+            st.caption(note)
     for table in section["tables"]:
         st.subheader(table["title"])
         financial_table(
@@ -100,4 +121,8 @@ def render_additional_workbook_page(title, theme):
             research_chart(workbook_figure(chart), theme, width="stretch", key=chart["id"])
         else:
             st.info(f"{chart['title']}: no valid saved observations.")
+    if title in FULL_WORKSHEET_PAGES and section["notes"]:
+        with st.expander("Workbook notes"):
+            for note in section["notes"]:
+                st.write(note)
     return True
