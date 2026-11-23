@@ -4,7 +4,9 @@
     "FC Data",
     "Failure Candidates",
     "Intra-Sector Spread",
-    "Trend Following"
+    "Trend Following",
+    "Growth Regime Indicator",
+    "Valuation Spreads"
   ],
   "Market": [
     "Market Data",
@@ -21,7 +23,10 @@
     "BTC",
     "Banks",
     "Housing",
-    "Energy"
+    "Energy",
+    "P/E vs Forward Returns",
+    "Cash Returns",
+    "M&A & IPOs"
   ],
   "Macro": [
     "Recession",

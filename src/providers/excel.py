@@ -8,7 +8,7 @@ from io import BytesIO
 from pathlib import Path
 
 from openpyxl import load_workbook
-from openpyxl.utils.cell import range_boundaries
+from openpyxl.utils.cell import get_column_letter, range_boundaries
 from openpyxl.utils.datetime import from_excel
 
 from src.provenance import WorkbookTracer
@@ -76,6 +76,111 @@ def range_cells(sheet, area):
         for row in sheet.iter_rows(min_row=r1, max_row=r2, min_col=c1, max_col=c2)
         for cell in row
     ]
+
+
+def chart_cells(cached, spec):
+    """Extend paired ranges only through contiguous valid source coordinates."""
+    xs, ys = cached[spec["date_sheet"]], cached[spec["sheet"]]
+    dates, values = range_cells(xs, spec["dates"]), range_cells(ys, spec["values"])
+    if not spec.get("extend") or not dates or not values:
+        return dates, values
+    horizontal = dates[0].row == dates[-1].row and len(dates) > 1
+    last_x, last_y = dates[-1], values[-1]
+    limit = min(xs.max_column, ys.max_column) if horizontal else min(xs.max_row, ys.max_row)
+    endpoint = last_x.column if horizontal else last_x.row
+    for offset in range(1, limit - endpoint + 1):
+        dc = (
+            xs.cell(last_x.row, last_x.column + offset)
+            if horizontal
+            else xs.cell(last_x.row + offset, last_x.column)
+        )
+        vc = (
+            ys.cell(last_y.row, last_y.column + offset)
+            if horizontal
+            else ys.cell(last_y.row + offset, last_y.column)
+        )
+        try:
+            chart_coordinate(dc.value, spec, cached.epoch)
+        except (ValueError, TypeError):
+            break  # Never cross a header, blank separator or summary area.
+        dates.append(dc)
+        values.append(vc)
+    return dates, values
+
+
+def shift_columns(area, offset):
+    c1, r1, c2, r2 = range_boundaries(area)
+    start = f"{get_column_letter(c1 + offset)}{r1}"
+    end = f"{get_column_letter(c2 + offset)}{r2}"
+    return start if start == end else start + ":" + end
+
+
+def resolve_table(table, sheet):
+    """Follow a unique, verified summary header when monthly columns move it."""
+    if not table.get("follow_header"):
+        return table
+    c1, r1, _, _ = range_boundaries(table["range"])
+    expected = table.get("expected_headers", {})
+
+    def matches(offset):
+        return all(
+            sheet[shift_columns(cell, offset)].value == label for cell, label in expected.items()
+        )
+
+    if matches(0):
+        return table
+    offsets = [
+        column - c1
+        for column in range(1, sheet.max_column + 1)
+        if sheet.cell(r1, column).value == expected.get(f"{get_column_letter(c1)}{r1}")
+        and matches(column - c1)
+    ]
+    if len(offsets) != 1:
+        raise ValueError(f"Missing or ambiguous summary header: {table['sheet']} {table['id']}")
+    offset = offsets[0]
+    result = {
+        **table,
+        "range": shift_columns(table["range"], offset),
+        "expected_headers": {
+            shift_columns(cell, offset): label for cell, label in expected.items()
+        },
+    }
+    result["display_columns"] = [
+        (get_column_letter(range_boundaries(column + "1")[0] + offset), label)
+        for column, label in table["display_columns"]
+    ]
+    result["heatmap_columns"] = [
+        get_column_letter(range_boundaries(column + "1")[0] + offset)
+        for column in table.get("heatmap_columns", [])
+    ]
+    return result
+
+
+def chart_coordinate(value, spec, epoch):
+    kind = spec.get("date_type", "excel_date")
+    if kind == "number":
+        return numeric(value, {})
+    if kind == "year":
+        if (
+            isinstance(value, bool)
+            or not isinstance(value, (int, float))
+            or not math.isfinite(value)
+            or value != int(value)
+            or not 1900 <= value <= 2200
+        ):
+            raise ValueError("Invalid annual category")
+        return str(int(value))
+    if kind == "yyyymm":
+        if (
+            isinstance(value, bool)
+            or not isinstance(value, (int, float))
+            or not math.isfinite(value)
+            or value != int(value)
+        ):
+            raise ValueError("Invalid YYYYMM date")
+        year, month = divmod(int(value), 100)
+        return date(year, month, 1).isoformat()
+    return normalize_date(value, epoch)
 
 
 class ExcelWorkbookProvider:
@@ -181,10 +286,19 @@ class ExcelWorkbookProvider:
         metric_count = 0
         section = {"notes": config["notes"], "charts": [], "tables": []}
         for table in config["tables"]:
+            table = resolve_table(table, cached[table["sheet"]])
             for coord, expected in table.get("expected_headers", {}).items():
                 if cached[table["sheet"]][coord].value != expected:
                     raise ValueError(f"Layout changed: {table['sheet']}!{coord}")
             c1, r1, c2, r2 = range_boundaries(table["range"])
+            extension = table.get("extend_columns")
+            if extension:
+                sheet = cached[table["sheet"]]
+                for column in range(c2 + 1, sheet.max_column + 1):
+                    year = sheet.cell(extension["header_row"], column).value
+                    if not isinstance(year, (int, float)) or not 1900 <= year <= 2200:
+                        break
+                    c2 = column
             rows = []
             for row in cached[table["sheet"]].iter_rows(
                 min_row=r1, max_row=r2, min_col=c1, max_col=c2
@@ -224,6 +338,15 @@ class ExcelWorkbookProvider:
                 if value is not None:
                     observed = normalize_date(value, cached.epoch)
                     latest_dates.append(observed)
+            if extension:
+                display_columns = [
+                    (
+                        get_column_letter(column),
+                        str(cached[table["sheet"]].cell(r1, column).value or "Metric"),
+                    )
+                    for column in range(c1, c2 + 1)
+                ]
+                table = {**table, "display_columns": display_columns}
             value_cells = [
                 c["cell"]
                 for row in rows
@@ -242,10 +365,14 @@ class ExcelWorkbookProvider:
         for chart in config["charts"]:
             chart_out = {"id": chart["id"], "title": chart["title"], "series": []}
             for spec in chart["series"]:
+                if spec.get("name_cell"):
+                    name = cached[spec["name_sheet"]][spec["name_cell"]].value
+                    if name is not None and not is_error(name):
+                        spec = {**spec, "name": str(name).replace("\n", " ")}
                 if not spec.get("unit") or spec.get("value_type") != "number":
                     raise ValueError(f"Metric unit/type contract missing: {spec['id']}")
-                dates = range_cells(cached[spec["date_sheet"]], spec["dates"])
-                values = range_cells(cached[spec["sheet"]], spec["values"])
+                dates, values = chart_cells(cached, spec)
+                is_dated = spec.get("date_type") not in {"number", "year"}
                 if len(dates) != len(values):
                     raise ValueError(f"Date/value range length mismatch: {spec['id']}")
                 points, seen = [], set()
@@ -267,12 +394,21 @@ class ExcelWorkbookProvider:
                             f"Unit/number format changed: {spec['sheet']}!{vc.coordinate}"
                         )
                     try:
-                        normalized = normalize_date(d, cached.epoch)
+                        normalized = chart_coordinate(d, spec, cached.epoch)
                     except ValueError as exc:
+                        if self.mapping.get("version", 1) >= 2:
+                            issues.append(
+                                {
+                                    "sheet": spec["date_sheet"],
+                                    "cell": dc.coordinate,
+                                    "reason": "Invalid chart coordinate; point unavailable",
+                                }
+                            )
+                            continue
                         raise ValueError(
                             f"Invalid date {spec['date_sheet']}!{dc.coordinate}"
                         ) from exc
-                    if normalized in seen:
+                    if is_dated and normalized in seen and not spec.get("allow_duplicate_dates"):
                         raise ValueError(f"Duplicate date in {spec['id']}: {normalized}")
                     seen.add(normalized)
                     try:
@@ -303,7 +439,7 @@ class ExcelWorkbookProvider:
                         forward = "(Fwd)" in label
                         if not forward:
                             reported_dates.append(normalized)
-                    if v is not None and not forward:
+                    if v is not None and not forward and is_dated:
                         latest_dates.append(normalized)
                     source_cell = formulas[spec["sheet"]][vc.coordinate]
                     formula = (
@@ -320,7 +456,8 @@ class ExcelWorkbookProvider:
                             "formula": formula,
                         }
                     )
-                points.sort(key=lambda p: p["date"])
+                if is_dated:
+                    points.sort(key=lambda p: p["date"])
                 chart_out["series"].append(
                     {
                         **spec,

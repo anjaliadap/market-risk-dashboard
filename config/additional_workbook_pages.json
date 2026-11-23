@@ -1,0 +1,725 @@
+{
+  "version": 2,
+  "policy": "Saved Excel values only; no formula evaluation",
+  "sections": {
+    "Growth Regime Indicator": {
+      "sheets": [
+        "Growth Regime Indicator"
+      ],
+      "notes": [
+        "Manual monthly inputs; YYYYMM row 3 supplies unambiguous dates rather than repeated two-digit year labels."
+      ],
+      "tables": [
+        {
+          "id": "growth_regions",
+          "title": "Growth Regions",
+          "sheet": "Growth Regime Indicator",
+          "range": "AHB7:AHG11",
+          "date_cell": null,
+          "expected_headers": {
+            "AHB7": "Region",
+            "AHC7": "Current",
+            "AHD7": "1M",
+            "AHE7": "3M",
+            "AHF7": "6M",
+            "AHG7": "12M"
+          },
+          "display_columns": [
+            [
+              "AHB",
+              "Region"
+            ],
+            [
+              "AHC",
+              "Current"
+            ],
+            [
+              "AHD",
+              "1M"
+            ],
+            [
+              "AHE",
+              "3M"
+            ],
+            [
+              "AHF",
+              "6M"
+            ],
+            [
+              "AHG",
+              "12M"
+            ]
+          ],
+          "header_row": 7,
+          "follow_header": true,
+          "heatmap_columns": [
+            "AHD",
+            "AHE",
+            "AHF",
+            "AHG"
+          ]
+        }
+      ],
+      "charts": [
+        {
+          "id": "growth_regime_indicator_0",
+          "title": "U.S Regime Indicator  5= Growth-Driven, 1 = Valuation-Driven 1954-Current",
+          "series": [
+            {
+              "id": "growth_regime_indicator_0_0",
+              "name": "U.S",
+              "role": "metric",
+              "sheet": "Growth Regime Indicator",
+              "values": "E5:AGL5",
+              "date_sheet": "Growth Regime Indicator",
+              "dates": "E3:AGL3",
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0",
+              "value_type": "number",
+              "date_type": "yyyymm",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "0",
+              "allowed_number_formats": [
+                "0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "U.S",
+              "trendline": null,
+              "name_sheet": "Growth Regime Indicator",
+              "name_cell": "D5"
+            }
+          ]
+        }
+      ]
+    },
+    "Valuation Spreads": {
+      "sheets": [
+        "Valuation Spreads"
+      ],
+      "notes": [
+        "Manual monthly inputs; row 3 supplies YYYYMM dates. Recession bars and the saved current reference line are retained."
+      ],
+      "tables": [
+        {
+          "id": "valuation_regions",
+          "title": "Valuation Regions",
+          "sheet": "Valuation Spreads",
+          "range": "AUJ8:AUO16",
+          "date_cell": null,
+          "expected_headers": {
+            "AUJ8": "Valuation Spreads",
+            "AUK8": "Current",
+            "AUL8": "1M",
+            "AUM8": "3M",
+            "AUN8": "6M",
+            "AUO8": "12M"
+          },
+          "display_columns": [
+            [
+              "AUJ",
+              "Valuation Spreads"
+            ],
+            [
+              "AUK",
+              "Current"
+            ],
+            [
+              "AUL",
+              "1M"
+            ],
+            [
+              "AUM",
+              "3M"
+            ],
+            [
+              "AUN",
+              "6M"
+            ],
+            [
+              "AUO",
+              "12M"
+            ]
+          ],
+          "header_row": 8,
+          "follow_header": true,
+          "heatmap_columns": [
+            "AUL",
+            "AUM",
+            "AUN",
+            "AUO"
+          ]
+        }
+      ],
+      "charts": [
+        {
+          "id": "valuation_spreads_0",
+          "title": "US Large-Cap Stocks Valuation Spreads Top Quintile Compared  to the Average 1926-Current",
+          "series": [
+            {
+              "id": "valuation_spreads_0_0",
+              "name": "Recession",
+              "role": "metric",
+              "sheet": "Valuation Spreads",
+              "values": "F6:ATT6",
+              "date_sheet": "Valuation Spreads",
+              "dates": "F3:ATT3",
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0.00",
+              "value_type": "number",
+              "date_type": "yyyymm",
+              "allow_duplicate_dates": true,
+              "expected_number_format": "0.00",
+              "allowed_number_formats": [
+                "0.00"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Standard Deviation",
+              "trendline": null,
+              "name_sheet": "Valuation Spreads",
+              "name_cell": "E6"
+            },
+            {
+              "id": "valuation_spreads_0_1",
+              "name": "Recession",
+              "role": "metric",
+              "sheet": "Valuation Spreads",
+              "values": "F7:ATT7",
+              "date_sheet": "Valuation Spreads",
+              "dates": "F3:ATT3",
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "0.00",
+              "value_type": "number",
+              "date_type": "yyyymm",
+              "allow_duplicate_dates": true,
+              "expected_number_format": "0.00",
+              "allowed_number_formats": [
+                "0.00"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Standard Deviation",
+              "trendline": null,
+              "name_sheet": "Valuation Spreads",
+              "name_cell": "E7"
+            },
+            {
+              "id": "valuation_spreads_0_2",
+              "name": "U.S.",
+              "role": "metric",
+              "sheet": "Valuation Spreads",
+              "values": "F5:ATT5",
+              "date_sheet": "Valuation Spreads",
+              "dates": "F3:ATT3",
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.00",
+              "value_type": "number",
+              "date_type": "yyyymm",
+              "allow_duplicate_dates": true,
+              "expected_number_format": "0.00",
+              "allowed_number_formats": [
+                "0.00"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Standard Deviation",
+              "trendline": null,
+              "name_sheet": "Valuation Spreads",
+              "name_cell": "E5"
+            },
+            {
+              "id": "valuation_spreads_0_3",
+              "name": "Current",
+              "role": "metric",
+              "sheet": "Valuation Spreads",
+              "values": "F8:ATT8",
+              "date_sheet": "Valuation Spreads",
+              "dates": "F3:ATT3",
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.00",
+              "value_type": "number",
+              "date_type": "yyyymm",
+              "allow_duplicate_dates": true,
+              "expected_number_format": "0.00",
+              "allowed_number_formats": [
+                "0.00"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Standard Deviation",
+              "trendline": null,
+              "name_sheet": "Valuation Spreads",
+              "name_cell": "E8"
+            }
+          ]
+        }
+      ]
+    },
+    "P/E vs Forward Returns": {
+      "sheets": [
+        "PE vs Forward Returns"
+      ],
+      "notes": [
+        "Scatter x-axis is P/E, not a date. Saved forward returns and Excel linear trendlines retained; no predictive claim."
+      ],
+      "tables": [
+        {
+          "id": "implied_ntm_return",
+          "title": "Implied Ntm Return",
+          "sheet": "PE vs Forward Returns",
+          "range": "K292:O292",
+          "date_cell": null,
+          "expected_headers": {
+            "K292": "Current Valuation Implied NTM Return:"
+          },
+          "display_columns": [
+            [
+              "K",
+              "Metric"
+            ],
+            [
+              "O",
+              "Saved implied NTM return"
+            ]
+          ],
+          "header_row": null,
+          "follow_header": false
+        },
+        {
+          "id": "implied_3yr_return",
+          "title": "Implied 3Yr Return",
+          "sheet": "PE vs Forward Returns",
+          "range": "T292:X292",
+          "date_cell": null,
+          "expected_headers": {
+            "T292": "Current Valuation Implied 3Yr Return:"
+          },
+          "display_columns": [
+            [
+              "T",
+              "Metric"
+            ],
+            [
+              "X",
+              "Saved implied annualized 3yr return"
+            ]
+          ],
+          "header_row": null,
+          "follow_header": false
+        }
+      ],
+      "charts": [
+        {
+          "id": "pe_vs_forward_returns_0",
+          "title": "P/E vs NTM\nReturn",
+          "series": [
+            {
+              "id": "pe_vs_forward_returns_0_0",
+              "name": "NTM Return",
+              "role": "metric",
+              "sheet": "PE vs Forward Returns",
+              "values": "E5:E313",
+              "date_sheet": "PE vs Forward Returns",
+              "dates": "C5:C313",
+              "kind": "ScatterChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "number",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": false,
+              "x_title": "P/E",
+              "y_title": "NTM Return",
+              "trendline": "linear",
+              "name_sheet": "PE vs Forward Returns",
+              "name_cell": "E4"
+            }
+          ]
+        },
+        {
+          "id": "pe_vs_forward_returns_1",
+          "title": "P/E vs 3Yr Annualized\nReturn",
+          "series": [
+            {
+              "id": "pe_vs_forward_returns_1_0",
+              "name": "Annualized",
+              "role": "metric",
+              "sheet": "PE vs Forward Returns",
+              "values": "H5:H289",
+              "date_sheet": "PE vs Forward Returns",
+              "dates": "C5:C289",
+              "kind": "ScatterChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "number",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": false,
+              "x_title": "P/E",
+              "y_title": "Annualized",
+              "trendline": "linear",
+              "name_sheet": "PE vs Forward Returns",
+              "name_cell": "H4"
+            }
+          ]
+        }
+      ]
+    },
+    "Cash Returns": {
+      "sheets": [
+        "Cash Returns"
+      ],
+      "notes": [
+        "Process requests monthly row additions; workbook says Update Quarterly. Confirm cadence. Dividends and buybacks are saved USD billions."
+      ],
+      "tables": [],
+      "charts": [
+        {
+          "id": "cash_returns_0",
+          "title": "S&P 500 Dividends & Buybacks ($Bn)",
+          "series": [
+            {
+              "id": "cash_returns_0_0",
+              "name": "Dividends",
+              "role": "metric",
+              "sheet": "Cash Returns",
+              "values": "I4:I113",
+              "date_sheet": "Cash Returns",
+              "dates": "H4:H113",
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "\"$\"#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "\"$\"#,##0",
+              "allowed_number_formats": [
+                "\"$\"#,##0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Dividends",
+              "trendline": null,
+              "name_sheet": "Cash Returns",
+              "name_cell": "I3"
+            },
+            {
+              "id": "cash_returns_0_1",
+              "name": "Buybacks",
+              "role": "metric",
+              "sheet": "Cash Returns",
+              "values": "J4:J113",
+              "date_sheet": "Cash Returns",
+              "dates": "H4:H113",
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "\"$\"#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "\"$\"#,##0",
+              "allowed_number_formats": [
+                "\"$\"#,##0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Buybacks",
+              "trendline": null,
+              "name_sheet": "Cash Returns",
+              "name_cell": "J3"
+            },
+            {
+              "id": "cash_returns_0_2",
+              "name": "Total",
+              "role": "metric",
+              "sheet": "Cash Returns",
+              "values": "K4:K113",
+              "date_sheet": "Cash Returns",
+              "dates": "H4:H113",
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "\"$\"#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "\"$\"#,##0",
+              "allowed_number_formats": [
+                "\"$\"#,##0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Total",
+              "trendline": null,
+              "name_sheet": "Cash Returns",
+              "name_cell": "K3"
+            }
+          ]
+        },
+        {
+          "id": "cash_returns_1",
+          "title": "Y/Y S&P 500 Dividends & Buybacks",
+          "series": [
+            {
+              "id": "cash_returns_1_0",
+              "name": "Total %",
+              "role": "metric",
+              "sheet": "Cash Returns",
+              "values": "N4:N113",
+              "date_sheet": "Cash Returns",
+              "dates": "H4:H113",
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Total %",
+              "trendline": null,
+              "name_sheet": "Cash Returns",
+              "name_cell": "N3"
+            }
+          ]
+        }
+      ]
+    },
+    "M&A & IPOs": {
+      "sheets": [
+        "M&A IPOs"
+      ],
+      "notes": [
+        "Manual annual columns per Process; workbook also says Update Monthly. Update current-year totals as needed; confirm cadence. Bloomberg MA/IPO functions require an authorized environment."
+      ],
+      "tables": [
+        {
+          "id": "annual_activity",
+          "title": "Annual Activity",
+          "sheet": "M&A IPOs",
+          "range": "B18:M21",
+          "date_cell": null,
+          "expected_headers": {},
+          "display_columns": [
+            [
+              "B",
+              "B"
+            ],
+            [
+              "C",
+              "2016"
+            ],
+            [
+              "D",
+              "2017"
+            ],
+            [
+              "E",
+              "2018"
+            ],
+            [
+              "F",
+              "2019"
+            ],
+            [
+              "G",
+              "2020"
+            ],
+            [
+              "H",
+              "2021"
+            ],
+            [
+              "I",
+              "2022"
+            ],
+            [
+              "J",
+              "2023"
+            ],
+            [
+              "K",
+              "2024"
+            ],
+            [
+              "L",
+              "2025"
+            ],
+            [
+              "M",
+              "2026"
+            ]
+          ],
+          "header_row": 18,
+          "follow_header": false,
+          "extend_columns": {
+            "header_row": 18,
+            "first_column": 3,
+            "type": "year"
+          }
+        }
+      ],
+      "charts": [
+        {
+          "id": "manda_ipos_0",
+          "title": "M&A Activity",
+          "series": [
+            {
+              "id": "manda_ipos_0_0",
+              "name": "Value ($Bn)",
+              "role": "metric",
+              "sheet": "M&A IPOs",
+              "values": "C7:M7",
+              "date_sheet": "M&A IPOs",
+              "dates": "C5:M5",
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "\"$\"#,##0",
+              "value_type": "number",
+              "date_type": "year",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "\"$\"#,##0",
+              "allowed_number_formats": [
+                "\"$\"#,##0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Value ($Bn)",
+              "trendline": null,
+              "name_sheet": "M&A IPOs",
+              "name_cell": "B7"
+            },
+            {
+              "id": "manda_ipos_0_1",
+              "name": "Deal Count",
+              "role": "metric",
+              "sheet": "M&A IPOs",
+              "values": "C8:M8",
+              "date_sheet": "M&A IPOs",
+              "dates": "C5:M5",
+              "kind": "LineChart",
+              "secondary": true,
+              "unit": "#,##0",
+              "value_type": "number",
+              "date_type": "year",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "#,##0",
+              "allowed_number_formats": [
+                "#,##0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Deal Count",
+              "trendline": null,
+              "name_sheet": "M&A IPOs",
+              "name_cell": "B8"
+            }
+          ]
+        },
+        {
+          "id": "manda_ipos_1",
+          "title": "IPO Activity",
+          "series": [
+            {
+              "id": "manda_ipos_1_0",
+              "name": "Value ($Bn)",
+              "role": "metric",
+              "sheet": "M&A IPOs",
+              "values": "C15:M15",
+              "date_sheet": "M&A IPOs",
+              "dates": "C5:M5",
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "\"$\"#,##0",
+              "value_type": "number",
+              "date_type": "year",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "\"$\"#,##0",
+              "allowed_number_formats": [
+                "\"$\"#,##0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Value ($Bn)",
+              "trendline": null,
+              "name_sheet": "M&A IPOs",
+              "name_cell": "B15"
+            },
+            {
+              "id": "manda_ipos_1_1",
+              "name": "Deal Count",
+              "role": "metric",
+              "sheet": "M&A IPOs",
+              "values": "C16:M16",
+              "date_sheet": "M&A IPOs",
+              "dates": "C5:M5",
+              "kind": "LineChart",
+              "secondary": true,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "year",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Deal Count",
+              "trendline": null,
+              "name_sheet": "M&A IPOs",
+              "name_cell": "B16"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

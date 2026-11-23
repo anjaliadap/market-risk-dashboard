@@ -10,6 +10,7 @@ import streamlit as st
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from dashboard.additional_workbook_pages import render_additional_workbook_page
 from dashboard.excel_views import render_administration, render_section, synchronization_status
 from dashboard.process_sections import render_process_section
 from dashboard.sections import RENDERERS, PageContext
@@ -73,6 +74,8 @@ def render(title):
     provenance.reset_page()  # Chart captions attribute derived lines to this page's inputs.
     theme = theme_for(title, PAGES)
     page_header(title, theme)
+    if render_additional_workbook_page(title, theme):
+        return
     if render_process_section(title):
         return
     if title in PAGE_IDS:
@@ -387,7 +390,11 @@ def page(title):
     return st.Page(
         lambda: render(title),
         title=title,
-        url_path=title.lower().replace(" ", "-").replace("&", "and"),
+        url_path=(
+            "pe-vs-forward-returns"
+            if title == "P/E vs Forward Returns"
+            else title.lower().replace(" ", "-").replace("&", "and")
+        ),
     )
 
 

@@ -211,12 +211,18 @@ def render_section(title):
     return True
 
 
-def table_frame(table):
+def table_frame(table, *, mapped_headers=False):
     columns = table.get("display_columns")
     if not columns:
         return pd.DataFrame([[format_cell(c) for c in row] for row in table["rows"]])
     values, styles = [], []
     for row in table["rows"]:
+        if (
+            mapped_headers
+            and row
+            and table.get("header_row") == int("".join(filter(str.isdigit, row[0]["cell"])))
+        ):
+            continue
         cells = {"".join(filter(str.isalpha, c["cell"])): c for c in row}
         visible = [cells.get(col, {"value": None, "format": "General"}) for col, _ in columns]
         if not any(c["value"] is not None for c in visible):
@@ -238,10 +244,12 @@ def table_frame(table):
         for (col, _), cell in zip(columns, visible, strict=True):
             number = isinstance(cell["value"], (int, float)) and not isinstance(cell["value"], bool)
             text = format_cell(cell)
-            heatmap = (
-                table.get("id") == "market_snapshot"
-                and col in {"E", "F", "G", "H", "I", "J", "K", "L", "M"}
-                and number
+            heatmap = number and (
+                (mapped_headers and col in table.get("heatmap_columns", ()))
+                or (
+                    table.get("id") == "market_snapshot"
+                    and col in {"E", "F", "G", "H", "I", "J", "K", "L", "M"}
+                )
             )
             if heatmap and cell["value"] > 0:
                 text = "+" + text
