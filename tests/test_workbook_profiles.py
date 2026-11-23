@@ -170,6 +170,39 @@ def test_process_cli_import_uses_process_profile(tmp_path, process_provider):
     assert excel_sync.latest_import(True) is None
 
 
+def test_process_poll_recognizes_already_imported_workbook(tmp_path, monkeypatch):
+    from src.providers import process_workbook
+
+    path = tmp_path / "master.xlsx"
+    blob = b"saved workbook"
+    path.write_bytes(blob)
+    mapping = {"version": 1}
+    monkeypatch.setattr(process_workbook, "load_process_mapping", lambda: mapping)
+    monkeypatch.setattr(settings, "excel_workbook_path", str(path))
+    monkeypatch.setattr(process_sync, "_candidate", None)
+    monkeypatch.setattr(process_sync, "_candidate_since", 0.0)
+    monkeypatch.setattr(process_sync, "_future", None)
+    monkeypatch.setattr(process_sync, "_attempted", None)
+    monkeypatch.setattr(process_sync, "_force_requested", False)
+    monkeypatch.setattr(process_sync, "_message", "")
+    with Session(store.engine) as session, session.begin():
+        session.add(
+            store.WorkbookImport(
+                imported_at=datetime.now(UTC),
+                profile="process",
+                path=str(path.resolve()),
+                sha256=hashlib.sha256(blob).hexdigest(),
+                status="success",
+                payload=json.dumps(
+                    {"mapping_sha256": hashlib.sha256(json.dumps(mapping).encode()).hexdigest()}
+                ),
+            )
+        )
+
+    assert process_sync.poll_workbook() == "Showing the latest saved workbook values"
+    assert process_sync._future is None
+
+
 def test_profile_migration_backfills_existing_rows_and_is_idempotent(tmp_path):
     engine = create_engine("sqlite:///" + str(tmp_path / "old-schema.db"))
     migration_path = (

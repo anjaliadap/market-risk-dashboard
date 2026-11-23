@@ -167,7 +167,7 @@ def synthetic_snapshot():
             charts.append(out)
         tables = []
         for table in config["tables"]:
-            if table["id"] == "failure_candidates":
+            if title == "Failure Candidates":
                 rows = failure_rows(fc_series)
             else:
                 rows = [

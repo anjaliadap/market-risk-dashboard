@@ -8,7 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from threading import Lock
 
-from src.excel_sync import import_workbook
+from src.excel_sync import import_workbook, latest_import
 from src.settings import settings
 
 logger = logging.getLogger(__name__)
@@ -38,7 +38,12 @@ def poll_workbook(force=False):
             return "Validating saved Process workbook in background"
         if _future is not None:
             try:
-                _message = "Process import " + _future.result() + "; source refresh time unknown"
+                result = _future.result()
+                _message = (
+                    "Showing the latest saved workbook values"
+                    if result in {"success", "unchanged"}
+                    else "Workbook import failed; showing the last valid saved values if available"
+                )
             except Exception as exc:
                 logger.exception("Process workbook worker failed")
                 _message = f"Process import worker failed; prior snapshot retained: {exc}"
@@ -47,12 +52,19 @@ def poll_workbook(force=False):
             source = Path(path).expanduser().resolve()
             stat = source.stat()
             identity = (str(source), stat.st_size, stat.st_mtime_ns)
+            first_check = _candidate is None and not _force_requested
             if identity != _candidate:
                 _candidate = identity
                 _candidate_since = time.monotonic()
-                _message = "Save detected; waiting for file writes to settle"
-                return _message
-            if time.monotonic() - _candidate_since < settings.excel_settle_seconds:
+                _message = (
+                    "Checking the saved workbook"
+                    if first_check
+                    else "Save detected; waiting for file writes to settle"
+                )
+                if not first_check:
+                    return _message
+            settling = time.monotonic() - _candidate_since < settings.excel_settle_seconds
+            if settling and not first_check:
                 return "Waiting for file writes to settle"
             blob = source.read_bytes()
             after = source.stat()
@@ -65,6 +77,20 @@ def poll_workbook(force=False):
                 json.dumps(load_process_mapping(), sort_keys=True).encode()
             ).hexdigest()
             version = (str(source), hashlib.sha256(blob).hexdigest(), mapping_digest)
+            if first_check:
+                latest = latest_import(profile="process")
+                if latest and latest["status"] == "success":
+                    recorded = (
+                        latest["path"],
+                        latest["sha256"],
+                        (latest["snapshot"] or {}).get("mapping_sha256"),
+                    )
+                    if version == recorded:
+                        _attempted = version
+                        _message = "Showing the latest saved workbook values"
+                        return _message
+                if settling:
+                    return _message
             if version != _attempted or _force_requested:
                 _attempted = version
                 _future = _pool.submit(

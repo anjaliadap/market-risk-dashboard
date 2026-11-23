@@ -17,6 +17,7 @@ from dashboard.additional_workbook_pages import (
     worksheet_name,
 )
 from dashboard.excel_views import render_administration, render_section, synchronization_status
+from dashboard.process_sections import PAGE_TITLES as PROCESS_PAGE_TITLES
 from dashboard.process_sections import render_process_section
 from dashboard.sections import RENDERERS, PageContext
 from dashboard.styles.theme import (
@@ -44,7 +45,6 @@ from src.settings import settings
 
 st.set_page_config(page_title="Market & Risk Intelligence", page_icon="◈", layout="wide")
 initialize()
-synchronization_status()
 PAGES = json.loads((Path(__file__).resolve().parents[1] / "config/pages.json").read_text())
 MAPPING = {
     "Executive Overview": ["SP500", "DGS10", "VIXCLS", "UNRATE"],
@@ -75,6 +75,7 @@ BLOCKERS = {
 
 
 def render(title):
+    synchronization_status(show_status=title not in PROCESS_PAGE_TITLES)
     if title == "Workbook Administration":
         render_administration()
         return

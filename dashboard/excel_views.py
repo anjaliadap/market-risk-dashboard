@@ -297,7 +297,7 @@ def table_columns(table):
 
 
 @st.fragment(run_every="10s")
-def synchronization_status():
+def synchronization_status(show_status=True):
     message = poll_workbook()
     latest = latest_import(success_only=True)
     current = latest["id"] if latest else None
@@ -305,7 +305,7 @@ def synchronization_status():
     st.session_state.excel_snapshot_id = current
     if current != previous:
         st.rerun()
-    if settings.excel_workbook_path:
+    if show_status and settings.excel_workbook_path:
         st.caption("Workbook synchronization · " + message)
 
 

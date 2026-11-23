@@ -826,25 +826,35 @@
     },
     "Failure Candidates": {
       "sheets": [
-        "Failure Candidates"
+        "Failure Candidates",
+        "FC Data"
       ],
       "notes": [
-        "Summary of FC Data for the latest month (P4). AD:AJ link to FC Data statistics; AK:AL OPP/Patient portfolio weights are manual inputs; AM S&P 500 sector weights (S5xxxx Index). AO:AP 'Overweight' if portfolio weight > S&P weight; AR:AS 'Risk' if overweight and the failure share is above its historical mean (std. dev. from mean > 0). Style rows (Big Growers, Expensive, Leveraged Borrowers) have no weights."
+        "Complete Failure Candidates worksheet plus the formatted summary. Linked FC Data supplies model history. Portfolio weights are manual; Bloomberg supplies S&P sector weights. This worksheet contains no embedded charts."
       ],
-      "charts": [],
       "tables": [
         {
-          "id": "failure_candidates",
-          "title": "Share of failure candidates by sector & style",
+          "id": "failure_summary",
+          "title": "Failure Summary",
           "sheet": "Failure Candidates",
-          "range": "AC5:AS20",
-          "date_cell": "P4",
+          "range": "AC4:AS20",
+          "date_cell": null,
           "expected_headers": {
             "AC4": "Sector",
-            "AD3": "Failure",
-            "AK3": "Weight",
-            "AO3": "Relative Weight",
-            "AR3": "OW Positions"
+            "AD4": "Model",
+            "AE4": "Mean",
+            "AF4": "From Mean",
+            "AG4": "1M",
+            "AH4": "3M",
+            "AI4": "6M",
+            "AJ4": "12M",
+            "AK4": "OPP",
+            "AL4": "Patient",
+            "AM4": "S&P",
+            "AO4": "OPP",
+            "AP4": "Patient",
+            "AR4": "OPP",
+            "AS4": "Patient"
           },
           "display_columns": [
             [
@@ -881,35 +891,49 @@
             ],
             [
               "AK",
-              "Weight: OPP"
+              "OPP weight"
             ],
             [
               "AL",
-              "Weight: Patient"
+              "Patient weight"
             ],
             [
               "AM",
-              "Weight: S&P"
+              "S&P weight"
             ],
             [
               "AO",
-              "Relative weight: OPP"
+              "OPP relative"
             ],
             [
               "AP",
-              "Relative weight: Patient"
+              "Patient relative"
             ],
             [
               "AR",
-              "OW position: OPP"
+              "OPP position"
             ],
             [
               "AS",
-              "OW position: Patient"
+              "Patient position"
             ]
-          ]
+          ],
+          "header_row": 4,
+          "follow_header": true,
+          "heatmap_columns": [
+            "AF",
+            "AG",
+            "AH",
+            "AI",
+            "AJ"
+          ],
+          "text_signals": {
+            "Overweight": 1,
+            "Underweight": -1
+          }
         }
-      ]
+      ],
+      "charts": []
     },
     "Market Data": {
       "sheets": [
@@ -1504,105 +1528,7 @@
         "Margin Debt"
       ],
       "notes": [
-        "W:X GDP, Z:AA FINRA margin debt in millions, AC:AD Wilshire market cap in millions. FINRA data must be manually updated; market cap hardcoded through early 2026 then Bloomberg. K:U retains PCM - Monthly Market & Risk Monitor unit alignment/calculations. B:G peak/trough benchmarks preserved."
-      ],
-      "charts": [
-        {
-          "id": "margin_debt_0",
-          "title": "Margin Debt/GDP",
-          "series": [
-            {
-              "id": "margin_debt_0_0",
-              "name": "Margin Debt/GDP",
-              "role": "metric",
-              "sheet": "Margin Debt",
-              "values": "N4:N109",
-              "date_sheet": "Margin Debt",
-              "dates": "K4:K109",
-              "date_mapping_inferred": false,
-              "kind": "LineChart",
-              "secondary": false,
-              "unit": "0.0%",
-              "value_type": "number",
-              "date_type": "excel_date",
-              "expected_number_format": "0.0%",
-              "allowed_number_formats": [
-                "0.0%"
-              ],
-              "allow_forward": false,
-              "period_labels_row": null
-            },
-            {
-              "id": "margin_debt_0_1",
-              "name": "Avg",
-              "role": "metric",
-              "sheet": "Margin Debt",
-              "values": "O4:O109",
-              "date_sheet": "Margin Debt",
-              "dates": "K4:K109",
-              "date_mapping_inferred": false,
-              "kind": "LineChart",
-              "secondary": false,
-              "unit": "0.0%",
-              "value_type": "number",
-              "date_type": "excel_date",
-              "expected_number_format": "0.0%",
-              "allowed_number_formats": [
-                "0.0%"
-              ],
-              "allow_forward": false,
-              "period_labels_row": null
-            }
-          ]
-        },
-        {
-          "id": "margin_debt_1",
-          "title": "Margin Debt/Market Cap",
-          "series": [
-            {
-              "id": "margin_debt_1_0",
-              "name": "Margin Debt/Market Cap",
-              "role": "metric",
-              "sheet": "Margin Debt",
-              "values": "T4:T357",
-              "date_sheet": "Margin Debt",
-              "dates": "Q4:Q357",
-              "date_mapping_inferred": false,
-              "kind": "LineChart",
-              "secondary": false,
-              "unit": "0.0%",
-              "value_type": "number",
-              "date_type": "excel_date",
-              "expected_number_format": "0.0%",
-              "allowed_number_formats": [
-                "0.0%"
-              ],
-              "allow_forward": false,
-              "period_labels_row": null
-            },
-            {
-              "id": "margin_debt_1_1",
-              "name": "Avg",
-              "role": "metric",
-              "sheet": "Margin Debt",
-              "values": "U4:U357",
-              "date_sheet": "Margin Debt",
-              "dates": "Q4:Q357",
-              "date_mapping_inferred": false,
-              "kind": "LineChart",
-              "secondary": false,
-              "unit": "0.0%",
-              "value_type": "number",
-              "date_type": "excel_date",
-              "expected_number_format": "0.0%",
-              "allowed_number_formats": [
-                "0.0%"
-              ],
-              "allow_forward": false,
-              "period_labels_row": null
-            }
-          ]
-        }
+        "Mixed manual FINRA and Bloomberg inputs; saved unit conversions and benchmarks retained."
       ],
       "tables": [
         {
@@ -1636,7 +1562,130 @@
               "Prior trough"
             ]
           ],
-          "signal_column": null
+          "header_row": 4,
+          "follow_header": false
+        }
+      ],
+      "charts": [
+        {
+          "id": "margin_debt_0",
+          "title": "Margin Debt/GDP",
+          "series": [
+            {
+              "id": "margin_debt_0_0",
+              "name": "Margin Debt/GDP",
+              "role": "metric",
+              "sheet": "Margin Debt",
+              "values": "N4:N109",
+              "date_sheet": "Margin Debt",
+              "dates": "K4:K109",
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "0.0%",
+              "allowed_number_formats": [
+                "0.0%"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Margin Debt/GDP",
+              "trendline": null,
+              "name_sheet": "Margin Debt",
+              "name_cell": "N3"
+            },
+            {
+              "id": "margin_debt_0_1",
+              "name": "Avg",
+              "role": "metric",
+              "sheet": "Margin Debt",
+              "values": "O4:O109",
+              "date_sheet": "Margin Debt",
+              "dates": "K4:K109",
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "0.0%",
+              "allowed_number_formats": [
+                "0.0%"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Avg",
+              "trendline": null,
+              "name_sheet": "Margin Debt",
+              "name_cell": "O3"
+            }
+          ]
+        },
+        {
+          "id": "margin_debt_1",
+          "title": "Margin Debt/Market Cap",
+          "series": [
+            {
+              "id": "margin_debt_1_0",
+              "name": "Margin Debt/Market Cap",
+              "role": "metric",
+              "sheet": "Margin Debt",
+              "values": "T4:T357",
+              "date_sheet": "Margin Debt",
+              "dates": "Q4:Q357",
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "0.0%",
+              "allowed_number_formats": [
+                "0.0%"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Margin Debt/Market Cap",
+              "trendline": null,
+              "name_sheet": "Margin Debt",
+              "name_cell": "T3"
+            },
+            {
+              "id": "margin_debt_1_1",
+              "name": "Avg",
+              "role": "metric",
+              "sheet": "Margin Debt",
+              "values": "U4:U357",
+              "date_sheet": "Margin Debt",
+              "dates": "Q4:Q357",
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "0.0%",
+              "allowed_number_formats": [
+                "0.0%"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Avg",
+              "trendline": null,
+              "name_sheet": "Margin Debt",
+              "name_cell": "U3"
+            }
+          ]
         }
       ]
     },
@@ -1981,8 +2030,86 @@
         "AAII Bull"
       ],
       "notes": [
-        "B:F and N:Q Bloomberg; H:L Excel; S:T fixed decile lookup; V:AA saved conditional returns. Forward returns contain BQL capacity-error text. Unavailable values stay missing, never zero. Historical conditional returns are descriptive and overlap/publication controls are not established.",
-        "Auxiliary substantive worksheet, not a separate PCM - Monthly Market & Risk Monitor section. Additional Bloomberg returns and hardcoded decile lookup; mapped as an optional Bull vs Bear chart. Do not substitute it for the requested bull-minus-bear study."
+        "Saved decile and win-rate tables; missing/error returns remain unavailable. Hidden AAII Bull chart retained as existing auxiliary content.",
+        "Refresh in authorized Excel where required, recalculate and save. Appended chart observations are read through contiguous source dates."
+      ],
+      "tables": [
+        {
+          "id": "sentiment_deciles",
+          "title": "Sentiment Deciles",
+          "sheet": "Bull vs Bear",
+          "range": "AA4:AF16",
+          "date_cell": null,
+          "expected_headers": {
+            "AA4": "Investors",
+            "AB4": "Bear Decile",
+            "AC4": "1M",
+            "AD4": "3M",
+            "AE4": "6M",
+            "AF4": "12M"
+          },
+          "display_columns": [
+            [
+              "AA",
+              "Investors"
+            ],
+            [
+              "AB",
+              "Bear Decile"
+            ],
+            [
+              "AC",
+              "1M"
+            ],
+            [
+              "AD",
+              "3M"
+            ],
+            [
+              "AE",
+              "6M"
+            ],
+            [
+              "AF",
+              "12M"
+            ]
+          ],
+          "header_row": 4,
+          "follow_header": false
+        },
+        {
+          "id": "sentiment_win_rate",
+          "title": "Sentiment Win Rate",
+          "sheet": "Bull vs Bear",
+          "range": "AA19:AD29",
+          "date_cell": null,
+          "expected_headers": {
+            "AA19": "Count",
+            "AB19": "Decile",
+            "AC19": "# Positive",
+            "AD19": "% Positive"
+          },
+          "display_columns": [
+            [
+              "AA",
+              "Count"
+            ],
+            [
+              "AB",
+              "Decile"
+            ],
+            [
+              "AC",
+              "# Positive"
+            ],
+            [
+              "AD",
+              "% Positive"
+            ]
+          ],
+          "header_row": 19,
+          "follow_header": false
+        }
       ],
       "charts": [
         {
@@ -1994,42 +2121,54 @@
               "name": "Bull - Bear",
               "role": "metric",
               "sheet": "Bull vs Bear",
-              "values": "I5:I2049",
+              "values": "I5:I330",
               "date_sheet": "Bull vs Bear",
-              "dates": "H5:H2049",
-              "date_mapping_inferred": false,
+              "dates": "H5:H330",
               "kind": "LineChart",
               "secondary": false,
               "unit": "General",
               "value_type": "number",
               "date_type": "excel_date",
+              "allow_duplicate_dates": false,
               "expected_number_format": "General",
               "allowed_number_formats": [
                 "General"
               ],
               "allow_forward": false,
-              "period_labels_row": null
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Bull - Bear",
+              "trendline": null,
+              "name_sheet": "Bull vs Bear",
+              "name_cell": "I4"
             },
             {
               "id": "bull_vs_bear_0_1",
               "name": "Current",
               "role": "metric",
               "sheet": "Bull vs Bear",
-              "values": "L5:L2049",
+              "values": "L5:L330",
               "date_sheet": "Bull vs Bear",
-              "dates": "H5:H2049",
-              "date_mapping_inferred": false,
+              "dates": "H5:H330",
               "kind": "LineChart",
               "secondary": false,
               "unit": "0",
               "value_type": "number",
               "date_type": "excel_date",
+              "allow_duplicate_dates": false,
               "expected_number_format": "0",
               "allowed_number_formats": [
                 "0"
               ],
               "allow_forward": false,
-              "period_labels_row": null
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Current",
+              "trendline": null,
+              "name_sheet": "Bull vs Bear",
+              "name_cell": "L4"
             }
           ]
         },
@@ -2045,18 +2184,24 @@
               "values": "C20:C2047",
               "date_sheet": "AAII Bull",
               "dates": "B20:B2047",
-              "date_mapping_inferred": false,
               "kind": "LineChart",
               "secondary": false,
               "unit": "General",
               "value_type": "number",
               "date_type": "excel_date",
+              "allow_duplicate_dates": false,
               "expected_number_format": "General",
               "allowed_number_formats": [
                 "General"
               ],
               "allow_forward": false,
-              "period_labels_row": null
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "AAII Bull",
+              "trendline": null,
+              "name_sheet": "AAII Bull",
+              "name_cell": "C19"
             },
             {
               "id": "aaii_bull_0_1",
@@ -2066,60 +2211,27 @@
               "values": "D20:D2047",
               "date_sheet": "AAII Bull",
               "dates": "B20:B2047",
-              "date_mapping_inferred": false,
               "kind": "LineChart",
               "secondary": false,
               "unit": "General",
               "value_type": "number",
               "date_type": "excel_date",
+              "allow_duplicate_dates": false,
               "expected_number_format": "General",
               "allowed_number_formats": [
                 "General"
               ],
               "allow_forward": false,
-              "period_labels_row": null
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Current",
+              "trendline": null,
+              "name_sheet": "AAII Bull",
+              "name_cell": "D19"
             }
-          ]
-        }
-      ],
-      "tables": [
-        {
-          "id": "sentiment_deciles",
-          "title": "Sentiment Deciles",
-          "sheet": "Bull vs Bear",
-          "range": "V3:AA16",
-          "date_cell": null,
-          "expected_headers": {
-            "W3": "AAII Bull Less",
-            "X3": "S&P 500"
-          },
-          "display_columns": [
-            [
-              "V",
-              "Investors"
-            ],
-            [
-              "W",
-              "Bull less bear decile"
-            ],
-            [
-              "X",
-              "1M"
-            ],
-            [
-              "Y",
-              "3M"
-            ],
-            [
-              "Z",
-              "6M"
-            ],
-            [
-              "AA",
-              "12M"
-            ]
           ],
-          "signal_column": null
+          "auxiliary": true
         }
       ]
     },
@@ -2321,8 +2433,9 @@
         "Banks"
       ],
       "notes": [
-        "Bloomberg quarterly net charge-offs; population/units are from PCM - Monthly Market & Risk Monitor, do not replace with another bank universe."
+        "Quarterly Bloomberg net charge-offs; preserve sponsor population and units."
       ],
+      "tables": [],
       "charts": [
         {
           "id": "banks_0",
@@ -2333,34 +2446,40 @@
               "name": "NCOs",
               "role": "metric",
               "sheet": "Banks",
-              "values": "C3:C44",
+              "values": "C3:C45",
               "date_sheet": "Banks",
-              "dates": "B3:B44",
-              "date_mapping_inferred": false,
+              "dates": "B3:B45",
               "kind": "LineChart",
               "secondary": false,
               "unit": "General",
               "value_type": "number",
               "date_type": "excel_date",
+              "allow_duplicate_dates": false,
               "expected_number_format": "General",
               "allowed_number_formats": [
                 "General"
               ],
               "allow_forward": false,
-              "period_labels_row": null
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "NCOs",
+              "trendline": null,
+              "name_sheet": "Banks",
+              "name_cell": "C2"
             }
           ]
         }
-      ],
-      "tables": []
+      ]
     },
     "Housing": {
       "sheets": [
         "Housing"
       ],
       "notes": [
-        "Independent date columns for different monthly/quarterly frequencies. Preserve secondary axes; never align affordability with the longer mortgage series by row position."
+        "Refresh in authorized Excel where required, recalculate and save. Appended chart observations are read through contiguous source dates."
       ],
+      "tables": [],
       "charts": [
         {
           "id": "housing_0",
@@ -2374,18 +2493,24 @@
               "values": "C24:C129",
               "date_sheet": "Housing",
               "dates": "B24:B129",
-              "date_mapping_inferred": false,
               "kind": "LineChart",
               "secondary": false,
               "unit": "General",
               "value_type": "number",
               "date_type": "excel_date",
+              "allow_duplicate_dates": false,
               "expected_number_format": "General",
               "allowed_number_formats": [
                 "General"
               ],
               "allow_forward": false,
-              "period_labels_row": null
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Affordability",
+              "trendline": null,
+              "name_sheet": "Housing",
+              "name_cell": "C23"
             },
             {
               "id": "housing_0_1",
@@ -2395,18 +2520,24 @@
               "values": "AD24:AD344",
               "date_sheet": "Housing",
               "dates": "AC24:AC344",
-              "date_mapping_inferred": true,
               "kind": "LineChart",
               "secondary": true,
               "unit": "General",
               "value_type": "number",
               "date_type": "excel_date",
+              "allow_duplicate_dates": false,
               "expected_number_format": "General",
               "allowed_number_formats": [
                 "General"
               ],
               "allow_forward": false,
-              "period_labels_row": null
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "30Yr Mortgage",
+              "trendline": null,
+              "name_sheet": "Housing",
+              "name_cell": "AD23"
             }
           ]
         },
@@ -2422,18 +2553,24 @@
               "values": "L24:L344",
               "date_sheet": "Housing",
               "dates": "K24:K344",
-              "date_mapping_inferred": true,
               "kind": "BarChart",
               "secondary": false,
               "unit": "General",
               "value_type": "number",
               "date_type": "excel_date",
+              "allow_duplicate_dates": false,
               "expected_number_format": "General",
               "allowed_number_formats": [
                 "General"
               ],
               "allow_forward": false,
-              "period_labels_row": null
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Months of Supply",
+              "trendline": null,
+              "name_sheet": "Housing",
+              "name_cell": "L23"
             },
             {
               "id": "housing_1_1",
@@ -2443,18 +2580,24 @@
               "values": "F24:F344",
               "date_sheet": "Housing",
               "dates": "E24:E344",
-              "date_mapping_inferred": false,
               "kind": "LineChart",
               "secondary": true,
               "unit": "General",
               "value_type": "number",
               "date_type": "excel_date",
+              "allow_duplicate_dates": false,
               "expected_number_format": "General",
               "allowed_number_formats": [
                 "General"
               ],
               "allow_forward": false,
-              "period_labels_row": null
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Existing Home Sales",
+              "trendline": null,
+              "name_sheet": "Housing",
+              "name_cell": "F23"
             },
             {
               "id": "housing_1_2",
@@ -2464,18 +2607,24 @@
               "values": "I24:I344",
               "date_sheet": "Housing",
               "dates": "H24:H344",
-              "date_mapping_inferred": true,
               "kind": "LineChart",
               "secondary": false,
               "unit": "General",
               "value_type": "number",
               "date_type": "excel_date",
+              "allow_duplicate_dates": false,
               "expected_number_format": "General",
               "allowed_number_formats": [
                 "General"
               ],
               "allow_forward": false,
-              "period_labels_row": null
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Existing Home Inventory",
+              "trendline": null,
+              "name_sheet": "Housing",
+              "name_cell": "I23"
             }
           ]
         },
@@ -2491,18 +2640,24 @@
               "values": "O24:O344",
               "date_sheet": "Housing",
               "dates": "N24:N344",
-              "date_mapping_inferred": false,
               "kind": "LineChart",
               "secondary": false,
               "unit": "General",
               "value_type": "number",
               "date_type": "excel_date",
+              "allow_duplicate_dates": false,
               "expected_number_format": "General",
               "allowed_number_formats": [
                 "General"
               ],
               "allow_forward": false,
-              "period_labels_row": null
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Existing Home Median Price",
+              "trendline": null,
+              "name_sheet": "Housing",
+              "name_cell": "O23"
             }
           ]
         },
@@ -2518,18 +2673,24 @@
               "values": "R24:R343",
               "date_sheet": "Housing",
               "dates": "Q24:Q343",
-              "date_mapping_inferred": false,
               "kind": "LineChart",
               "secondary": false,
               "unit": "General",
               "value_type": "number",
               "date_type": "excel_date",
+              "allow_duplicate_dates": false,
               "expected_number_format": "General",
               "allowed_number_formats": [
                 "General"
               ],
               "allow_forward": false,
-              "period_labels_row": null
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Single-Family Starts",
+              "trendline": null,
+              "name_sheet": "Housing",
+              "name_cell": "R23"
             },
             {
               "id": "housing_3_1",
@@ -2539,18 +2700,24 @@
               "values": "U24:U343",
               "date_sheet": "Housing",
               "dates": "T24:T343",
-              "date_mapping_inferred": true,
               "kind": "LineChart",
               "secondary": false,
               "unit": "General",
               "value_type": "number",
               "date_type": "excel_date",
+              "allow_duplicate_dates": false,
               "expected_number_format": "General",
               "allowed_number_formats": [
                 "General"
               ],
               "allow_forward": false,
-              "period_labels_row": null
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Single-Family Permits",
+              "trendline": null,
+              "name_sheet": "Housing",
+              "name_cell": "U23"
             }
           ]
         },
@@ -2566,18 +2733,24 @@
               "values": "X24:X344",
               "date_sheet": "Housing",
               "dates": "W24:W344",
-              "date_mapping_inferred": false,
               "kind": "LineChart",
               "secondary": false,
               "unit": "General",
               "value_type": "number",
               "date_type": "excel_date",
+              "allow_duplicate_dates": false,
               "expected_number_format": "General",
               "allowed_number_formats": [
                 "General"
               ],
               "allow_forward": false,
-              "period_labels_row": null
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Purchase Applications",
+              "trendline": null,
+              "name_sheet": "Housing",
+              "name_cell": "X23"
             },
             {
               "id": "housing_4_1",
@@ -2587,24 +2760,30 @@
               "values": "AA24:AA344",
               "date_sheet": "Housing",
               "dates": "Z24:Z344",
-              "date_mapping_inferred": true,
               "kind": "LineChart",
               "secondary": true,
               "unit": "General",
               "value_type": "number",
               "date_type": "excel_date",
+              "allow_duplicate_dates": false,
               "expected_number_format": "General",
               "allowed_number_formats": [
                 "General"
               ],
               "allow_forward": false,
-              "period_labels_row": null
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Refi Applications",
+              "trendline": null,
+              "name_sheet": "Housing",
+              "name_cell": "AA23"
             }
           ]
         },
         {
           "id": "housing_5",
-          "title": "Homeowners' equity",
+          "title": "Homeowners equity",
           "series": [
             {
               "id": "housing_5_0",
@@ -2614,23 +2793,28 @@
               "values": "AG24:AG129",
               "date_sheet": "Housing",
               "dates": "AF24:AF129",
-              "date_mapping_inferred": false,
               "kind": "LineChart",
               "secondary": false,
               "unit": "\"$\"#,##0",
               "value_type": "number",
               "date_type": "excel_date",
+              "allow_duplicate_dates": false,
               "expected_number_format": "\"$\"#,##0",
               "allowed_number_formats": [
                 "\"$\"#,##0"
               ],
               "allow_forward": false,
-              "period_labels_row": null
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Homeowners' Equity",
+              "trendline": null,
+              "name_sheet": "Housing",
+              "name_cell": "AG23"
             }
           ]
         }
-      ],
-      "tables": []
+      ]
     },
     "Energy": {
       "sheets": [
@@ -2867,60 +3051,7 @@
         "Recession"
       ],
       "notes": [
-        "Layout as of the 2026-11 workbook: checklist B4:H53 (items rows 5-49, total D52=17, F52 = SUM of G flags, F53 share). F is the current status (text or a number), G the PCM - Monthly Market & Risk Monitor's manual red flag, H the source note. PCM - Monthly Market & Risk Monitor definitions changed: Core inflation, Atlanta Fed wage tracker (WGTROVER), BEA personal income (PITLYOY). Sahm chart S5:U132 is ordered newest first and covers 2015 onward; U is the hardcoded 0.5 warning line. New sell-side probability block J3:N is not mapped. Manual statuses are not proven current by a new save."
-      ],
-      "charts": [
-        {
-          "id": "recession_0",
-          "title": "Sahm Rule Recession Indicator",
-          "series": [
-            {
-              "id": "recession_0_0",
-              "name": "Series 1",
-              "role": "metric",
-              "sheet": "Recession",
-              "values": "T5:T132",
-              "date_sheet": "Recession",
-              "dates": "S5:S132",
-              "date_mapping_inferred": false,
-              "kind": "LineChart",
-              "secondary": false,
-              "unit": "General",
-              "value_type": "number",
-              "date_type": "excel_date",
-              "expected_number_format": "General",
-              "allowed_number_formats": [
-                "0.0",
-                "0.00",
-                "General"
-              ],
-              "allow_forward": false,
-              "period_labels_row": null
-            },
-            {
-              "id": "recession_0_1",
-              "name": "Series 2",
-              "role": "metric",
-              "sheet": "Recession",
-              "values": "U5:U132",
-              "date_sheet": "Recession",
-              "dates": "S5:S132",
-              "date_mapping_inferred": false,
-              "kind": "LineChart",
-              "secondary": false,
-              "unit": "General",
-              "value_type": "number",
-              "date_type": "excel_date",
-              "expected_number_format": "General",
-              "allowed_number_formats": [
-                "0.00",
-                "General"
-              ],
-              "allow_forward": false,
-              "period_labels_row": null
-            }
-          ]
-        }
+        "Monthly mixed manual/Bloomberg checklist. Saved signal G and manual states determine display; no inferred predictive score. Recalculate and review flags in Excel before saving."
       ],
       "tables": [
         {
@@ -2932,7 +3063,8 @@
           "expected_headers": {
             "B4": "Metrics",
             "D4": "Recession Reading",
-            "F4": "Status"
+            "F4": "Status",
+            "H4": "Notes"
           },
           "display_columns": [
             [
@@ -2949,10 +3081,72 @@
             ],
             [
               "H",
-              "PCM - Monthly Market & Risk Monitor notes"
+              "Sponsor notes"
             ]
           ],
-          "signal_column": "G"
+          "header_row": 4,
+          "follow_header": false,
+          "signal_column": "G",
+          "current_column": "F"
+        }
+      ],
+      "charts": [
+        {
+          "id": "recession_0",
+          "title": "Sahm Rule Recession Indicator",
+          "series": [
+            {
+              "id": "recession_0_0",
+              "name": "Series 1",
+              "role": "metric",
+              "sheet": "Recession",
+              "values": "T5:T132",
+              "date_sheet": "Recession",
+              "dates": "S5:S132",
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "0.00",
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Series 1",
+              "trendline": null
+            },
+            {
+              "id": "recession_0_1",
+              "name": "Series 2",
+              "role": "metric",
+              "sheet": "Recession",
+              "values": "U5:U132",
+              "date_sheet": "Recession",
+              "dates": "S5:S132",
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "General",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "allow_duplicate_dates": false,
+              "expected_number_format": "General",
+              "allowed_number_formats": [
+                "General"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null,
+              "extend": true,
+              "x_title": "",
+              "y_title": "Series 2",
+              "trendline": null
+            }
+          ]
         }
       ]
     },
