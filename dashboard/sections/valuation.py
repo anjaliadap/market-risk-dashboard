@@ -52,9 +52,9 @@ TABLE = [
 ]
 NOTES = [
     (
-        "Earnings yield = 100 / P-E. The P/E input defaults to the sponsor workbook's saved "
+        "Earnings yield = 100 / P-E. The P/E input defaults to the PCM - Monthly Market & Risk Monitor's saved "
         "earnings-yield-implied P/E (Valuation!F11 = 1/F9) when a validated snapshot exists; the "
-        "trailing/forward definition is the sponsor's. Otherwise it must be entered."
+        "trailing/forward definition is the PCM - Monthly Market & Risk Monitor's. Otherwise it must be entered."
     ),
     (
         "Earnings-yield gaps are simple differences, not a modeled equity risk premium. The real-yield "

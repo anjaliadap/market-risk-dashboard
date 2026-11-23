@@ -11,6 +11,8 @@ import pandas as pd
 import streamlit as st
 from pandas.io.formats.style import Styler
 
+from src import provenance
+
 CONFIG = tomllib.loads(
     (Path(__file__).resolve().parents[2] / ".streamlit/config.toml").read_text(encoding="utf-8")
 )["theme"]
@@ -37,6 +39,7 @@ class Theme:
 
 
 THEMES = {
+    "Empirical": Theme("Empirical", CONFIG["orangeTextColor"], CONFIG["orangeBackgroundColor"]),
     "Market": Theme("Market", CONFIG["primaryColor"], "#F4EBF1"),
     "Macro": Theme("Macro", CONFIG["blueTextColor"], CONFIG["blueBackgroundColor"]),
     "AI": Theme("AI", CONFIG["violetTextColor"], CONFIG["violetBackgroundColor"]),
@@ -267,7 +270,31 @@ def style_figure(figure, theme=None):
     return figure
 
 
+def chart_source_text(figure):
+    """'Source: …' for a chart, built from the sources carried by its traces.
+
+    Lines without a recorded source are derived inside the dashboard (for example a ratio or a
+    moving average); they are attributed to the inputs this page read, never to a guessed provider.
+    """
+    traces = list(figure.data)
+    if not traces:
+        return None
+    labelled = [provenance.sources_of(t) for t in traces]
+    known = provenance.merge(*labelled)
+    unlabelled = sum(not group for group in labelled)
+    page = provenance.describe(provenance.page_sources())
+    if known and not unlabelled:
+        return "Source: " + provenance.describe(known)
+    if known:
+        tail = f"; other lines calculated from this page's inputs ({page})" if page else ""
+        return "Source: " + provenance.describe(known) + tail
+    if page:
+        return "Source: calculated from this page's inputs: " + page
+    return None
+
+
 def research_chart(figure, theme=None, **kwargs):
+    caption = kwargs.pop("source", None) or chart_source_text(figure)
     st.plotly_chart(
         style_figure(figure, theme),
         width=kwargs.pop("width", "stretch"),
@@ -281,3 +308,5 @@ def research_chart(figure, theme=None, **kwargs):
         },
         **kwargs,
     )
+    if caption:
+        st.caption(caption)

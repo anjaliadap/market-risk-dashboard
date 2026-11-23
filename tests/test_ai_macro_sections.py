@@ -104,7 +104,7 @@ def synthetic_snapshot():
         tables = []
         for table in config["tables"]:
             rows = []
-            for r in range(6, 57):
+            for r in range(4, 54):
                 row = []
                 for col in "BCDEFGH":
                     value = None
@@ -112,7 +112,8 @@ def synthetic_snapshot():
                         value = recession_rows()[r]
                     if col == "F" and r in recession_rows():
                         value = "Saved status"
-                    if col == "G" and r in (26, 43):
+                    licensed = ("Leading economic indicators (Y/Y)", "Composite PMI")
+                    if col == "G" and recession_rows().get(r) in licensed:
                         value = 1
                     row.append(
                         {
@@ -202,7 +203,7 @@ def test_page_with_workbook_snapshot(title, database):
     app = run(title)
     assert not app.exception
     # The sponsor workbook tab leads when a validated snapshot exists.
-    assert app.tabs[0].label == "Sponsor workbook"
+    assert app.tabs[0].label == "PCM - Monthly Market & Risk Monitor"
     assert not any("No validated workbook snapshot" in i.value for i in app.info)
 
 

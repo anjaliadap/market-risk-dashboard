@@ -72,7 +72,7 @@ NOTES = [
     ),
     (
         "Options-activity analytics (percentiles, z-scores, 4-week averages) are computed on the "
-        "sponsor's saved weekly Bloomberg series. CBOE put/call and MOVE have no free licensed "
+        "PCM - Monthly Market & Risk Monitor's saved weekly Bloomberg series. CBOE put/call and MOVE have no free licensed "
         "feed connected, so they remain workbook-only."
     ),
     "Shaded areas are NBER recessions (USREC). FRED VIX series are daily closes.",
@@ -230,8 +230,8 @@ def _structure(ctx, data, start):
 def _workbook_analytics(ctx):
     st.subheader("Workbook-derived options analytics")
     st.caption(
-        "Computed from the sponsor's saved weekly Bloomberg series. 'Current' reference lines in "
-        "the charts above are the sponsor's saved fixed-row values."
+        "Computed from the PCM - Monthly Market & Risk Monitor's saved weekly Bloomberg series. 'Current' reference lines in "
+        "the charts above are the PCM - Monthly Market & Risk Monitor's saved fixed-row values."
     )
     rows = []
     for series_id, (label, unit) in WORKBOOK.items():

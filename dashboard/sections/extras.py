@@ -6,6 +6,7 @@ score, raw workbook table cells, and an append-only log for analyst-sourced obse
 """
 
 import json
+import re
 import uuid
 from datetime import UTC, date, datetime
 
@@ -14,7 +15,7 @@ import streamlit as st
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from dashboard.sections.common import line_figure, workbook_section
+from dashboard.sections.common import current_sources, line_figure, workbook_section
 from dashboard.styles.theme import (
     AMBER,
     NEGATIVE,
@@ -24,9 +25,12 @@ from dashboard.styles.theme import (
     WARNING_BG,
     base_table_style,
 )
+from src import provenance
 from src.analytics.signals import checks_frame, score
 from src.database import store
 from src.database.store import ResearchRecord
+from src.excel_sync import section_state
+from src.registry import BY_ID
 
 # --- Checklists ----------------------------------------------------------------------------------
 
@@ -42,6 +46,28 @@ def signal_style(value):
     return ""
 
 
+_DOWNLOAD_REF = re.compile(r"FRED:\s*([A-Z0-9_]+(?:\s*,\s*[A-Z0-9_]+)*)")
+
+
+def live_source(text):
+    """Rewrite 'FRED: ID, ID' in a rule's source with the provider the data actually came from.
+
+    Rules name the series they use; the provider label is looked up from the loaded data, so a
+    series that moves to Bloomberg (via a declared equivalent) is relabelled automatically.
+    """
+    if not isinstance(text, str):
+        return text
+
+    def replace(match):
+        ids = [k.strip() for k in match.group(1).split(",")]
+        if not all(k in BY_ID for k in ids):
+            return match.group(0)
+        live = provenance.merge(*(current_sources(k) for k in ids))
+        return provenance.describe(live) if live else match.group(0)
+
+    return _DOWNLOAD_REF.sub(replace, text)
+
+
 def checklist(ctx, checks, key, label="signals", extra_columns=None):
     """Score tiles plus the styled rule table. Returns the frame for reuse/export."""
     red, evaluated, total = score(checks)
@@ -55,6 +81,7 @@ def checklist(ctx, checks, key, label="signals", extra_columns=None):
     )
     c.metric("Coverage", f"{evaluated} of {total} evaluated")
     frame = checks_frame(checks)
+    frame["Source"] = frame["Source"].map(live_source)
     if extra_columns:
         for name, values in extra_columns.items():
             frame.insert(5, name, values)
@@ -309,3 +336,86 @@ def analyst_log(ctx, dataset, key):
             st.write(f"Imported {len(clean)} rows; rejected {len(errors)}.")
             for error in errors[:20]:
                 st.caption(error)
+
+
+# --- Workbook-native pages (Empirical research data with no public equivalent) -------------------
+
+WORKBOOK_TABS = [
+    "PCM - Monthly Market & Risk Monitor",
+    "Analytics",
+    "Data & export",
+    "Methodology & sources",
+]
+
+
+def workbook_tabs():
+    return st.tabs(WORKBOOK_TABS)
+
+
+def workbook_unavailable(title):
+    """Standard notice when a page has no validated snapshot. Returns True if unavailable."""
+    if workbook_section(title) is not None:
+        return False
+    state = section_state(title)
+    if state["state"] == "rejected":
+        st.warning(
+            "UNAVAILABLE · This workbook tab did not pass validation in the latest import, so "
+            f"nothing is shown: {state['reason']}"
+        )
+        return True
+    st.warning(
+        "UNAVAILABLE · No validated workbook snapshot for this section. This is PCM - Monthly Market & Risk Monitor research "
+        "data that is updated manually each month and has no public equivalent, so nothing is "
+        "shown until the workbook is imported from Workbook Administration."
+    )
+    return True
+
+
+def workbook_sources(ctx, title, notes):
+    """Notes plus the mapped sheet ranges behind every workbook series on the page."""
+    from src.providers.excel import load_mapping
+
+    for note in notes:
+        st.markdown("- " + note)
+    config = load_mapping()["sections"].get(title, {})
+    for note in config.get("notes", []):
+        st.caption("Mapping note · " + note)
+    rows = [
+        {
+            "Chart": chart["title"],
+            "Series": series["name"],
+            "Sheet": series["sheet"],
+            "Values": series["values"],
+            "Dates": series["dates"],
+            "Excel format": series["unit"],
+        }
+        for chart in config.get("charts", [])
+        for series in chart["series"]
+    ]
+    rows += [
+        {
+            "Chart": table["title"],
+            "Series": "table",
+            "Sheet": table["sheet"],
+            "Values": table["range"],
+        }
+        for table in config.get("tables", [])
+    ]
+    if rows:
+        ctx.table_view(pd.DataFrame(rows), hide_index=True)
+
+
+def tone_style(good, bad):
+    """Cell style factory: green when ``good(value)``, red when ``bad(value)``."""
+
+    def style(value):
+        try:
+            if bad(value):
+                return f"color: {NEGATIVE}; background-color: {NEGATIVE_BG}; font-weight: 600"
+            if good(value):
+                return f"color: {POSITIVE}; background-color: {POSITIVE_BG}"
+        except TypeError:
+            return ""
+        return ""
+
+    return style

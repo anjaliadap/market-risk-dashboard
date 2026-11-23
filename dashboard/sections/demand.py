@@ -85,8 +85,8 @@ PERIODS = [
 ]
 NOTES = [
     (
-        "The Demand Tracker reproduces the sponsor's three warning items as explicit rules. Sales "
-        "vs capex uses the sponsor's saved reported quarters only (forward estimates excluded); "
+        "The Demand Tracker reproduces the PCM - Monthly Market & Risk Monitor's three warning items as explicit rules. Sales "
+        "vs capex uses the PCM - Monthly Market & Risk Monitor's saved reported quarters only (forward estimates excluded); "
         "cloud segment growth stands in for AI sales where mapped. Cloud revenue is not "
         "AI-specific revenue."
     ),
@@ -164,7 +164,9 @@ def _company_signals(title):
 
 def _workbook_analytics(ctx, companies):
     st.subheader("Workbook-derived hyperscaler comparison")
-    st.caption("Latest reported quarter from saved sponsor data; forward estimates are excluded.")
+    st.caption(
+        "Latest reported quarter from saved PCM - Monthly Market & Risk Monitor data; forward estimates are excluded."
+    )
     rows = []
     gaps = {}
     for company, item in companies.items():

@@ -19,7 +19,8 @@
 - [ ] Valuation: rate-relative and aggregate valuation page delivered (docs/sections.md); sponsor acceptance and live FRED verification pending
 - [ ] S&P 500 Fundamentals: complete full specification; see data_coverage.md for current partial functionality
 - [ ] Margin Debt: complete full specification; see data_coverage.md for current partial functionality
-- [ ] S&P Relative: complete full specification; see data_coverage.md for current partial functionality
+- [ ] S&P Relative: dedicated page added (2026-11 layout); sponsor visual acceptance pending
+- [ ] Momentum, FC Data, Failure Candidates: dedicated pages added from the 2026-11 workbook; sponsor visual acceptance pending
 - [ ] Gold to Oil: complete full specification; see data_coverage.md for current partial functionality
 - [ ] Banks: credit quality, SLOOS and funding page delivered; FDIC QBP outstanding; sponsor acceptance and live FRED verification pending
 - [ ] Bull vs Bear: complete full specification; see data_coverage.md for current partial functionality
@@ -30,7 +31,7 @@
 - [ ] Recession: complete full specification; see data_coverage.md for current partial functionality
 - [ ] Consumer: dedicated consumer page delivered; sponsor acceptance and live FRED verification pending
 - [ ] Demand: complete full specification; see data_coverage.md for current partial functionality
-- [ ] Forecasting: complete full specification; see data_coverage.md for current partial functionality
+- [ ] Forecasting: hidden from navigation at the sponsors' request; code retained
 
 ## Integration / acceptance
 - [ ] Real-data integrations verified
@@ -46,6 +47,8 @@ No phase is marked complete merely because a page renders. This iteration establ
 - [x] Versioned centralized mapping: 46 charts, 8 tables, 18 sections
 - [x] Reusable saved-value provider with formula/source metadata
 - [x] Immutable local database snapshots, atomic publication and last-valid retention
+- [x] Per-section publication: a rejected tab no longer blocks the rest; its last valid data is kept and marked out of date (see excel_operations.md)
+- [x] Data-source labels on every chart and table, detected from the data (Bloomberg / FRED / manual / calculated); opt-in FRED-to-Bloomberg equivalents (see data_sources.md)
 - [x] Stable-save detection, content hashes, background worker and optional CLI watcher
 - [x] Administration page, reimport, coverage/manual dependencies and error reporting
 - [x] Plotly combinations, separate axes/dates, reported-quarter markers and percent formats

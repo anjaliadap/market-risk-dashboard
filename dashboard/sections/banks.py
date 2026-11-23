@@ -66,14 +66,16 @@ TABLE = [
     ("TOTLL", "pct"),
     ("DPSACBW027SBOG", "pct"),
 ]
-CROSS_CHECKS = [("banks_0_0", "NCOs (BISPRBAC, sponsor population)", "CORALACBS")]
+CROSS_CHECKS = [
+    ("banks_0_0", "NCOs (BISPRBAC, PCM - Monthly Market & Risk Monitor population)", "CORALACBS")
+]
 NOTES = [
     (
         "Delinquency and charge-off rates are Federal Reserve quarterly, seasonally adjusted, all "
         "insured U.S.-chartered commercial banks. Charge-offs are annualized and net of recoveries."
     ),
     (
-        "The sponsor workbook's NCO series (BISPRBAC Index, NET_CHARGE_OFF_RATE_AVG) covers the "
+        "The PCM - Monthly Market & Risk Monitor's NCO series (BISPRBAC Index, NET_CHARGE_OFF_RATE_AVG) covers the "
         "Bloomberg bank-index population; it is shown separately and never replaced by the Fed universe."
     ),
     (

@@ -8,9 +8,19 @@ ROOT = Path(__file__).resolve().parents[1]
 PAGES = json.loads((ROOT / "config/pages.json").read_text())
 
 
+HIDDEN = ["Forecasting"]  # Kept in code but not in navigation (sponsors do not use it).
+
+
+def test_hidden_pages_are_not_in_navigation():
+    shown = {title for titles in PAGES.values() for title in titles}
+    assert not shown & set(HIDDEN)
+
+
 @pytest.mark.parametrize(
     "title",
-    [title for titles in PAGES.values() for title in titles] + ["Data Sources & System Status"],
+    [title for titles in PAGES.values() for title in titles]
+    + ["Data Sources & System Status"]
+    + HIDDEN,  # Hidden pages still render, so they can be re-enabled by editing pages.json.
 )
 def test_page_render(title):
     # Exercise each page body via the app's public renderer. Navigation is tested separately.

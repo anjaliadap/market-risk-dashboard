@@ -1,7 +1,10 @@
 """Shared building blocks for dedicated research pages.
 
 Pages read stored provider observations and the latest validated workbook snapshot. Nothing
-here fabricates, interpolates or merges sources: workbook and FRED series keep separate identities.
+here fabricates, interpolates or merges sources: workbook and FRED series keep separate identities,
+except where config/providers.json explicitly declares a workbook series equivalent to an
+independent one (then the preferred provider's series is used, and labelled as such). Every series
+carries its data-source label (src/provenance.py) through to chart captions and tables.
 """
 
 from collections.abc import Callable
@@ -13,6 +16,7 @@ import plotly.graph_objects as go
 import streamlit as st
 from plotly.subplots import make_subplots
 
+from src import provenance
 from src.analytics.sectors import (
     history_percentile,
     period_tolerance,
@@ -24,7 +28,7 @@ from src.analytics.sectors import (
     yoy_percent,
 )
 from src.database.store import history
-from src.excel_sync import latest_import
+from src.excel_sync import latest_import, section_state
 from src.registry import BY_ID
 
 PRE_PANDEMIC = "2019-12-31"
@@ -53,13 +57,49 @@ def frequency(series_id):
     return BY_ID[series_id]["frequency"]
 
 
+def independent_series(key):
+    """Stored observations for one id, labelled from the URL saved with them (or None)."""
+    frame = history(key)
+    if frame.empty:
+        return None
+    series = frame.value.astype(float)
+    stored = frame["source"].dropna() if "source" in frame else pd.Series(dtype=object)
+    url = stored.iloc[-1] if len(stored) else BY_ID.get(key, {}).get("url")
+    return provenance.tag(series, provenance.independent_sources(key, url, BY_ID.get(key)))
+
+
+def _rank(series):
+    order = provenance.config()["preference"]
+    names = provenance.providers(provenance.sources_of(series))
+    return min((order.index(n) if n in order else len(order) for n in names), default=len(order))
+
+
+def preferred_series(key, series):
+    """Use a declared equivalent workbook series when its provider ranks higher (or is the only one).
+
+    Equivalents are opt-in (config/providers.json) so that, for example, a Bloomberg rate the
+    sponsors add to the workbook replaces the FRED download only after someone confirms both
+    measure the same thing in the same units.
+    """
+    equivalent = provenance.config().get("equivalents", {}).get(key)
+    if not equivalent:
+        return series
+    alternative = workbook_series(equivalent["section"], equivalent["series"])
+    if alternative.empty:
+        return series
+    if series is None or _rank(alternative) < _rank(series):
+        return alternative
+    return series
+
+
 def load(ids):
     """Value series for every stored id; absent ids are omitted, never synthesized."""
     data = {}
     for key in ids:
-        frame = history(key)
-        if not frame.empty:
-            data[key] = frame.value.astype(float)
+        series = preferred_series(key, independent_series(key))
+        if series is not None:
+            provenance.note_page(provenance.sources_of(series))
+            data[key] = series
     return data
 
 
@@ -179,6 +219,7 @@ def line_figure(title, left, right=None, left_title="", right_title="", zero=Fal
                 if label in bars
                 else go.Scatter(x=s.index, y=s.values, name=label, mode="lines")
             )
+            trace.meta = {"sources": provenance.sources_of(series)}
             fig.add_trace(trace, secondary_y=side if right else None)
     fig.update_layout(title=title)
     if right:
@@ -231,7 +272,8 @@ def indicator_table(data, specs):
                 if mode == "pp"
                 else ((s.iloc[-1] / baseline - 1) * 100 if baseline and baseline > 0 else np.nan),
                 "Percentile since 2000": history_percentile(s, "2000-01-01"),
-                "Source": meta["url"],
+                "Source": provenance.describe(provenance.sources_of(series)) or "Unknown",
+                "Link": meta["url"],
             }
         )
     return pd.DataFrame(rows)
@@ -265,6 +307,23 @@ def workbook_section(title):
     return saved["snapshot"]["sections"].get(title)
 
 
+def section_notice(title):
+    """Warn when a section's workbook tab was rejected or is shown from an earlier import."""
+    state = section_state(title)
+    if state["state"] == "retained":
+        since = str(state["imported_at"])[:16].replace("T", " ")
+        st.warning(
+            f"OUT OF DATE · The latest workbook's {title} tab did not pass validation "
+            f"({state['reason']}). Showing the data kept from the import of {since} UTC."
+        )
+    elif state["state"] == "rejected":
+        st.warning(
+            f"UNAVAILABLE · The {title} workbook tab was not imported because it did not pass "
+            f"validation: {state['reason']}. See Workbook Administration."
+        )
+    return state
+
+
 def workbook_series(title, series_id):
     """Saved historical workbook points for one mapped series (forward estimates excluded)."""
     section = workbook_section(title)
@@ -282,8 +341,16 @@ def workbook_series(title, series_id):
             if not points:
                 return pd.Series(dtype=float)
             dates, values = zip(*points, strict=True)
-            return pd.Series(values, index=pd.DatetimeIndex(dates), dtype=float).sort_index()
+            out = pd.Series(values, index=pd.DatetimeIndex(dates), dtype=float).sort_index()
+            labels = saved_sources(series)
+            provenance.note_page(labels)
+            return provenance.tag(out, labels)
     return pd.Series(dtype=float)
+
+
+def saved_sources(item):
+    """Sources recorded at import for a workbook series or table (older snapshots: generic)."""
+    return item.get("sources") or [provenance.source("workbook:unknown")]
 
 
 def workbook_cell(title, coordinate):
@@ -340,7 +407,7 @@ def cross_check(ctx, data, title, pairs, key):
         shown = True
     ctx.table_view(pd.DataFrame(rows), hide_index=True)
     st.caption(
-        "Separate axes because sponsor Bloomberg tickers and FRED producers can differ in "
+        "Separate axes because PCM - Monthly Market & Risk Monitor Bloomberg tickers and FRED producers can differ in "
         "population, units and seasonal adjustment. Series are never merged or substituted."
         + ("" if shown else " Import the workbook and ingest FRED to populate the overlay.")
     )
@@ -348,12 +415,27 @@ def cross_check(ctx, data, title, pairs, key):
 
 def render_workbook(title, render_section):
     if workbook_section(title) is None:
-        st.info(
-            "No validated workbook snapshot for this section. Configure EXCEL_WORKBOOK_PATH and "
-            "import from Workbook Administration. Independent analytics remain available."
-        )
+        if section_notice(title)["state"] != "rejected":
+            st.info(
+                "No validated workbook snapshot for this section. Configure EXCEL_WORKBOOK_PATH "
+                "and import from Workbook Administration. Independent analytics remain available."
+            )
         return
-    render_section(title)
+    render_section(title)  # Shows the out-of-date notice itself when the data is retained.
+
+
+def current_sources(key):
+    """Live data sources for one series id (follows declared equivalents); [] if not ingested."""
+    series = preferred_series(key, independent_series(key))
+    return [] if series is None else provenance.sources_of(series)
+
+
+def current_source(key):
+    """Live data-source label for one series id."""
+    series = preferred_series(key, independent_series(key))
+    if series is None:
+        return "Not yet ingested"
+    return provenance.describe(provenance.sources_of(series)) or "Unknown"
 
 
 def sources_table(ctx, ids, notes):
@@ -367,7 +449,8 @@ def sources_table(ctx, ids, notes):
                     "ID": k,
                     "Units": BY_ID[k]["unit"],
                     "Frequency": BY_ID[k]["frequency"],
-                    "Source": BY_ID[k]["url"],
+                    "Data source": current_source(k),
+                    "Link": BY_ID[k]["url"],
                 }
                 for k in ids
             ]
@@ -378,12 +461,17 @@ def sources_table(ctx, ids, notes):
 
 def page_tabs(title, independent_first_label="Independent analytics"):
     """Workbook tab leads when a validated snapshot exists; otherwise analytics lead."""
-    labels = ["Sponsor workbook", independent_first_label, "Indicators", "Methodology & sources"]
+    labels = [
+        "PCM - Monthly Market & Risk Monitor",
+        independent_first_label,
+        "Indicators",
+        "Methodology & sources",
+    ]
     if workbook_section(title) is None:
         labels = [labels[1], labels[0], labels[2], labels[3]]
     tabs = dict(zip(labels, st.tabs(labels), strict=True))
     return (
-        tabs["Sponsor workbook"],
+        tabs["PCM - Monthly Market & Risk Monitor"],
         tabs[independent_first_label],
         tabs["Indicators"],
         tabs["Methodology & sources"],

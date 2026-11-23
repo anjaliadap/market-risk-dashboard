@@ -68,8 +68,8 @@ COMPANY_RATIOS = {
 }
 NOTES = [
     (
-        "The Financing Tracker reproduces the sponsor's four warning items. Company-specific items "
-        "(capex vs CFOps, HY Tech − IG, ORCL/CRWV relative strength) come from the sponsor's saved "
+        "The Financing Tracker reproduces the PCM - Monthly Market & Risk Monitor's four warning items. Company-specific items "
+        "(capex vs CFOps, HY Tech − IG, ORCL/CRWV relative strength) come from the PCM - Monthly Market & Risk Monitor's saved "
         "Bloomberg data, reported quarters only. Where the workbook is unavailable, the HY Tech "
         "item falls back to the broad FRED HY − IG OAS, labelled as a proxy."
     ),
@@ -85,7 +85,7 @@ NOTES = [
     ),
     (
         "Funding gap = combined hyperscaler capex − cash flow from operations per quarter (USD as "
-        "saved by the sponsor). Positive values must be met from cash balances, debt or equity."
+        "saved by the PCM - Monthly Market & Risk Monitor). Positive values must be met from cash balances, debt or equity."
     ),
     (
         "Nonfinancial corporate debt / GDP uses Z.1 debt securities and loans (millions, converted "
@@ -211,7 +211,7 @@ def _credit(ctx, data, start):
         diff = _hy_ig(data)
         series = {"HY − IG": clip(diff * 100, start)}
         fig = line_figure(
-            "DERIVED · HY minus IG spread (bp) — broad-market analogue of sponsor's HY Tech − IG",
+            "DERIVED · HY minus IG spread (bp) — broad-market analogue of PCM - Monthly Market & Risk Monitor's HY Tech − IG",
             series,
             left_title="Basis points",
         )
