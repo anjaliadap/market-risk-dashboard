@@ -120,7 +120,7 @@ def poll(force=False):
     return 'Synthetic workbook ready'
 with patch('dashboard.process_sections.latest_import', side_effect=latest), \\
      patch('dashboard.process_sections.poll_workbook', side_effect=poll), \\
-     patch('dashboard.process_sections.configured_workbook_path', return_value={"/synthetic/latest.xlsx" if configured else ""!r}), \\
+     patch('dashboard.process_sections.settings.excel_workbook_path', {"/synthetic/latest.xlsx" if configured else ""!r}), \\
      patch('dashboard.process_sections.workbook_file_status', return_value={{'error': {source_error!r}}}), \\
      patch('httpx.Client.get', side_effect=AssertionError('No public data allowed')):
     st.title({title!r})
@@ -134,7 +134,7 @@ def test_missing_process_import_owns_page_and_explains_configuration(title):
     app = render_page(title, configured=False)
     assert not app.exception
     assert any("No validated workbook snapshot" in item.value for item in app.info)
-    assert any("PROCESS_WORKBOOK_PATH" in item.value for item in app.warning)
+    assert any("EXCEL_WORKBOOK_PATH" in item.value for item in app.warning)
     assert not app.metric
     assert not app.get("plotly_chart")
     assert app.button[0].label == "Reimport source workbook"

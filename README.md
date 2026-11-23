@@ -19,10 +19,13 @@ uv run streamlit run dashboard/app.py
 
 On Linux the same uv commands work. No paid infrastructure is required. Dependencies are pinned in `uv.lock`. Optional `.env` (copy `.env.example`) selects `DATABASE_URL`; the default is `sqlite:///data/research.db`. Run all commands from the repository root. For PostgreSQL, install its SQLAlchemy driver and set its URL; PostgreSQL has not been integration-tested.
 
-To enable the sponsor workbook's saved views, import an approved local file:
+To enable the sponsor workbook's saved views, set `EXCEL_WORKBOOK_PATH` in `.env`
+to the full path of the approved master workbook. Both import profiles and all
+workbook-backed pages use that file.
 
 ```powershell
-uv run python -m scripts.import_workbook "C:/approved/local/master.xlsx"
+uv run python -m scripts.import_workbook
+uv run python -m scripts.import_process_workbook
 ```
 
 The public providers for the three sections require outbound HTTPS, with no Bloomberg terminal, user login, paid feed or user-provided API key. Source availability and publisher terms still apply. Their live endpoint checks were performed on **October 22, 2026**; that historical verification does not establish current endpoint availability or current observation freshness.

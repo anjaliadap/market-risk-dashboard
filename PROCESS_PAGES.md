@@ -14,18 +14,18 @@ uv sync --frozen
 uv run alembic upgrade head
 ```
 
-Set the path in a local, ignored `.env` file. Use the latest workbook supplied for
-this project. The workbook, extracted data, database and personal paths are not
-part of the published source code.
+Set the path to the latest master workbook in a local, ignored `.env` file.
+Every workbook-backed page uses this setting. The workbook, extracted data,
+database and personal paths are not part of the published source code.
 
 ```dotenv
-PROCESS_WORKBOOK_PATH=C:/approved/source/latest-master.xlsx
+EXCEL_WORKBOOK_PATH=C:/approved/source/latest-master.xlsx
 ```
 
-An explicit `PROCESS_WORKBOOK_PATH` takes precedence over `EXCEL_WORKBOOK_PATH`.
-The fallback exists for installations with one master workbook. The app does not
-choose a source by filename or modification time, and does not combine old and
-new workbooks. The configured file is authoritative for these four pages.
+If an existing installation only sets `PROCESS_WORKBOOK_PATH`, the app accepts
+it as a fallback. When both settings are present, `EXCEL_WORKBOOK_PATH` is the
+source for all workbook-backed pages. The two import profiles still validate
+their respective worksheets and store separate snapshots.
 
 ```sh
 uv run python -m scripts.import_process_workbook

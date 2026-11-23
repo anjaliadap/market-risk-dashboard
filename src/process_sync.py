@@ -5,7 +5,6 @@ import json
 import logging
 import time
 from concurrent.futures import ThreadPoolExecutor
-from datetime import UTC, datetime
 from pathlib import Path
 from threading import Lock
 
@@ -23,25 +22,6 @@ _message = "Waiting for a stable saved workbook"
 _force_requested = False
 
 
-def configured_workbook_path():
-    """An explicit Process source takes precedence over the legacy workbook source."""
-    return settings.process_workbook_path or settings.excel_workbook_path
-
-
-def workbook_file_status():
-    path = configured_workbook_path()
-    if not path:
-        return {"modified_at": None, "error": "Not configured"}
-    try:
-        stat = Path(path).expanduser().stat()
-        return {
-            "modified_at": datetime.fromtimestamp(stat.st_mtime, UTC).isoformat(),
-            "error": None,
-        }
-    except OSError as exc:
-        return {"modified_at": None, "error": str(exc)}
-
-
 def poll_workbook(force=False):
     """Settle file writes before a bounded, atomic Process-profile import.
 
@@ -49,9 +29,9 @@ def poll_workbook(force=False):
     A failed new save leaves the latest valid Process snapshot available.
     """
     global _future, _candidate, _candidate_since, _attempted, _message, _force_requested
-    path = configured_workbook_path()
+    path = settings.excel_workbook_path
     if not path:
-        return "Process workbook not configured (PROCESS_WORKBOOK_PATH or EXCEL_WORKBOOK_PATH)"
+        return "Workbook not configured (EXCEL_WORKBOOK_PATH)"
     with _lock:
         _force_requested = _force_requested or force
         if _future is not None and not _future.done():

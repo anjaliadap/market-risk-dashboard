@@ -5,18 +5,18 @@ import logging
 import time
 
 from src.database.store import initialize
-from src.process_sync import configured_workbook_path, poll_workbook, wait_and_import
+from src.process_sync import poll_workbook, wait_and_import
 from src.settings import settings
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("path", nargs="?", default=configured_workbook_path())
+    parser.add_argument("path", nargs="?", default=settings.excel_workbook_path)
     parser.add_argument("--watch", action="store_true")
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
     if not args.path:
-        parser.error("Set PROCESS_WORKBOOK_PATH or EXCEL_WORKBOOK_PATH, or provide a local path")
-    settings.process_workbook_path = args.path
+        parser.error("Set EXCEL_WORKBOOK_PATH or provide a local workbook path")
+    settings.excel_workbook_path = args.path
     logging.basicConfig(level=logging.INFO)
     initialize()
     if args.watch:

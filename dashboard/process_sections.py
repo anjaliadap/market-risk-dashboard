@@ -12,8 +12,9 @@ from openpyxl.styles.numbers import is_date_format
 from plotly.subplots import make_subplots
 
 from dashboard.styles.theme import base_table_style, financial_table, research_chart, style_figure
-from src.excel_sync import latest_import
-from src.process_sync import configured_workbook_path, poll_workbook, workbook_file_status
+from src.excel_sync import latest_import, workbook_file_status
+from src.process_sync import poll_workbook
+from src.settings import settings
 
 PAGE_TITLES = ("Gold to Oil", "NDR", "Intra-Sector Spread", "Trend Following")
 SOURCE_SHEETS = {
@@ -467,7 +468,7 @@ def _source_checks(title, saved, section):
 
 @st.fragment(run_every="10s")
 def _render_process_fragment(title):
-    configured = configured_workbook_path()
+    configured = settings.excel_workbook_path
     reimport = st.button(
         "Reimport source workbook",
         key="process_reimport" + title,
@@ -479,7 +480,7 @@ def _render_process_fragment(title):
     st.caption("Source: sponsor's saved Excel workbook · " + str(message))
     if not configured:
         st.warning(
-            "Workbook location is not configured. Set PROCESS_WORKBOOK_PATH (or EXCEL_WORKBOOK_PATH) "
+            "Workbook location is not configured. Set EXCEL_WORKBOOK_PATH "
             "to the latest saved workbook to enable updates."
         )
     else:

@@ -11,7 +11,6 @@ from openpyxl.utils.exceptions import InvalidFileException
 
 from dashboard.excel_views import build_figure, table_columns, table_frame
 from dashboard.styles.theme import financial_table, research_chart
-from src.process_sync import configured_workbook_path
 from src.providers.excel import ExcelWorkbookProvider
 from src.settings import settings
 
@@ -23,12 +22,6 @@ FULL_WORKSHEET_PAGES = frozenset(MAPPING["full_worksheet_pages"])
 
 def worksheet_name(title):
     return MAPPING["sections"][title]["sheets"][0]
-
-
-def workbook_path(title):
-    if title in REVIEWED_LEGACY_PAGES and settings.excel_workbook_path:
-        return settings.excel_workbook_path
-    return configured_workbook_path()
 
 
 @st.cache_data(show_spinner="Reading the saved workbook…", max_entries=20)
@@ -81,11 +74,11 @@ def workbook_figure(chart):
 def render_additional_workbook_page(title, theme, *, fallback=False):
     if title not in MAPPING["sections"]:
         return False
-    configured = workbook_path(title)
+    configured = settings.excel_workbook_path
     if not configured:
         if fallback:
             return False
-        st.info("Set PROCESS_WORKBOOK_PATH or EXCEL_WORKBOOK_PATH to the saved sponsor workbook.")
+        st.info("Set EXCEL_WORKBOOK_PATH to the saved sponsor workbook.")
         return True
     path = Path(configured).expanduser()
     try:

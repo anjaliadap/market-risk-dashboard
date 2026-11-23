@@ -75,7 +75,7 @@ def export_values(rows, last_row, last_column):
 
 def render_worksheet_data(configured, sheet):
     if not configured:
-        st.info("Set EXCEL_WORKBOOK_PATH or PROCESS_WORKBOOK_PATH to view this worksheet.")
+        st.info("Set EXCEL_WORKBOOK_PATH to view this worksheet.")
         return
     path = Path(configured).expanduser()
     st.caption(f"{path.name} · {sheet}")

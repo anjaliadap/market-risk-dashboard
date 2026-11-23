@@ -17,7 +17,7 @@ from sqlalchemy.orm import Session
 
 from src import excel_sync, process_sync
 from src.database import store
-from src.settings import settings
+from src.settings import Settings, settings
 
 
 @pytest.fixture
@@ -110,19 +110,12 @@ def test_process_cannot_use_legacy_mapping(tmp_path, process_provider):
         excel_sync.import_workbook(path, profile="unknown")
 
 
-def test_process_source_precedence_and_file_status(tmp_path, monkeypatch):
-    legacy = tmp_path / "legacy.xlsx"
-    source = tmp_path / "process.xlsx"
-    legacy.write_bytes(b"legacy")
-    source.write_bytes(b"process")
-    monkeypatch.setattr(settings, "excel_workbook_path", str(legacy))
-    assert process_sync.configured_workbook_path() == str(legacy)
-    monkeypatch.setattr(settings, "process_workbook_path", str(source))
-    assert process_sync.configured_workbook_path() == str(source)
-    assert process_sync.workbook_file_status()["modified_at"] is not None
-    assert process_sync.workbook_file_status()["error"] is None
-    source.unlink()
-    assert process_sync.workbook_file_status()["error"]
+def test_shared_workbook_settings_prefer_the_standard_path(monkeypatch):
+    monkeypatch.setenv("PROCESS_WORKBOOK_PATH", "old-process.xlsx")
+    monkeypatch.setenv("EXCEL_WORKBOOK_PATH", "master.xlsx")
+    assert Settings(_env_file=None).excel_workbook_path == "master.xlsx"
+    monkeypatch.delenv("EXCEL_WORKBOOK_PATH")
+    assert Settings(_env_file=None).excel_workbook_path == "old-process.xlsx"
 
 
 def test_process_poll_settles_hashes_and_keeps_legacy_state_separate(tmp_path, monkeypatch):
@@ -130,7 +123,7 @@ def test_process_poll_settles_hashes_and_keeps_legacy_state_separate(tmp_path, m
 
     path = tmp_path / "synthetic.xlsx"
     path.write_bytes(b"first")
-    monkeypatch.setattr(settings, "process_workbook_path", str(path))
+    monkeypatch.setattr(settings, "excel_workbook_path", str(path))
     monkeypatch.setattr(settings, "excel_settle_seconds", 5)
     monkeypatch.setattr(process_sync, "_candidate", None)
     monkeypatch.setattr(process_sync, "_future", None)

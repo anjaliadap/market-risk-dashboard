@@ -14,7 +14,6 @@ from dashboard.additional_workbook_pages import (
     FULL_WORKSHEET_PAGES,
     REVIEWED_LEGACY_PAGES,
     render_additional_workbook_page,
-    workbook_path,
     worksheet_name,
 )
 from dashboard.excel_views import render_administration, render_section, synchronization_status
@@ -41,6 +40,7 @@ from src.analytics.core import (
 from src.database.store import Job, ResearchRecord, engine, history, initialize
 from src.refresh import enqueue
 from src.registry import BY_ID, REGISTRY
+from src.settings import settings
 
 st.set_page_config(page_title="Market & Risk Intelligence", page_icon="◈", layout="wide")
 initialize()
@@ -87,7 +87,7 @@ def render(title):
         )
         if worksheet.open:
             with worksheet:
-                render_worksheet_data(workbook_path(title), worksheet_name(title))
+                render_worksheet_data(settings.excel_workbook_path, worksheet_name(title))
         else:
             with summary:
                 render_page_content(title, theme)
