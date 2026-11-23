@@ -2,7 +2,9 @@
   "Empirical": [
     "Momentum",
     "FC Data",
-    "Failure Candidates"
+    "Failure Candidates",
+    "Intra-Sector Spread",
+    "Trend Following"
   ],
   "Market": [
     "Market Data",
@@ -13,6 +15,7 @@
     "Margin Debt",
     "S&P Relative",
     "Gold to Oil",
+    "NDR",
     "Bull vs Bear",
     "VIX & Options",
     "BTC",

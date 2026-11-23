@@ -11,6 +11,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from dashboard.excel_views import render_administration, render_section, synchronization_status
+from dashboard.process_sections import render_process_section
 from dashboard.sections import RENDERERS, PageContext
 from dashboard.styles.theme import (
     financial_table,
@@ -18,6 +19,7 @@ from dashboard.styles.theme import (
     research_chart,
     theme_for,
 )
+from dashboard.workbook_sections import PAGE_IDS, render_workbook_section
 from src import provenance
 from src.analytics.core import (
     drawdown,
@@ -59,10 +61,6 @@ BLOCKERS = {
     "Bear Market": "Historical peak comparison requires PCM - Monthly Market & Risk Monitor event dates and publication-aligned history. No aggregate predictive score is claimed.",
     "S&P vs Bonds": "Earnings-yield spread requires dated index earnings/P-E history. A simple yield spread is not a modeled equity risk premium.",
     "S&P 500 Fundamentals": "Official index aggregates require a licensed dataset; constituent medians would not be equivalent.",
-    "Margin Debt": "FINRA margin history and comparable market capitalization ingestion are not implemented. GDP is in billions; FINRA figures require unit alignment.",
-    "Gold to Oil": "Verified USD gold spot history is required. No futures splice or synthetic observation is used.",
-    "Bull vs Bear": "AAII history requires permitted access. Conditional-return studies require publication dates and overlap controls.",
-    "BTC": "Exchange/reference-currency provider and history are not yet verified. No synthetic price feed.",
     "Energy": "Spot prices only. EIA inventory, production, utilization, storage and seasonal balance ingestion remain unimplemented.",
     "Forecasting": "SEC filed capex and cash-flow data are not integrated. Scenarios below are explicit analyst assumptions, not company forecasts.",
 }
@@ -75,6 +73,23 @@ def render(title):
     provenance.reset_page()  # Chart captions attribute derived lines to this page's inputs.
     theme = theme_for(title, PAGES)
     page_header(title, theme)
+    if render_process_section(title):
+        return
+    if title in PAGE_IDS:
+        source = st.radio(
+            "Data source",
+            ["Public data (automatic updates)", "Imported workbook snapshot"],
+            key="section_source_" + title,
+            horizontal=True,
+        )
+        if source == "Public data (automatic updates)":
+            render_workbook_section(title)
+            return
+        if not render_section(title):
+            st.info(
+                "No imported workbook snapshot is available. Import a workbook in Workbook Administration or select public data."
+            )
+        return
 
     def table_view(frame, **kwargs):
         financial_table(frame, theme, **kwargs)

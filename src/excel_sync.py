@@ -37,10 +37,14 @@ def _decode_snapshot(payload):
 PUBLISHED = ("success", "partial")  # Import statuses that carry a usable snapshot.
 
 
-def latest_import(success_only=False):
+def latest_import(success_only=False, profile="legacy"):
     """Latest import attempt; with ``success_only``, the latest published (usable) snapshot."""
     with Session(store.engine) as session:
-        query = select(store.WorkbookImport).order_by(store.WorkbookImport.id.desc())
+        query = (
+            select(store.WorkbookImport)
+            .where(store.WorkbookImport.profile == profile)
+            .order_by(store.WorkbookImport.id.desc())
+        )
         if success_only:
             query = query.where(store.WorkbookImport.status.in_(PUBLISHED))
         row = session.scalar(query.limit(1))
@@ -48,6 +52,7 @@ def latest_import(success_only=False):
             return None
         return {
             "id": row.id,
+            "profile": row.profile,
             "time": row.imported_at.isoformat(),
             "path": row.path,
             "sha256": row.sha256,
@@ -154,19 +159,26 @@ def section_state(title, saved=None):
     return {"state": "rejected" if reason else "missing", "reason": reason, "imported_at": None}
 
 
-def import_workbook(path, mapping=None, force=False):
-    """Validate each section before one short transaction publishes a new active snapshot.
-
-    Sections that pass are published; sections that fail keep their last valid data (or stay
-    unavailable). Status is "success" when every mapped section passed, "partial" when some were
-    rejected, and "failed" when nothing new could be published.
-    """
+def import_workbook(path, mapping=None, force=False, profile="legacy"):
+    """Publish legacy sections individually and validate process snapshots as a whole."""
+    if profile not in {"legacy", "process"}:
+        raise ValueError(f"Unknown workbook profile: {profile}")
     source = str(Path(path).expanduser().resolve())
     digest = None
     try:
-        snapshot = ExcelWorkbookProvider(source, mapping).read()
+        if profile == "process":
+            from src.providers.process_workbook import (
+                ProcessWorkbookProvider,
+                validate_process_continuity,
+            )
+
+            if mapping is not None:
+                raise ValueError("The process profile uses its own validated workbook layout")
+            snapshot = ProcessWorkbookProvider(source).read()
+        else:
+            snapshot = ExcelWorkbookProvider(source, mapping).read()
         digest = snapshot["sha256"]
-        previous = latest_import(success_only=True)
+        previous = latest_import(success_only=True, profile=profile)
         if (
             previous
             and not force
@@ -175,14 +187,17 @@ def import_workbook(path, mapping=None, force=False):
             and previous["snapshot"].get("schema") == snapshot.get("schema")
         ):
             return "unchanged"
-        fresh = merge_with_previous(
-            previous["snapshot"] if previous else None,
-            snapshot,
-            previous["time"] if previous else None,
-        )
-        rejected = snapshot["rejected_sections"]
-        if not fresh:
-            raise ValueError("; ".join(f"{name}: {reason}" for name, reason in rejected.items()))
+        previous_snapshot = previous["snapshot"] if previous else None
+        rejected = {}
+        if profile == "process":
+            validate_process_continuity(previous_snapshot, snapshot)
+        else:
+            fresh = merge_with_previous(
+                previous_snapshot, snapshot, previous["time"] if previous else None
+            )
+            rejected = snapshot["rejected_sections"]
+            if not fresh:
+                raise ValueError("; ".join(f"{name}: {reason}" for name, reason in rejected.items()))
         if hashlib.sha256(Path(source).read_bytes()).hexdigest() != digest:
             raise ValueError("Workbook changed during validation; prior snapshot retained")
         status = "partial" if rejected else "success"
@@ -191,6 +206,7 @@ def import_workbook(path, mapping=None, force=False):
         with Session(store.engine) as session, session.begin():
             session.add(
                 store.WorkbookImport(
+                    profile=profile,
                     imported_at=datetime.now(UTC),
                     path=source,
                     sha256=digest,
@@ -200,8 +216,9 @@ def import_workbook(path, mapping=None, force=False):
                 )
             )
         logger.info(
-            "Excel import %s sha256=%s metrics=%s rejected=%s",
+            "Excel import %s profile=%s sha256=%s metrics=%s rejected=%s",
             status,
+            profile,
             digest,
             snapshot["metric_count"],
             sorted(rejected),
@@ -212,6 +229,7 @@ def import_workbook(path, mapping=None, force=False):
         with Session(store.engine) as session, session.begin():
             session.add(
                 store.WorkbookImport(
+                    profile=profile,
                     imported_at=datetime.now(UTC),
                     path=source,
                     sha256=digest,
