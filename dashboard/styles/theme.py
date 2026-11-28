@@ -1,6 +1,5 @@
 """Light research design system. Tokens come from Streamlit's native theme contract."""
 
-import hashlib
 import json
 import tomllib
 from dataclasses import dataclass
@@ -154,8 +153,6 @@ def financial_table(frame, theme=None, **kwargs):
             styled = styled.format({c: "{:+,.2f}" for c in signed}, na_rep="—").map(
                 signed_style, subset=signed
             )
-        if numeric:
-            styled = styled.set_properties(subset=numeric, **{"text-align": "right"})
         statuses = [c for c in data if str(c).lower() in {"status", "quality"}]
         if statuses:
             styled = styled.map(status_style, subset=statuses)
@@ -171,36 +168,74 @@ def financial_table(frame, theme=None, **kwargs):
         styled,
         hide_index=kwargs.pop("hide_index", True),
         width=kwargs.pop("width", "stretch"),
+        # Every row visible: the table grows with its content instead of scrolling inside.
+        height=kwargs.pop("height", "content"),
         row_height=36,
-        column_config=column_config,
+        column_config=centered(data, column_config),
         alt=kwargs.pop("alt", "Financial research table with source metadata"),
         **kwargs,
     )
 
 
+def centered(data, column_config):
+    """Center every column, keeping any other per-column settings (links, labels, formats)."""
+    out = {}
+    for column in data.columns:
+        config = column_config.get(column, column_config.get(str(column)))
+        if config is None:
+            config = st.column_config.Column()
+        elif isinstance(config, str):
+            config = st.column_config.Column(config)
+        out[column] = {**config, "alignment": "center"}
+    for column, config in column_config.items():
+        out.setdefault(column, config)
+    return out
+
+
+# Recurring series keep one color on every page. Everything else is colored in drawing order
+# (plum, teal, slate, ...) like the PCM - Monthly Market & Risk Monitor workbook's own charts.
+KNOWN_SERIES = {
+    "revenue": 0,
+    "capex + r&d": 1,
+    "capex": 1,
+    "aws": 2,
+    "cloud": 2,
+    "operating cash flow": 2,
+    "free cash flow": 3,
+    "combined": 4,
+    "amzn": 0,
+    "googl": 1,
+    "meta": 2,
+    "h100": 0,
+    "b200": 1,
+    "s&p 500 p/e": 0,
+    "operating margin": 1,
+    "roe": 1,
+    "avg": 1,
+    "lt avg.": 1,
+    "ratio": 0,
+}
+
+
+def known_color(name):
+    index = KNOWN_SERIES.get(str(name).strip().lower().replace("_", " "))
+    return None if index is None else PALETTE[index]
+
+
 def series_color(name):
-    """Identity-based colors stay the same across sections, unlike trace-index colors."""
-    text = str(name).strip().lower().replace("_", " ")
-    known = {
-        "revenue": PALETTE[0],
-        "capex + r&d": PALETTE[1],
-        "capex": PALETTE[1],
-        "operating cash flow": PALETTE[2],
-        "free cash flow": PALETTE[3],
-        "combined": PALETTE[4],
-        "amzn": PALETTE[0],
-        "googl": PALETTE[1],
-        "meta": PALETTE[2],
-        "s&p 500 p/e": PALETTE[0],
-        "operating margin": PALETTE[1],
-        "roe": PALETTE[1],
-        "avg": PALETTE[1],
-        "lt avg.": PALETTE[1],
-        "ratio": PALETTE[0],
-    }
-    return known.get(
-        text, PALETTE[int.from_bytes(hashlib.sha256(text.encode()).digest()[:2]) % len(PALETTE)]
-    )
+    """Fixed color for a recurring series; the lead workbook color otherwise."""
+    return known_color(name) or PALETTE[0]
+
+
+def figure_colors(names):
+    """One distinct palette color per trace: known identities first, then drawing order."""
+    colors, used = [], set()
+    for name in names:
+        color = known_color(name)
+        colors.append(color if color and color not in used else None)
+        used.add(color)
+    free = iter([c for c in PALETTE if c not in used] * 4)
+    return [color or next(free, PALETTE[0]) for color in colors]
 
 
 def style_figure(figure, theme=None):
@@ -232,12 +267,15 @@ def style_figure(figure, theme=None):
         height=420,
         hovermode="x unified",
     )
-    dashes = ["solid", "dash", "dot", "dashdot", "longdash", "longdashdot"]
-    for index, trace in enumerate(figure.data):
-        color = series_color(trace.name or index)
+    colored = [t for t in figure.data if t.type in ("scatter", "bar")]
+    colors = dict(zip(map(id, colored), figure_colors([t.name for t in colored]), strict=True))
+    dashes = ["solid", "dash", "dot"]
+    for index, trace in enumerate(colored):
+        color = colors[id(trace)]
         if trace.type == "scatter":
             trace.update(
-                line={"color": color, "width": 2, "dash": dashes[index % len(dashes)]},
+                # Solid lines; dashes only once the palette has been used up.
+                line={"color": color, "width": 2.4, "dash": dashes[index // len(PALETTE) % 3]},
                 marker={"color": color},
                 hoverlabel={"bgcolor": SURFACE, "font_color": TEXT},
             )

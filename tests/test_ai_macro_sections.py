@@ -67,7 +67,7 @@ def synthetic_snapshot():
 
     rng = np.random.default_rng(3)
     sections = {}
-    for title in ("Recession", "VIX & Options", "Demand", "Financing"):
+    for title in ("Recession", "VIX & Options", "Demand", "Financing", "Supply"):
         config = load_mapping()["sections"][title]
         charts = []
         for chart in config["charts"]:
@@ -103,6 +103,9 @@ def synthetic_snapshot():
             charts.append(out)
         tables = []
         for table in config["tables"]:
+            if title == "Supply":
+                tables.append({**table, "rows": category_rows(table, rng), "as_of": None})
+                continue
             rows = []
             for r in range(4, 54):
                 row = []
@@ -134,6 +137,27 @@ def synthetic_snapshot():
         "diagnostics": {},
         "issues": [],
     }
+
+
+def category_rows(table, rng):
+    """Header row plus four text-labelled periods, laid out like the workbook's Supply blocks."""
+    columns = [col for col, _ in table["display_columns"]]
+    first = int("".join(filter(str.isdigit, table["range"].split(":")[0])))
+    rows = [
+        [
+            {"cell": f"{col}{first}", "value": None if i == 0 else label, "format": "General"}
+            for i, (col, label) in enumerate(table["display_columns"])
+        ]
+    ]
+    for r, period in enumerate(("2023", "2024", "1H25", "2026E"), start=first + 1):
+        rows.append(
+            [{"cell": f"{columns[0]}{r}", "value": period, "format": "General"}]
+            + [
+                {"cell": f"{col}{r}", "value": float(rng.random()), "format": "0.0%"}
+                for col in columns[1:]
+            ]
+        )
+    return rows
 
 
 def recession_rows():
@@ -180,7 +204,7 @@ def test_page_with_observations(title, charts, database):
     app = run(title)
     assert not app.exception
     assert app.title[0].value == title
-    assert len(app.tabs) == 4
+    assert len(app.tabs) == (5 if title == "Supply" else 4)
     assert len(app.get("plotly_chart")) >= charts
     labels = {m.label: m.value for m in app.metric}
     assert any(label.startswith("Red ") for label in labels)
@@ -196,7 +220,7 @@ def test_page_without_observations(title, database):
     assert coverage.startswith("0 of")  # nothing evaluated, nothing assumed green
 
 
-@pytest.mark.parametrize("title", ["Recession", "VIX & Options", "Demand", "Financing"])
+@pytest.mark.parametrize("title", ["Recession", "VIX & Options", "Demand", "Financing", "Supply"])
 def test_page_with_workbook_snapshot(title, database):
     seed_observations(database, PAGES[title].IDS)
     seed_snapshot(database)
@@ -267,3 +291,29 @@ def test_registry_covers_section_ids():
     for module in PAGES.values():
         assert set(module.IDS) <= BY_ID.keys()
         assert {k.series_id for k in module.KPIS} <= set(module.IDS)
+
+
+def test_supply_workbook_tab_leads_with_gpu_and_capacity_charts(database):
+    seed_snapshot(database)
+    app = run("Supply")
+    assert not app.exception
+    assert app.tabs[0].label == "PCM - Monthly Market & Risk Monitor"
+    labels = {m.label: m.value for m in app.metric}
+    for tile in ("H100 rental price", "B200 rental price", "B200 premium to H100"):
+        assert labels[tile] != "—"
+    assert labels["Data-center vacancy"].endswith("%")
+    titles = " ".join(str(c.proto.spec) for c in app.get("plotly_chart"))
+    for title in ("GPU Pricing", "NAM capacity additions (GW)", "Backlog & years to build"):
+        assert title in titles
+
+
+def test_demand_billings_drive_tracker_when_saved(database):
+    seed_snapshot(database)
+    app = run("Demand")
+    assert not app.exception
+    row = checklist_frame(app).set_index("Metric").loc["Declining semiconductor billings momentum"]
+    assert row["Signal"] in {"RED", "Not red"}
+    assert "Y/Y" in row["Current reading"]
+    assert row["Source"].startswith("Workbook")
+    labels = {m.label for m in app.metric}
+    assert {"Billings, 3MMA", "Major cycle (last 12M)"} <= labels

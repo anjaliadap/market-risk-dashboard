@@ -113,6 +113,31 @@ def workbook_cells(title):
     }
 
 
+def workbook_table(title, table_id):
+    """One mapped workbook table as raw saved values under its display labels (or empty).
+
+    Rows with no saved values are dropped; text cells (period labels such as '1H25' or '2026E')
+    stay text and numbers stay numbers, so callers can chart them without reparsing formats.
+    """
+    section = workbook_section(title)
+    table = next((t for t in (section or {}).get("tables", []) if t["id"] == table_id), None)
+    if not table:
+        return pd.DataFrame()
+    columns = table.get("display_columns") or []
+    rows = []
+    for row in table["rows"]:
+        cells = {"".join(filter(str.isalpha, c["cell"])): c.get("value") for c in row}
+        values = [cells.get(col) for col, _ in columns]
+        if any(v is not None for v in values[1:]):
+            rows.append(values)
+    frame = pd.DataFrame(rows, columns=[label for _, label in columns])
+    # Header row (the sponsor's column titles) is layout, not an observation.
+    if len(frame) and all(isinstance(v, str) or v is None for v in frame.iloc[0, 1:]):
+        frame = frame.iloc[1:].reset_index(drop=True)
+    frame.attrs["sources"] = table.get("sources") or []
+    return frame
+
+
 def workbook_reference(title, chart_id):
     """Return (latest_reported_date, has_forward_points) for a mapped workbook chart."""
     section = workbook_section(title)

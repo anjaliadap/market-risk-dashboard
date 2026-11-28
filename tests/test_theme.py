@@ -104,3 +104,34 @@ def test_workbook_table_flags_and_heatmap_are_readable():
     html = styled.to_html()
     assert theme.POSITIVE.lower() in html.lower()
     assert theme.POSITIVE_BG.lower() in html.lower()
+
+
+def test_chart_colors_follow_workbook_order_without_repeats():
+    fig = go.Figure(
+        [
+            go.Scatter(x=[1, 2], y=[1, 2], name="Alpha"),
+            go.Scatter(x=[1, 2], y=[2, 3], name="Beta"),
+            go.Bar(x=[1, 2], y=[3, 4], name="Gamma"),
+        ]
+    )
+    theme.style_figure(fig)
+    colors = [fig.data[0].line.color, fig.data[1].line.color, fig.data[2].marker.color]
+    assert colors == list(theme.PALETTE[:3])  # plum, teal, slate as in the workbook
+    assert {t.line.dash for t in fig.data[:2]} == {"solid"}
+    # Two series sharing an identity color never collide in one chart.
+    assert len(set(theme.figure_colors(["Capex", "Capex + R&D", "Revenue"]))) == 3
+
+
+def test_tables_show_every_row_centered():
+    from unittest.mock import patch
+
+    frame = pd.DataFrame({"Metric": ["a"] * 30, "Value": range(30)})
+    with patch.object(theme.st, "dataframe") as dataframe:
+        theme.financial_table(
+            frame, column_config={"Metric": theme.st.column_config.TextColumn("M")}
+        )
+    kwargs = dataframe.call_args.kwargs
+    assert kwargs["height"] == "content"
+    config = kwargs["column_config"]
+    assert {c["alignment"] for c in config.values()} == {"center"}
+    assert config["Metric"]["label"] == "M"

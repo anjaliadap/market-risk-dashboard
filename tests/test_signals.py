@@ -215,3 +215,28 @@ def test_financing_checks():
 def test_funding_gap_matches_quarters():
     gap = funding_gap(quarterly([10, 12, 15]), quarterly([11, 11, 11]))
     assert gap.tolist() == [-1, 1, 4]
+
+
+def test_billings_check_and_major_cycle():
+    from src.analytics.signals import billings_check, major_cycle
+
+    index = pd.date_range("2024-01-01", periods=24, freq="MS")
+    # Flat for a year, then 8% a month: Y/Y accelerates past 40% with >6% M/M gains.
+    values = [10.0] * 12 + [10.0 * 1.08**i for i in range(1, 13)]
+    rising = pd.Series(values, index=index)
+    check = billings_check(rising)
+    assert check.red is False and check.status == "Rising momentum"
+    assert "major cycle" in check.reading
+    cycle = major_cycle(rising)
+    assert cycle["major"] and cycle["peak_mm"] > 6
+    # Growth fading in the last months: Y/Y below its level three months earlier.
+    fading = pd.concat(
+        [
+            rising,
+            pd.Series(
+                [rising.iloc[-1]] * 4, index=pd.date_range("2026-01-01", periods=4, freq="MS")
+            ),
+        ]
+    )
+    assert billings_check(fading).red is True
+    assert billings_check(pd.Series(dtype=float)).red is None

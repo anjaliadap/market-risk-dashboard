@@ -518,6 +518,69 @@ def semiconductor_check(production, shipments=None):
     return c
 
 
+MAJOR_CYCLE_MM, MAJOR_CYCLE_YY = 6.0, 40.0  # Demand!E13: >6% M/M and >40% Y/Y within 12M
+
+
+def billings_growth(billings):
+    """(M/M %, Y/Y %) of a monthly billings series, each against the bounded prior observation."""
+    s = clean(billings)
+    if s.empty:
+        return pd.Series(dtype=float), pd.Series(dtype=float)
+    month = (s / lagged(s, 1, GAP["monthly"]) - 1) * 100
+    year = yoy_percent(s, GAP["monthly"])
+    return month.dropna(), year.dropna()
+
+
+def major_cycle(billings, window=12):
+    """The PCM workbook's major-cycle test over the last ``window`` months, or None.
+
+    A major cycle is a >6% M/M gain and a >40% Y/Y gain in the same cycle, within 12 months of
+    each other (Demand!E13). Returns the peak M/M month and whether both legs are present.
+    """
+    month, year = billings_growth(billings)
+    if month.empty or year.empty:
+        return None
+    end = max(month.index[-1], year.index[-1])
+    start = end - pd.DateOffset(months=window - 1)
+    m, y = month.loc[start:], year.loc[start:]
+    if m.empty:
+        return None
+    return {
+        "major": bool((m > MAJOR_CYCLE_MM).any() and (y > MAJOR_CYCLE_YY).any()),
+        "peak_mm": float(m.max()),
+        "peak_mm_date": m.idxmax().date(),
+        "max_yy": float(y.max()) if len(y) else np.nan,
+    }
+
+
+def billings_check(billings, source="Workbook (saved US semi billings, Demand!J91:J123)"):
+    """Declining billings momentum from the sponsor's US semiconductor billings (3MMA).
+
+    RED when the latest Y/Y growth of the 3-month-average billings is below its level three
+    months earlier (the same rule as the FRED proxy, applied to the sponsor's billings).
+    """
+    c = Check(
+        "Declining semiconductor billings momentum",
+        "Declining momentum",
+        "US semiconductor billings (3MMA) Y/Y growth below its level 3 months earlier",
+    )
+    month, year = billings_growth(billings)
+    now, as_of = last(year)
+    prior = nth_last(year, 3)
+    if _ready(c, prior, as_of, source) and not np.isnan(now):
+        c.red = now < prior
+        c.status = "Declining momentum" if c.red else "Rising momentum"
+        c.reading = f"{now:+.1f}% Y/Y (3M earlier {prior:+.1f}%)"
+        if len(month):
+            c.reading += f"; latest M/M {month.iloc[-1]:+.1f}%"
+        cycle = major_cycle(billings)
+        if cycle:
+            c.reading += f"; peak M/M {cycle['peak_mm']:+.1f}% ({cycle['peak_mm_date']:%b %Y})" + (
+                " · major cycle" if cycle["major"] else ""
+            )
+    return c
+
+
 def sales_vs_capex(revenue_growth, capex_growth):
     """Per-company signal from reported TTM growth fractions.
 

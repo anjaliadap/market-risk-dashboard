@@ -25,7 +25,12 @@ from dashboard.sections.common import (
 )
 from dashboard.sections.extras import add_reference, analyst_log, checklist
 from src.analytics.signals import (
+    MAJOR_CYCLE_MM,
+    MAJOR_CYCLE_YY,
     annualized_growth,
+    billings_check,
+    billings_growth,
+    major_cycle,
     momentum,
     peak_status,
     period_cagr,
@@ -77,6 +82,7 @@ COMPANIES = {
     "GOOGL": ("demand_2_3", "Google Cloud", "demand_2_4", "demand_3_2", "demand_2_2"),
     "META": ("demand_4_2", "Revenue", "demand_4_3", "demand_5_2", "demand_4_2"),
 }
+BILLINGS = "demand_6_0"  # Demand!J91:J123, US semiconductor billings, 3MMA (USD billions)
 PERIODS = [
     ("2000 → 2007-Q4", "2000-01-01", "2007-10-01"),
     ("2007-Q4 → 2019-Q4", "2007-10-01", "2019-10-01"),
@@ -94,6 +100,12 @@ NOTES = [
         "Productivity is BLS nonfarm business output per hour. Period growth rates are compound "
         "annual rates between the quarters shown. Comparing the post-2022 period with 2007–2019 "
         "is descriptive: it cannot isolate AI from cyclical, measurement or composition effects."
+    ),
+    (
+        "US semiconductor billings (3-month average) come from the PCM - Monthly Market & Risk "
+        "Monitor's Demand tab (I90:L123) and drive the Demand Tracker billings item when present. "
+        "Major cycle (Demand!E13): a >6% M/M gain and a >40% Y/Y gain within 12 months of each "
+        "other. M/M and Y/Y on this page are recomputed from the saved 3MMA levels."
     ),
     (
         "Semiconductor billings (SIA/WSTS) are licensed. The independent proxy is Fed industrial "
@@ -118,10 +130,12 @@ def render(ctx, render_section):
         ctx.title, "Demand tracker & analytics"
     )
     companies = _company_signals(ctx.title)
+    billings = workbook_series(ctx.title, BILLINGS)
     with workbook_tab:
         render_workbook(ctx.title, render_section)
         if workbook_section(ctx.title) is not None:
             _workbook_analytics(ctx, companies)
+            _billings(ctx, billings)
     with analytics_tab:
         refresh_controls(ctx, IDS)
         st.subheader("Demand tracker")
@@ -130,7 +144,10 @@ def render(ctx, render_section):
             [
                 sales_vs_capex_check({k: v["signal"] for k, v in companies.items()}),
                 productivity_check(data.get("OPHNFB")),
-                semiconductor_check(data.get("IPG3344S"), data.get("A34SVS")),
+                # Sponsor billings (Bloomberg workbook) lead; the FRED output proxy is the fallback.
+                billings_check(billings)
+                if len(billings)
+                else semiconductor_check(data.get("IPG3344S"), data.get("A34SVS")),
             ],
             "demand_tracker",
             "warnings",
@@ -362,3 +379,45 @@ def _investment(ctx, data, start):
         chart_or_note(
             ctx, fig, [series], "demand_share", "Investment/GDP not ingested.", data, start
         )
+
+
+def _billings(ctx, billings):
+    st.subheader("US semiconductor billings: momentum and major-cycle test")
+    if billings.empty:
+        st.info("UNAVAILABLE · Billings rows (Demand!I91:J123) are not in the saved workbook.")
+        return
+    month, year = billings_growth(billings)
+    cycle = major_cycle(billings)
+    a, b, c, d = st.columns(4)
+    a.metric("Billings, 3MMA", f"${billings.iloc[-1]:,.2f}B")
+    a.caption(f"PCM workbook · {billings.index[-1]:%b %Y}")
+    derived_metric(b, "M/M", month, "{:+.1f}%", "percent M/M")
+    derived_metric(c, "Y/Y", year, "{:+.1f}%", "percent Y/Y")
+    if cycle:
+        d.metric(
+            "Major cycle (last 12M)",
+            "Yes" if cycle["major"] else "No",
+            help=f"> {MAJOR_CYCLE_MM:.0f}% M/M and > {MAJOR_CYCLE_YY:.0f}% Y/Y within 12 months "
+            "(Demand!E13).",
+        )
+        d.caption(f"DERIVED · peak M/M {cycle['peak_mm']:+.1f}% in {cycle['peak_mm_date']:%b %Y}")
+    left, right = st.columns(2)
+    with left:
+        fig = line_figure(
+            "DERIVED · Billings M/M vs major-cycle threshold (%)",
+            {"M/M": month},
+            left_title="Percent",
+            zero=True,
+            bars=("M/M",),
+        )
+        add_reference(fig, MAJOR_CYCLE_MM, f"> {MAJOR_CYCLE_MM:.0f}% M/M")
+        ctx.chart(fig, key="demand_billings_mm")
+    with right:
+        fig = line_figure(
+            "DERIVED · Billings Y/Y vs major-cycle threshold (%)",
+            {"Y/Y": year},
+            left_title="Percent",
+            zero=True,
+        )
+        add_reference(fig, MAJOR_CYCLE_YY, f"> {MAJOR_CYCLE_YY:.0f}% Y/Y")
+        ctx.chart(fig, key="demand_billings_yy")

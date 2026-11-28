@@ -147,7 +147,7 @@ def render_section(title):
             hide_index=True,
         )
         st.caption(
-            "Source: validated Excel snapshot. Supply has no workbook source. Review Workbook Administration for missing values and manual dependencies."
+            "Source: validated Excel snapshot. Review Workbook Administration for missing values and manual dependencies."
         )
         return True
     if title not in load_mapping()["sections"]:
@@ -253,7 +253,7 @@ def table_frame(table):
                 if len(values) % 2
                 else SURFACE
             )
-            style = f"color: {color}; background-color: {background}; text-align: {'right' if number else 'left'}"
+            style = f"color: {color}; background-color: {background}; text-align: center"
             if heatmap:
                 style += "; " + signed_style(cell["value"])
             if benchmark:
@@ -272,17 +272,10 @@ def table_frame(table):
 
 
 def table_columns(table):
-    """String-formatted Excel cells need explicit native-grid alignment."""
-    numeric_columns = set()
-    for row in table["rows"]:
-        for cell in row:
-            if isinstance(cell["value"], (int, float)):
-                numeric_columns.add("".join(filter(str.isalpha, cell["cell"])))
+    """String-formatted Excel cells need explicit native-grid alignment (centered throughout)."""
     return {
-        label: st.column_config.TextColumn(
-            label, alignment="right" if col in numeric_columns else "left"
-        )
-        for col, label in table.get("display_columns", [])
+        label: st.column_config.TextColumn(label, alignment="center")
+        for _, label in table.get("display_columns", [])
     }
 
 

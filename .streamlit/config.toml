@@ -42,7 +42,7 @@ violetBackgroundColor = "#EEEDF7"
 grayColor = "#475569"
 grayTextColor = "#475569"
 grayBackgroundColor = "#F1F5F9"
-chartCategoricalColors = ["#581C46", "#0F766E", "#534D96", "#B45309", "#18263D", "#475569"]
+chartCategoricalColors = ["#4C0038", "#2A7F6C", "#455667", "#A0558C", "#1F5F52", "#64748B"]
 chartDivergingColors = ["#B91C1C", "#CF6464", "#E8AAAA", "#FBEAEA", "#FFF4DB", "#F0F8F2", "#CEE7D6", "#9BCBAD", "#55A575", "#15803D"]
 
 [theme.sidebar]

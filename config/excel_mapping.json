@@ -3053,7 +3053,8 @@
         "Demand"
       ],
       "notes": [
-        "Horizontal quarterly history/forward estimates; row 2 labels distinguish (Rep)/(Fwd), row 3 dates. Preserve red vertical latest-reported-quarter marker. Revenue/FCF/capex Excel calculations remain authoritative; do not describe all revenue as AI-specific."
+        "Horizontal quarterly history/forward estimates; row 2 labels distinguish (Rep)/(Fwd), row 3 dates. Preserve red vertical latest-reported-quarter marker. Revenue/FCF/capex Excel calculations remain authoritative; do not describe all revenue as AI-specific.",
+        "Rows 90-123 (I:L): US semiconductor billings 3-month average (USD billions), M/M and Y/Y, entered by the sponsor. B20:F27 semiconductor peak tracker: peak dates are manual text; S&P/SOX since-peak returns are Bloomberg BDP total returns from E26 to F26 (TODAY())."
       ],
       "charts": [
         {
@@ -3574,9 +3575,91 @@
               "period_labels_row": 2
             }
           ]
+        },
+        {
+          "id": "demand_6",
+          "title": "US Semi Billings (3MMA)",
+          "series": [
+            {
+              "id": "demand_6_0",
+              "name": "US Semi Billings (3MMA)",
+              "role": "metric",
+              "sheet": "Demand",
+              "values": "J91:J123",
+              "date_sheet": "Demand",
+              "dates": "I91:I123",
+              "date_mapping_inferred": false,
+              "kind": "BarChart",
+              "secondary": false,
+              "unit": "\"$\"#,##0",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "\"$\"#,##0",
+              "allowed_number_formats": [
+                "\"$\"#,##0"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "demand_7",
+          "title": "US Semi Billings M/M",
+          "series": [
+            {
+              "id": "demand_7_0",
+              "name": "M/M",
+              "role": "metric",
+              "sheet": "Demand",
+              "values": "K92:K123",
+              "date_sheet": "Demand",
+              "dates": "I92:I123",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0.0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0.0%",
+              "allowed_number_formats": [
+                "0.0%"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
         }
       ],
-      "tables": []
+      "tables": [
+        {
+          "id": "semis_peak",
+          "title": "Semiconductor billings peak tracker",
+          "sheet": "Demand",
+          "range": "B20:F27",
+          "date_cell": null,
+          "expected_headers": {
+            "B20": "Semiconductor Billings",
+            "B26": "S&P Since Peak",
+            "B27": "SOX Since Peak"
+          },
+          "display_columns": [
+            [
+              "B",
+              "Metric"
+            ],
+            [
+              "D",
+              "Saved value"
+            ],
+            [
+              "E",
+              "Reference date / note"
+            ]
+          ],
+          "signal_column": null
+        }
+      ]
     },
     "Financing": {
       "sheets": [
@@ -3906,6 +3989,192 @@
         }
       ],
       "tables": []
+    },
+    "Supply": {
+      "sheets": [
+        "Supply"
+      ],
+      "notes": [
+        "C:D H100 and G:H B200 GPU rental price indexes (Bloomberg SDH100RT / SDB200RT, USD per GPU-hour) with M/M changes; the last row is a BDP current price dated TODAY(). B35:D42 data-center inventory (MW) and vacancy, B45:D51 North American capacity additions (GW, 'E' = estimate), B54:D57 backlog and years to build are sponsor-entered values with text period labels. Sources for the hardcoded blocks are not stated in the workbook."
+      ],
+      "charts": [
+        {
+          "id": "supply_0",
+          "title": "GPU Pricing",
+          "series": [
+            {
+              "id": "supply_0_0",
+              "name": "H100",
+              "role": "metric",
+              "sheet": "Supply",
+              "values": "C6:C32",
+              "date_sheet": "Supply",
+              "dates": "B6:B32",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "\"$\"#,##0.00",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "\"$\"#,##0.00",
+              "allowed_number_formats": [
+                "\"$\"#,##0.00"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "supply_0_1",
+              "name": "B200",
+              "role": "metric",
+              "sheet": "Supply",
+              "values": "G16:G32",
+              "date_sheet": "Supply",
+              "dates": "F16:F32",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "\"$\"#,##0.00",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "\"$\"#,##0.00",
+              "allowed_number_formats": [
+                "\"$\"#,##0.00"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        },
+        {
+          "id": "supply_1",
+          "title": "GPU Pricing M/M",
+          "series": [
+            {
+              "id": "supply_1_0",
+              "name": "H100",
+              "role": "metric",
+              "sheet": "Supply",
+              "values": "D7:D32",
+              "date_sheet": "Supply",
+              "dates": "B7:B32",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            },
+            {
+              "id": "supply_1_1",
+              "name": "B200",
+              "role": "metric",
+              "sheet": "Supply",
+              "values": "H17:H32",
+              "date_sheet": "Supply",
+              "dates": "F17:F32",
+              "date_mapping_inferred": false,
+              "kind": "LineChart",
+              "secondary": false,
+              "unit": "0%",
+              "value_type": "number",
+              "date_type": "excel_date",
+              "expected_number_format": "0%",
+              "allowed_number_formats": [
+                "0%"
+              ],
+              "allow_forward": false,
+              "period_labels_row": null
+            }
+          ]
+        }
+      ],
+      "tables": [
+        {
+          "id": "dc_inventory",
+          "title": "Data center inventory (MW) vs vacancy",
+          "sheet": "Supply",
+          "range": "B35:D42",
+          "date_cell": null,
+          "expected_headers": {
+            "C35": "Inventory",
+            "D35": "Vacancy"
+          },
+          "display_columns": [
+            [
+              "B",
+              "Period"
+            ],
+            [
+              "C",
+              "Inventory (MW)"
+            ],
+            [
+              "D",
+              "Vacancy"
+            ]
+          ],
+          "signal_column": null
+        },
+        {
+          "id": "capacity_additions",
+          "title": "NAM capacity additions (GW)",
+          "sheet": "Supply",
+          "range": "B45:D51",
+          "date_cell": null,
+          "expected_headers": {
+            "C45": "Tracked/Under Construction",
+            "D45": "Announced, Not Yet Under Construction"
+          },
+          "display_columns": [
+            [
+              "B",
+              "Year"
+            ],
+            [
+              "C",
+              "Tracked / under construction"
+            ],
+            [
+              "D",
+              "Announced, not yet under construction"
+            ]
+          ],
+          "signal_column": null
+        },
+        {
+          "id": "backlog_build",
+          "title": "Backlog & years to build",
+          "sheet": "Supply",
+          "range": "B54:D57",
+          "date_cell": null,
+          "expected_headers": {
+            "C54": "Backlog",
+            "D54": "Years to Build"
+          },
+          "display_columns": [
+            [
+              "B",
+              "Quarter"
+            ],
+            [
+              "C",
+              "Backlog"
+            ],
+            [
+              "D",
+              "Years to build"
+            ]
+          ],
+          "signal_column": null
+        }
+      ]
     }
   }
 }
